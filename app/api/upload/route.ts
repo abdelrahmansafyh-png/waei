@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const allowedFolders = ["banners", "programs", "files", "games"];
+    const allowedFolders = ["banners", "programs", "files", "games", "game-images"];
     const safeFolder = allowedFolders.includes(folder) ? folder : "files";
 
     const bytes = await file.arrayBuffer();

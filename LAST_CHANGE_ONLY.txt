@@ -1,9 +1,0 @@
-آخر تعديل فقط:
-1) ألوان عناصر الطائرة والبالونات/السيارات صارت عشوائية قبل إجابة الطفل، وليست مرتبطة بالصح والخطأ.
-2) زيادة الوقت بين ظهور العناصر إلى حوالي 1.5 ثانية قدر الإمكان.
-3) لم يتم تعديل التصميم أو باقي النظام.
-
-Patched files:
-game-templates/balloon_plane.zip: public/index.html
-game-templates/subway.zip: public/index.html
-game-templates/drag_dynamic_kid.zip: index.html

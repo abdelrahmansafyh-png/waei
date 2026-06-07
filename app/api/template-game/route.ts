@@ -96,6 +96,7 @@ function normalizeTemplateGame(templateId: string, input: any) {
     if (!Array.isArray(game.cards) && Array.isArray(game.items)) {
       game.cards = game.items.map((item: any) => ({
         text: item?.text || item?.label || "",
+        image: item?.image || "",
         group: item?.group || item?.category || item?.type || "correct",
       }));
     }
@@ -154,10 +155,18 @@ function buildTtsFromGame(game: any) {
 
   if (Array.isArray(game.cards)) {
     game.cards = game.cards.map((card: any, index: number) => {
-      const text = card?.text || card?.front || card?.back || card?.question;
-      const file = `card_${index}.mp3`;
+      const text = card?.text || card?.label || card?.front || card?.back || card?.question;
+      const existingAudio = String(card?.audio || "");
+      const file = existingAudio.startsWith("audio/")
+        ? existingAudio.replace(/^audio\//, "")
+        : `card_${index}.mp3`;
+
       addTts(tts, `card_${index}`, text, file);
-      return { ...card, audio: `audio/${file}` };
+
+      return {
+        ...card,
+        audio: `audio/${file}`,
+      };
     });
   }
 

@@ -1,3 +1,0 @@
-Game added to: public/games/drag-dynamic-kid/
-Open from browser:
-/games/drag-dynamic-kid/index.html
