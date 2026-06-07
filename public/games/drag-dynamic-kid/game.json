@@ -1,0 +1,67 @@
+{
+  "title": "ضع البطاقة في مكانها الصحيح",
+  "instruction": "اسحب كل بطاقة إلى الصندوق المناسب، ثم اضغط تحقق",
+  "character": "images/character.png",
+  "theme": {
+    "background": "classroom"
+  },
+  "groups": [
+    {
+      "id": "good",
+      "title": "سلوك صحيح",
+      "color": "#22c55e",
+      "icon": "⭐"
+    },
+    {
+      "id": "bad",
+      "title": "سلوك غير مناسب",
+      "color": "#ef4444",
+      "icon": "⚠️"
+    }
+  ],
+  "cards": [
+    {
+      "id": "c1",
+      "type": "text",
+      "text": "أساعد صديقي عندما يحتاجني",
+      "group": "good",
+      "audio": "audio/c1.mp3"
+    },
+    {
+      "id": "c2",
+      "type": "text",
+      "text": "أستمع للمعلمة بهدوء",
+      "group": "good",
+      "audio": "audio/c2.mp3"
+    },
+    {
+      "id": "c3",
+      "type": "text",
+      "text": "أرتب ألعابي بعد الانتهاء",
+      "group": "good",
+      "audio": "audio/c3.mp3"
+    },
+    {
+      "id": "c4",
+      "type": "text",
+      "text": "أسخر من زميلي",
+      "group": "bad",
+      "audio": "audio/c4.mp3"
+    },
+    {
+      "id": "c5",
+      "type": "text",
+      "text": "أقاطع حديث الآخرين",
+      "group": "bad",
+      "audio": "audio/c5.mp3"
+    },
+    {
+      "id": "c6",
+      "type": "image",
+      "text": "أترك المكان فوضويًا",
+      "image": "images/mess.svg",
+      "group": "bad",
+      "audio": "audio/c6.mp3"
+    }
+  ]
+}
