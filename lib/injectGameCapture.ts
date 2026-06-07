@@ -22,10 +22,22 @@ export async function injectGameCaptureToZip(input: ArrayBuffer | Buffer) {
 
   zip.file(base + "waei-capture.js", WAEI_CAPTURE_SCRIPT);
 
-  zip.file(
-    base + "html2canvas.min.js",
-    await fetch("https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js").then((r) => r.text())
+  // zip.file(
+  //   base + "html2canvas.min.js",
+  //   await fetch("https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js").then((r) => r.text())
+  // );
+
+  const html2canvasRes = await fetch(
+    "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"
   );
+
+  if (!html2canvasRes.ok) {
+    throw new Error("Failed to load html2canvas");
+  }
+
+  const html2canvasCode: string = await html2canvasRes.text();
+
+  zip.file(base + "html2canvas.min.js", html2canvasCode);
 
   let html = await zip.file(indexPath)!.async("string");
 
