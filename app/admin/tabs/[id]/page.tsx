@@ -185,21 +185,21 @@ export default function TabContentPage({
     );
   }
 
-  function getGameJsonUrlFromIframe(url: string) {
-    if (!url) return "";
+  // function getGameJsonUrlFromIframe(url: string) {
+  //   if (!url) return "";
 
-    const cleanUrl = url.split("?")[0].split("#")[0];
+  //   const cleanUrl = url.split("?")[0].split("#")[0];
 
-    if (cleanUrl.endsWith("/")) {
-      return `${cleanUrl}game.json`;
-    }
+  //   if (cleanUrl.endsWith("/")) {
+  //     return `${cleanUrl}game.json`;
+  //   }
 
-    if (cleanUrl.endsWith("index.html")) {
-      return cleanUrl.replace(/index\.html$/, "game.json");
-    }
+  //   if (cleanUrl.endsWith("index.html")) {
+  //     return cleanUrl.replace(/index\.html$/, "game.json");
+  //   }
 
-    return `${cleanUrl.replace(/\/$/, "")}/game.json`;
-  }
+  //   return `${cleanUrl.replace(/\/$/, "")}/game.json`;
+  // }
 
   async function loadGameDataForEdit(item: Content) {
     // 1) الأفضل: نقرأ البيانات المخزنة في body من قاعدة البيانات
