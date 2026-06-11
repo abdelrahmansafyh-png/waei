@@ -409,14 +409,8 @@ export default function ChildProgramPage() {
           <div className="preview-page" dir="rtl">
             <style>{`
               .preview-page {
-                  min-height: 100vh;
-                  background:
-                      linear-gradient(rgba(255,255,255,.25), rgba(255,255,255,.25)),
-                      url("/images/kids-soft-bg.png");
-                  background-size: cover;
-                  background-position: center top;
-                  background-repeat: no-repeat;
-                  background-attachment: fixed;
+                  min-height: 100%;
+                  background: transparent;
                   color: #20294f;
                   padding: 24px;
                   overflow-x: hidden;

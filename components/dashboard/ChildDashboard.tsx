@@ -176,38 +176,7 @@ export default function ChildDashboard({ profile }: { profile: any }) {
             </div>
           </header>
 
-          <section className="relative mb-7 overflow-hidden rounded-[2.4rem] bg-gradient-to-l from-[#5E38D8] to-[#7B4DFF] p-6 text-white shadow-[0_22px_60px_rgba(94,56,216,.28)]">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_40%,rgba(255,255,255,.20),transparent_14%),radial-gradient(circle_at_88%_65%,rgba(255,214,102,.30),transparent_12%)]" />
-            <div className="relative flex flex-wrap items-center justify-between gap-6">
-              <div className="rounded-[1.8rem] bg-white px-8 py-5 text-center shadow-2xl">
-                <div className="text-sm font-black text-[#6E46E8]">كود الربط</div>
-                <div className="mt-2 text-5xl font-black tracking-[0.25em] text-[#0B4D6B]">
-                  {localAccessCode || "------"}
-                </div>
-                <button
-                  type="button"
-                  onClick={copyAccessCode}
-                  className="mt-4 rounded-full bg-[#6E46E8]/15 px-6 py-3 text-sm font-black text-[#6E46E8]"
-                >
-                  نسخ الكود
-                </button>
-              </div>
-
-              <div className="max-w-2xl">
-                <div className="mb-3 inline-flex rounded-full bg-white/15 px-4 py-2 text-sm font-black">
-                  🔗 ربط ولي الأمر
-                </div>
-                <h2 className="text-3xl font-black md:text-4xl">
-                  شارك هذا الكود مع ولي أمرك
-                </h2>
-                <p className="mt-3 text-sm font-bold leading-7 text-white/85">
-                  يمكن لولي الأمر إدخال هذا الكود لربط حسابك ومتابعة تقدمك وبرامجك.
-                </p>
-              </div>
-
-              <div className="hidden text-7xl md:block">⭐</div>
-            </div>
-          </section>
+  
 
           {!proActive && (
             <section className="mb-7 rounded-[2.2rem] bg-[#FFF4C7] p-5 shadow-lg">
@@ -273,6 +242,7 @@ export default function ChildDashboard({ profile }: { profile: any }) {
               </div>
             </section>
           )}
+          
 
           <section className="rounded-[2.4rem] bg-white/80 p-6 shadow-xl backdrop-blur">
             <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
@@ -292,6 +262,7 @@ export default function ChildDashboard({ profile }: { profile: any }) {
                 عرض كل البرامج
               </Link>
             </div>
+            
 
             {loading ? (
               <div className="rounded-[2rem] bg-white p-12 text-center font-black text-[#6E7A99]">
@@ -419,6 +390,41 @@ export default function ChildDashboard({ profile }: { profile: any }) {
                 </h3>
               </div>
             )}
+
+            
+          </section>
+
+          <section className="relative mt-6 mb-1 overflow-hidden rounded-[2.4rem] bg-gradient-to-l from-[#5E38D8] to-[#7B4DFF] p-6 text-white shadow-[0_22px_60px_rgba(94,56,216,.28)]">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_40%,rgba(255,255,255,.20),transparent_14%),radial-gradient(circle_at_88%_65%,rgba(255,214,102,.30),transparent_12%)]" />
+            <div className="relative flex flex-wrap items-center justify-between gap-6">
+              <div className="rounded-[1.8rem] bg-white px-8 py-5 text-center shadow-2xl">
+                <div className="text-sm font-black text-[#6E46E8]">كود الربط</div>
+                <div className="mt-2 text-5xl font-black tracking-[0.25em] text-[#0B4D6B]">
+                  {localAccessCode || "------"}
+                </div>
+                <button
+                  type="button"
+                  onClick={copyAccessCode}
+                  className="mt-4 rounded-full bg-[#6E46E8]/15 px-6 py-3 text-sm font-black text-[#6E46E8]"
+                >
+                  نسخ الكود
+                </button>
+              </div>
+
+              <div className="max-w-2xl">
+                <div className="mb-3 inline-flex rounded-full bg-white/15 px-4 py-2 text-sm font-black">
+                  🔗 ربط ولي الأمر
+                </div>
+                <h2 className="text-3xl font-black md:text-4xl">
+                  شارك هذا الكود مع ولي أمرك
+                </h2>
+                <p className="mt-3 text-sm font-bold leading-7 text-white/85">
+                  يمكن لولي الأمر إدخال هذا الكود لربط حسابك ومتابعة تقدمك وبرامجك.
+                </p>
+              </div>
+
+              <div className="hidden text-7xl md:block">⭐</div>
+            </div>
           </section>
         </div>
       </section>

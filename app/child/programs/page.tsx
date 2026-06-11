@@ -114,17 +114,14 @@ export default function ChildProgramsPage() {
     <ChildLayout profile={profile} activeHref="/child/programs">
         <section
           className="min-h-screen flex-1 bg-cover bg-fixed bg-center px-4 py-6 md:px-8"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,.42), rgba(255,255,255,.42)), url("/images/kids-soft-bg.png")',
-          }}
+          
         >
           <div className="mx-auto max-w-7xl">
-            <header className="mb-8 rounded-[2.8rem] bg-white/95 p-7 shadow-[0_18px_45px_rgba(62,87,120,.13)]">
+            <header className="mb-8 rounded-[2.8rem] border border-white/40 bg-white/88 p-7 shadow-[0_22px_70px_rgba(62,87,120,.18)] backdrop-blur-xl">
               <div className="flex flex-wrap items-center justify-between gap-5">
                 <div>
                   <div className="mb-3 inline-flex rounded-full bg-[#E8F8F3] px-5 py-2 font-black text-[#42BFA8]">
-                    برامج واعي
+                    برامج واعي 🗺️
                   </div>
 
                   <h1 className="text-5xl font-black leading-[1.2] text-[#20294f]">
@@ -192,7 +189,7 @@ export default function ChildProgramsPage() {
                   return (
                     <div
                       key={program.id}
-                      className="group overflow-hidden rounded-[2rem] border border-[#DDEDEA] bg-[#F9FFFD] shadow-xl shadow-teal-50 transition hover:-translate-y-2"
+                      className="group overflow-hidden rounded-[2rem] border border-white/55 bg-white/92 shadow-xl transition hover:-translate-y-2"
                     >
                       <Link href={locked ? "/plans" : `/child/programs/${program.slug}`}>
                         <div className="relative">
