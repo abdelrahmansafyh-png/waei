@@ -19,56 +19,35 @@ export default function ChildSidebar({ profile, activeHref = "/dashboard" }: Chi
   const router = useRouter();
 
   async function handleLogout() {
-  await supabase.auth.signOut();
-  router.push("/login");
-}
+    await supabase.auth.signOut();
+    router.push("/login");
+  }
+
   return (
-    <aside className="sticky top-0 hidden h-screen w-[292px] shrink-0 overflow-y-auto border-l border-[#E6F1EE] bg-white px-5 py-6 lg:block">
-      <Link href="/" className="mb-8 flex items-center gap-3">
-        <img src="/images/logo.png" alt="واعي" className="h-16 w-auto" />
-        <div>
-          <h2 className="text-2xl font-black text-[#0B4D6B]">واعي</h2>
-          <p className="text-xs font-black text-[#42BFA8]">عالم الطفل</p>
+    <aside className="relative z-20 hidden h-screen w-[300px] shrink-0 overflow-hidden rounded-l-[2.5rem] bg-gradient-to-b from-[#4B2DB8] via-[#342087] to-[#24145F] px-5 py-6 text-white shadow-2xl lg:block">
+      <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-white/10" />
+      <div className="pointer-events-none absolute -left-20 bottom-10 h-56 w-56 rounded-full bg-[#42BFA8]/20" />
+
+      <Link href="/" className="relative mb-7 flex items-center justify-center">
+        <div className="text-center">
+          <img src="/images/logo.png" alt="واعي" className="mx-auto h-20 w-auto brightness-0 invert" />
+          <p className="-mt-2 text-sm font-black text-white/80">عالم الطفل</p>
         </div>
       </Link>
 
-      <div className="relative mb-7 overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#0B4D6B] to-[#2D9B87] p-5 text-white shadow-xl">
-        <div className="absolute -left-10 -top-10 h-32 w-32 rounded-full bg-white/10" />
-        <div className="absolute -bottom-14 -right-10 h-36 w-36 rounded-full bg-[#D8F36A]/15" />
-        <div className="relative">
-          <div className="flex h-20 w-20 items-center justify-center rounded-[1.7rem] bg-white text-5xl shadow-xl">
-            {childAvatar}
-          </div>
-          <h3 className="mt-4 text-2xl font-black">{childName}</h3>
-          <p className="mt-2 text-sm font-bold leading-7 text-white/75">
-            مستعد نكمل رحلة واعي اليوم؟
-          </p>
-        </div>
-      </div>
-
-      <div className="mb-5 rounded-[1.6rem] border border-[#E6F1EE] bg-[#F9FFFD] p-4">
-        <p className="text-xs font-black text-[#6E7A99]">نوع الاشتراك</p>
-        <div
-          className={`mt-2 inline-flex rounded-full px-4 py-2 text-sm font-black ${
-            proActive
-              ? "bg-[#FFF8D9] text-[#8A6A00]"
-              : "bg-[#ECFBF7] text-[#0B4D6B]"
-          }`}
-        >
-          {proActive ? "👑 Pro" : "🟢 Free"}
+      <div className="relative mb-6 overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#1B7B9C] to-[#3DBB8E] p-5 text-center shadow-xl">
+        <div className="pointer-events-none absolute -left-10 -top-10 h-28 w-28 rounded-full bg-white/10" />
+        <div className="mx-auto grid h-24 w-24 place-items-center rounded-full bg-white text-6xl shadow-xl">
+          {childAvatar}
         </div>
 
-        {!proActive && (
-          <Link
-            href="/plans"
-            className="mt-4 block rounded-full bg-[#0B4D6B] py-3 text-center text-sm font-black text-white"
-          >
-            تفعيل الاشتراك
-          </Link>
-        )}
+        <h3 className="mt-4 text-3xl font-black">{childName}</h3>
+        <p className="mt-2 text-sm font-bold leading-7 text-white/80">
+          مستعد تكمل رحلة واعي اليوم؟
+        </p>
       </div>
 
-      <nav className="space-y-2">
+      <nav className="relative space-y-3">
         {childNavItems.map((item) => {
           const active = item.href === activeHref;
 
@@ -76,13 +55,13 @@ export default function ChildSidebar({ profile, activeHref = "/dashboard" }: Chi
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 rounded-2xl px-4 py-4 font-black transition ${
+              className={`flex items-center gap-4 rounded-[1.4rem] px-4 py-4 text-lg font-black transition ${
                 active
-                  ? "bg-[#ECFBF7] text-[#0B4D6B] shadow-sm"
-                  : "text-[#6E7A99] hover:bg-[#F6FBF9] hover:text-[#0B4D6B]"
+                  ? "bg-gradient-to-l from-[#FFD65A] to-[#FFF1A8] text-[#3A2777] shadow-lg"
+                  : "bg-white/10 text-white hover:bg-white/15"
               }`}
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-2xl shadow-sm">
+              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white text-3xl shadow-md">
                 {item.icon}
               </span>
               {item.label}
@@ -91,18 +70,21 @@ export default function ChildSidebar({ profile, activeHref = "/dashboard" }: Chi
         })}
       </nav>
 
-      <div className="mt-8 rounded-[2rem] bg-[#FFF8D9] p-5">
-        <div className="text-4xl">⚡</div>
-        <h3 className="mt-3 font-black text-[#0B4D6B]">XP الطفل</h3>
-        <p className="mt-2 text-sm font-bold leading-7 text-[#7A6B22]">
-          اجمع XP بإكمال البرامج والألعاب لتظهر في لوحة الصدارة.
-        </p>
-      </div>
-      <button
-          onClick={handleLogout}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-red-50 px-5 py-4 font-black text-red-600 transition hover:bg-red-100"
+      <div className="relative mt-5 rounded-[1.6rem] bg-white/10 p-4">
+        <p className="text-xs font-black text-white/70">نوع الاشتراك</p>
+        <Link
+          href={proActive ? "/dashboard/subscription" : "/plans"}
+          className="mt-2 inline-flex rounded-full bg-[#FFF1A8] px-4 py-2 text-sm font-black text-[#8A6200]"
         >
-          🚪 تسجيل الخروج
+          {proActive ? "👑 Pro" : "🟢 Free"}
+        </Link>
+      </div>
+
+      <button
+        onClick={handleLogout}
+        className="relative mt-4 flex w-full items-center justify-center gap-2 rounded-[1.4rem] bg-[#DF4777] px-5 py-4 font-black text-white shadow-lg"
+      >
+        🚪 تسجيل خروج
       </button>
     </aside>
   );

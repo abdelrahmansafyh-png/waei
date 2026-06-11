@@ -50,6 +50,7 @@ function normalizeIframeUrl(value: string) {
 }
 
 function icon(type: string) {
+  if (type === "interactive_stories" || type === "interactive_story") return "🎭";
   if (type === "games" || type === "iframe" || type === "zip_game") return "🎮";
   if (type === "youtube") return "▶️";
   if (type === "video") return "🎬";
@@ -231,7 +232,7 @@ export default function ChildProgramPage() {
     () =>
       activeContents.filter(
         (item) =>
-          (item.content_type === "iframe" || item.content_type === "zip_game") &&
+          (item.content_type === "iframe" || item.content_type === "zip_game" || item.content_type === "interactive_story") &&
           item.iframe_url
       ),
     [activeContents]
@@ -240,7 +241,7 @@ export default function ChildProgramPage() {
   const normalContents = useMemo(
     () =>
       activeContents.filter(
-        (item) => item.content_type !== "iframe" && item.content_type !== "zip_game"
+        (item) => item.content_type !== "iframe" && item.content_type !== "interactive_story" && item.content_type !== "zip_game"
       ),
     [activeContents]
   );
@@ -266,7 +267,7 @@ export default function ChildProgramPage() {
     const games = contents.filter(
       (item) =>
         item.tab_id === activeTab &&
-        (item.content_type === "iframe" || item.content_type === "zip_game") &&
+        (item.content_type === "iframe" || item.content_type === "zip_game" || item.content_type === "interactive_story") &&
         item.iframe_url
     );
 
@@ -291,7 +292,7 @@ export default function ChildProgramPage() {
     return contents.filter(
       (item) =>
         item.tab_id === tabId &&
-        (item.content_type === "iframe" || item.content_type === "zip_game") &&
+        (item.content_type === "iframe" || item.content_type === "zip_game" || item.content_type === "interactive_story") &&
         item.iframe_url
     ).length;
   }
@@ -693,7 +694,7 @@ export default function ChildProgramPage() {
 
               .text-content {
                 display: grid;
-                grid-template-columns: 1fr 300px;
+                grid-template-columns: 1fr 20px;
                 gap: 28px;
                 align-items: center;
               }
@@ -709,12 +710,13 @@ export default function ChildProgramPage() {
               }
 
               .media-wrap {
-                max-width: 780px;
+                width: 100%;
                 margin: 0 auto;
                 background: white;
                 padding: 12px;
                 border-radius: 30px;
                 box-shadow: 0 12px 28px rgba(62,87,120,.15);
+                overflow: hidden;
               }
 
               .media-image {
@@ -734,24 +736,40 @@ export default function ChildProgramPage() {
               }
 
               .game-tabs {
-                display: flex;
-                gap: 12px;
-                overflow-x: auto;
-                padding: 6px 4px 18px;
-                margin-bottom: 16px;
-              }
+                  display: flex;
+                  gap: 12px;
+                  overflow-x: auto;
+                  overflow-y: hidden;
+                  padding: 6px 4px 18px;
+                  margin-bottom: 16px;
+                  max-width: 100%;
+                  scrollbar-width: thin;
+                }
 
-              .game-tab {
-                border: 0;
-                cursor: pointer;
-                white-space: nowrap;
-                border-radius: 18px;
-                padding: 14px 20px;
-                background: #eef7ff;
-                color: #20294f;
-                font-weight: 900;
-                font-size: 16px;
-                box-shadow: 0 8px 18px rgba(62,87,120,.08);
+                .game-tabs::-webkit-scrollbar {
+                  height: 8px;
+                }
+
+                .game-tabs::-webkit-scrollbar-thumb {
+                  background: #d8d2ff;
+                  border-radius: 999px;
+                }
+
+                .game-tab {
+                  flex: 0 0 auto;
+                  max-width: 180px;
+                  border: 0;
+                  cursor: pointer;
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  border-radius: 18px;
+                  padding: 14px 20px;
+                  background: #eef7ff;
+                  color: #20294f;
+                  font-weight: 900;
+                  font-size: 15px;
+                  box-shadow: 0 8px 18px rgba(62,87,120,.08);
               }
 
               .game-tab.active {
@@ -759,22 +777,21 @@ export default function ChildProgramPage() {
                 color: white;
               }
 
-              .game-frame-wrap {
-                width: 100%;
-                max-width: 1100px;
-                margin: 0 auto;
-                overflow: hidden;
-                border-radius: 28px;
-              }
+             .game-frame-wrap {
+  width: 100%;
+  min-height: 760px;
+  overflow: hidden;
+  border-radius: 28px;
+  background: white;
+}
 
-              .game-frame {
-                width: 100%;
-                height: 820px;
-                border: 0;
-                border-radius: 28px;
-                display: block;
-                background: white;
-              }
+.game-frame {
+  width: 100%;
+  height: 700px;
+  border: 0;
+  border-radius: 28px;
+  display: block;
+}
 
               .answers-report {
                 margin-top: 22px;
@@ -1155,12 +1172,35 @@ export default function ChildProgramPage() {
                                   </h2>
                                 )}
 
-                                {item.content_type === "text" && (
-                                  <div className="text-content center-text-only">
-                                    <div className="text-body">{item.body}</div>
+                                {/* {item.content_type === "text" && (
+                                  <div className="w-full  text-content">
+                                    <div className="text-body text-center">{item.body}</div>
                                   </div>
-                                )}
+                                )} */}
 
+                                {/* {item.content_type === "text" && (
+                                  <div className="w-full px-20 md:px-20" dir="rtl">
+                                    <div className="text-body text-center">
+                                      {item.body}
+                                    </div>
+                                  </div>
+                                )} */}
+                                
+                                {item.content_type === "text" && (
+                                    <div className="text-content center-text-only center-text-only"
+                                        dir="rtl"
+                                        style={{
+                                          whiteSpace: "pre-line",
+                                          direction: "rtl",
+                                          textAlign: "center",
+                                          lineHeight: "2.2",
+                                        }}>
+                                      <div
+                                        className="text-body ">
+                                        {item.body}
+                                      </div>
+                                    </div>
+                                  )}
                                 {item.content_type === "image" &&
                                   item.file_url && (
                                     <div className="media-wrap">
@@ -1210,12 +1250,21 @@ export default function ChildProgramPage() {
                             ))}
 
                             {iframeGames.length > 0 && (
-                              <article className="content-card">
+                              <article className="content-card" style={{ overflow: "hidden" }}>
+                               
                                 <h2 className="content-title">
-                                  ألعاب البرنامج 🎮
+                                  {tabs.find((t) => t.id === activeTab)?.title === "الأنشطة"
+                                    ? "أنشطة البرنامج ✨"
+                                    : "ألعاب البرنامج 🎮"}
                                 </h2>
 
-                                <div className="game-tabs">
+                                <div
+                                  className="game-tabs"
+                                  style={{
+                                    overflowX: "auto",
+                                    flexWrap: "nowrap",
+                                  }}
+                                >
                                   {iframeGames.map((game, index) => (
                                     <button
                                       key={game.id}
@@ -1226,7 +1275,7 @@ export default function ChildProgramPage() {
                                           : ""
                                       }`}
                                     >
-                                      🎮 {game.title || `لعبة ${index + 1}`}
+                                      {game.content_type === "interactive_story" ? "🎭" : "🎮"} {game.title || `لعبة ${index + 1}`}
                                     </button>
                                   ))}
                                 </div>

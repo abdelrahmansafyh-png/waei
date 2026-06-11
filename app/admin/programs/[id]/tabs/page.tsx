@@ -18,6 +18,7 @@ type Program = {
 const tabTypes = [
   { value: "content", label: "محتوى نصي", icon: "📝" },
   { value: "games", label: "ألعاب", icon: "🎮" },
+  { value: "interactive_stories", label: "قصص تفاعلية", icon: "🎭" },
   { value: "videos", label: "فيديوهات", icon: "🎬" },
   { value: "images", label: "صور", icon: "🖼️" },
   { value: "files", label: "ملفات", icon: "📎" },

@@ -46,6 +46,7 @@ function normalizeIframeUrl(value: string) {
 }
 
 function icon(type: string) {
+  if (type === "interactive_stories" || type === "interactive_story") return "🎭";
   if (type === "games" || type === "iframe") return "🎮";
   if (type === "youtube") return "▶️";
   if (type === "video") return "🎬";
@@ -174,14 +175,14 @@ export default function ProgramPreviewPage({
     () =>
       activeContents.filter(
         (item) =>
-          (item.content_type === "iframe" || item.content_type === "zip_game") &&
+          (item.content_type === "iframe" || item.content_type === "zip_game" || item.content_type === "interactive_story") &&
           item.iframe_url
       ),
     [activeContents]
   );
 
   const normalContents = useMemo(
-    () => activeContents.filter((item) => item.content_type !== "iframe"),
+    () => activeContents.filter((item) => item.content_type !== "iframe" && item.content_type !== "interactive_story"),
     [activeContents]
   );
 
@@ -202,7 +203,7 @@ export default function ProgramPreviewPage({
     const games = contents.filter(
       (item) =>
         item.tab_id === activeTab &&
-        (item.content_type === "iframe" || item.content_type === "zip_game") &&
+        (item.content_type === "iframe" || item.content_type === "zip_game" || item.content_type === "interactive_story") &&
         item.iframe_url
     );
 
@@ -1071,7 +1072,7 @@ export default function ProgramPreviewPage({
                               selectedGame?.id === game.id ? "active" : ""
                             }`}
                           >
-                            🎮 {game.title || `لعبة ${index + 1}`}
+                            {game.content_type === "interactive_story" ? "🎭" : "🎮"} {game.title || `لعبة ${index + 1}`}
                           </button>
                         ))}
                       </div>

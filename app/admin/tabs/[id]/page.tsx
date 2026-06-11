@@ -29,7 +29,20 @@ const contentTypes = [
   { value: "youtube", label: "يوتيوب", icon: "▶️" },
   { value: "iframe", label: "iframe / لعبة خارجية", icon: "🎮" },
   { value: "zip_game", label: "لعبة ZIP", icon: "🕹️" },
+  { value: "interactive_story", label: "قصة تفاعلية", icon: "🎭" },
 ];
+
+function getContentTypesForTab(tabType?: string) {
+  if (tabType === "interactive_stories") {
+    return [{ value: "interactive_story", label: "قصة تفاعلية", icon: "🎭" }];
+  }
+
+  if (tabType === "games") {
+    return contentTypes.filter((type) => type.value !== "interactive_story");
+  }
+
+  return contentTypes;
+}
 
 const emptyForm = {
   content_type: "text",
@@ -55,6 +68,14 @@ const GAME_TEMPLATES = [
     id: "drag_dynamic_kid",
     name: "اسحب وصنّف",
   },
+  {
+    id: "maze_quiz",
+    name: "المتاهة",
+  },
+  {
+    id: "fishing_game",
+    name: "لعبة الصيد",
+  },
 ];
 
 
@@ -71,16 +92,44 @@ export default function TabContentPage({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
   const [templateId, setTemplateId] = useState("balloon_plane");
   const [templateMeta, setTemplateMeta] = useState({
     title: "",
     question: "",
     instruction: "",
     targetCategory: "correct",
+    targetCount: "5",
   });
 
   const [templateItems, setTemplateItems] = useState<any[]>([
     { text: "", image: "", category: "correct" }
+  ]);
+
+  const [templateQuestions, setTemplateQuestions] = useState<any[]>([
+    {
+      q: "",
+      image: "",
+      answers: [
+        { text: "", image: "", correct: true },
+        { text: "", image: "", correct: false },
+        { text: "", image: "", correct: false },
+        { text: "", image: "", correct: false },
+      ],
+    },
+  ]);
+
+  const [storyDescription, setStoryDescription] = useState("");
+  const [storyScenes, setStoryScenes] = useState<any[]>([
+    {
+      title: "المشهد 1",
+      videoUrl: "",
+      question: "",
+      answers: [
+        { text: "", isCorrect: true, feedbackVideoUrl: "", nextQuestionIndex: "end" },
+        { text: "", isCorrect: false, feedbackVideoUrl: "", nextQuestionIndex: "end" },
+      ],
+    },
   ]);
 
   useEffect(() => {
@@ -110,12 +159,109 @@ export default function TabContentPage({
 
     setTab(tabData as TabInfo);
     setContents((contentsData as Content[]) || []);
+
+    if ((tabData as TabInfo)?.type === "interactive_stories") {
+      setForm((prev) => ({ ...prev, content_type: "interactive_story" }));
+    }
+
     setLoading(false);
   }
 
 
   function normalizeLoadedGameToForm(game: any, fallbackTemplateId?: string) {
     if (!game) return;
+
+    if (Array.isArray(game)) {
+      setTemplateId(fallbackTemplateId || "maze_quiz");
+
+      setTemplateMeta({
+        title: "",
+        question: "",
+        instruction: "",
+        targetCategory: "correct",
+        targetCount: "5",
+      });
+
+      setTemplateQuestions(
+        game.length
+          ? game.map((q: any) => ({
+              q: q.q || q.question || q.text || "",
+              image: q.image || "",
+              answers: Array.isArray(q.answers)
+                ? q.answers.map((a: any) => ({
+                    text: a.text || a.label || "",
+                    image: a.image || "",
+                    correct: Boolean(a.correct),
+                  }))
+                : [
+                    { text: "", image: "", correct: true },
+                    { text: "", image: "", correct: false },
+                    { text: "", image: "", correct: false },
+                    { text: "", image: "", correct: false },
+                  ],
+            }))
+          : [
+              {
+                q: "",
+                image: "",
+                answers: [
+                  { text: "", image: "", correct: true },
+                  { text: "", image: "", correct: false },
+                  { text: "", image: "", correct: false },
+                  { text: "", image: "", correct: false },
+                ],
+              },
+            ]
+      );
+
+      return;
+    }
+
+    if (Array.isArray(game.questions)) {
+      setTemplateId(fallbackTemplateId || "maze_quiz");
+
+      setTemplateMeta({
+        title: game.title || "",
+        question: "",
+        instruction: "",
+        targetCategory: "correct",
+        targetCount: "5",
+      });
+
+      setTemplateQuestions(
+        game.questions.length
+          ? game.questions.map((q: any) => ({
+              q: q.q || q.question || q.text || "",
+              image: q.image || "",
+              answers: Array.isArray(q.answers)
+                ? q.answers.map((a: any) => ({
+                    text: a.text || a.label || "",
+                    image: a.image || "",
+                    correct: Boolean(a.correct),
+                  }))
+                : [
+                    { text: "", image: "", correct: true },
+                    { text: "", image: "", correct: false },
+                    { text: "", image: "", correct: false },
+                    { text: "", image: "", correct: false },
+                  ],
+            }))
+          : [
+              {
+                q: "",
+                image: "",
+                answers: [
+                  { text: "", image: "", correct: true },
+                  { text: "", image: "", correct: false },
+                  { text: "", image: "", correct: false },
+                  { text: "", image: "", correct: false },
+                ],
+              },
+            ]
+      );
+
+      return;
+    }
 
     if (game.levels && Array.isArray(game.levels) && game.levels[0]) {
       const level = game.levels[0];
@@ -127,6 +273,7 @@ export default function TabContentPage({
         question: level.question || level.title || "",
         instruction: "",
         targetCategory: level.targetCategory || level.target || "correct",
+        targetCount: String(game.targetCount || 5),
       });
 
       setTemplateItems(
@@ -150,6 +297,7 @@ export default function TabContentPage({
         question: "",
         instruction: game.instruction || "",
         targetCategory: "correct",
+        targetCount: "5",
       });
 
       setTemplateItems(
@@ -172,6 +320,7 @@ export default function TabContentPage({
       question: game.question || "",
       instruction: "",
       targetCategory: game.targetCategory || game.target || "correct",
+      targetCount: String(game.targetCount || 5),
     });
 
     setTemplateItems(
@@ -184,22 +333,6 @@ export default function TabContentPage({
         : [{ text: "", image: "", category: "correct" }]
     );
   }
-
-  // function getGameJsonUrlFromIframe(url: string) {
-  //   if (!url) return "";
-
-  //   const cleanUrl = url.split("?")[0].split("#")[0];
-
-  //   if (cleanUrl.endsWith("/")) {
-  //     return `${cleanUrl}game.json`;
-  //   }
-
-  //   if (cleanUrl.endsWith("index.html")) {
-  //     return cleanUrl.replace(/index\.html$/, "game.json");
-  //   }
-
-  //   return `${cleanUrl.replace(/\/$/, "")}/game.json`;
-  // }
 
   async function loadGameDataForEdit(item: Content) {
     // 1) الأفضل: نقرأ البيانات المخزنة في body من قاعدة البيانات
@@ -237,7 +370,21 @@ export default function TabContentPage({
       const result = await res.json();
 
       if (!res.ok || !result.success) {
-        console.warn("لم يتم العثور على game.json:", result?.message || gameJsonUrl);
+        const questionsJsonUrl = gameJsonUrl.replace(/game\.json(?:\?.*)?$/, "questions.json");
+
+        const res2 = await fetch(
+          `/api/read-game-json?url=${encodeURIComponent(questionsJsonUrl)}`,
+          { cache: "no-store" }
+        );
+
+        const result2 = await res2.json();
+
+        if (!res2.ok || !result2.success) {
+          console.warn("لم يتم العثور على game.json أو questions.json:", result?.message || gameJsonUrl);
+          return;
+        }
+
+        normalizeLoadedGameToForm(result2.game, "maze_quiz");
         return;
       }
 
@@ -250,7 +397,23 @@ export default function TabContentPage({
 
   function resetForm() {
     setEditingId(null);
-    setForm(emptyForm);
+    setFormOpen(false);
+    setForm({
+      ...emptyForm,
+      content_type: tab?.type === "interactive_stories" ? "interactive_story" : "text",
+    });
+    setStoryDescription("");
+    setStoryScenes([
+      {
+        title: "المشهد 1",
+        videoUrl: "",
+        question: "",
+        answers: [
+          { text: "", isCorrect: true, feedbackVideoUrl: "", nextQuestionIndex: "end" },
+          { text: "", isCorrect: false, feedbackVideoUrl: "", nextQuestionIndex: "end" },
+        ],
+      },
+    ]);
   }
 
 
@@ -270,92 +433,6 @@ export default function TabContentPage({
     return `${cleanUrl.replace(/\/$/, "")}/game.json`;
   }
 
-  async function loadGameDataFromJsonUrl(item: Content) {
-    if (!item.iframe_url) return;
-
-    try {
-      const gameJsonUrl = getGameJsonUrlFromIframe(item.iframe_url);
-      const res = await fetch(gameJsonUrl, { cache: "no-store" });
-
-      if (!res.ok) {
-        console.warn("لم يتم العثور على game.json:", gameJsonUrl);
-        return;
-      }
-
-      const game = await res.json();
-
-      if (game.levels && Array.isArray(game.levels) && game.levels[0]) {
-        const level = game.levels[0];
-
-        setTemplateId("subway");
-
-        setTemplateMeta({
-          title: game.title || "",
-          question: level.question || level.title || "",
-          instruction: "",
-          targetCategory: level.targetCategory || level.target || "correct",
-        });
-
-        setTemplateItems(
-          Array.isArray(level.items) && level.items.length
-            ? level.items.map((x: any) => ({
-                text: x.text || x.label || "",
-                image: x.image || "",
-                category: x.category || x.type || "correct",
-              }))
-            : [{ text: "", image: "", category: "correct" }]
-        );
-
-        return;
-      }
-
-      if (Array.isArray(game.cards)) {
-        setTemplateId("drag_dynamic_kid");
-
-        setTemplateMeta({
-          title: game.title || "",
-          question: "",
-          instruction: game.instruction || "",
-          targetCategory: "correct",
-        });
-
-        setTemplateItems(
-          game.cards.length
-            ? game.cards.map((x: any) => ({
-                text: x.text || x.label || "",
-                image: x.image || "",
-                category: x.group || x.category || "correct",
-              }))
-            : [{ text: "", image: "", category: "correct" }]
-        );
-
-        return;
-      }
-
-      setTemplateId("balloon_plane");
-
-      setTemplateMeta({
-        title: game.title || "",
-        question: game.question || "",
-        instruction: "",
-        targetCategory: game.targetCategory || game.target || "correct",
-      });
-
-      setTemplateItems(
-        Array.isArray(game.items) && game.items.length
-          ? game.items.map((x: any) => ({
-              text: x.text || x.label || "",
-              image: x.image || "",
-              category: x.category || x.type || "correct",
-            }))
-          : [{ text: "", image: "", category: "correct" }]
-      );
-    } catch (e) {
-      console.warn("فشل تحميل بيانات اللعبة القديمة من game.json", e);
-    }
-  }
-
-
   async function startEdit(item: Content) {
     setEditingId(item.id);
 
@@ -373,7 +450,17 @@ export default function TabContentPage({
       await loadGameDataForEdit(item);
     }
 
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (item.content_type === "interactive_story" && item.body) {
+      try {
+        const saved = JSON.parse(item.body);
+        setStoryDescription(saved?.story?.description || "");
+        if (Array.isArray(saved?.editor_scenes) && saved.editor_scenes.length) {
+          setStoryScenes(saved.editor_scenes);
+        }
+      } catch {}
+    }
+
+    setFormOpen(true);
   }
 
   async function uploadFile(file: File) {
@@ -428,10 +515,201 @@ export default function TabContentPage({
     return result.path;
   }
 
+  async function uploadStoryVideo(file: File, sceneIndex: number, answerIndex?: number) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("folder", "files");
+
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const result = await res.json();
+
+    if (!res.ok || !result.success) {
+      throw new Error(result.message || "فشل رفع الفيديو");
+    }
+
+    const next = [...storyScenes];
+    if (typeof answerIndex === "number") {
+      next[sceneIndex].answers[answerIndex].feedbackVideoUrl = result.path;
+    } else {
+      next[sceneIndex].videoUrl = result.path;
+    }
+    setStoryScenes(next);
+  }
+
+  function buildInteractiveStoryJson() {
+    const scenes: any[] = [];
+
+    storyScenes.forEach((scene, sceneIndex) => {
+      const sceneId = `scene_${sceneIndex + 1}`;
+
+      scenes.push({
+        id: sceneId,
+        title: scene.title || `المشهد ${sceneIndex + 1}`,
+        videoUrl: scene.videoUrl,
+        story: scene.story || "",
+        question: scene.question,
+        points: 1,
+        answers: scene.answers.map((answer: any, answerIndex: number) => ({
+          text: answer.text,
+          isCorrect: Boolean(answer.isCorrect),
+          nextSceneId: `${sceneId}_answer_${answerIndex + 1}`,
+          color: answer.isCorrect ? "good" : "bad",
+        })),
+      });
+
+      scene.answers.forEach((answer: any, answerIndex: number) => {
+        const feedbackScene: any = {
+          id: `${sceneId}_answer_${answerIndex + 1}`,
+          title: answer.isCorrect ? "نتيجة الاختيار الصحيح" : "نتيجة الاختيار الخاطئ",
+          videoUrl: answer.feedbackVideoUrl,
+        };
+
+        if (answer.nextQuestionIndex === "end") {
+          feedbackScene.end = true;
+        } else {
+          feedbackScene.autoNextSceneId = `scene_${Number(answer.nextQuestionIndex) + 1}`;
+        }
+
+        scenes.push(feedbackScene);
+      });
+    });
+
+    return {
+      title: form.title || "قصة تفاعلية",
+      description: storyDescription || "شاهد المشهد واختر القرار المناسب.",
+      footerText: "كل اختيار يفتح مسارًا مختلفًا.",
+      startSceneId: "scene_1",
+      maxScore: storyScenes.length,
+      autoplay: true,
+      endTitle: "انتهت القصة",
+      endText: "رائع! شاهدت المواقف واتخذت قراراتك.",
+      scenes,
+    };
+  }
+
+  function getStaticStoryTemplateUrl(dataPath: string) {
+    const base =
+      process.env.NEXT_PUBLIC_INTERACTIVE_STORY_TEMPLATE_URL ||
+      `${process.env.NEXT_PUBLIC_FILES_URL || ""}/game-templates/decision_theater/index.html`;
+
+    return `${base}?data=${encodeURIComponent(dataPath)}&v=${Date.now()}`;
+  }
+
+  async function generateInteractiveStory() {
+    if (!form.title.trim()) {
+      alert("اكتب عنوان القصة أولاً");
+      return;
+    }
+
+    for (const [sceneIndex, scene] of storyScenes.entries()) {
+      if (!scene.videoUrl) {
+        alert(`ارفع فيديو المشهد ${sceneIndex + 1}`);
+        return;
+      }
+
+      if (!scene.question.trim()) {
+        alert(`اكتب سؤال المشهد ${sceneIndex + 1}`);
+        return;
+      }
+
+      for (const [answerIndex, answer] of scene.answers.entries()) {
+        if (!answer.text.trim()) {
+          alert(`اكتب نص الخيار ${answerIndex + 1} في المشهد ${sceneIndex + 1}`);
+          return;
+        }
+
+        if (!answer.feedbackVideoUrl) {
+          alert(`ارفع فيديو نتيجة الخيار ${answerIndex + 1} في المشهد ${sceneIndex + 1}`);
+          return;
+        }
+      }
+    }
+
+    setUploading(true);
+
+    try {
+      const story = buildInteractiveStoryJson();
+      const stableId =
+        editingId ||
+        `story-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+      const res = await fetch("/api/interactive-story-data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: stableId,
+          story,
+        }),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok || !result.success) {
+        alert(result.message || "فشل حفظ بيانات القصة");
+        setUploading(false);
+        return;
+      }
+
+      const iframeUrl = getStaticStoryTemplateUrl(result.path);
+
+      setForm((prev) => ({
+        ...prev,
+        iframe_url: iframeUrl,
+        file_url: result.path,
+        body: JSON.stringify({
+          template_id: "interactive_story_static",
+          data_path: result.path,
+          data_url: result.url,
+          template_url: iframeUrl,
+          story,
+          editor_scenes: storyScenes,
+        }),
+      }));
+    } catch (e: any) {
+      alert(e?.message || "حدث خطأ أثناء حفظ بيانات القصة");
+    }
+
+    setUploading(false);
+  }
+
   function buildTemplateGameJson() {
     const parsed: any = {};
 
     parsed.title = templateMeta.title;
+
+    if (templateId === "maze_quiz") {
+      parsed.questions = templateQuestions.map((question) => ({
+        type: question.image ? "image" : "text",
+        q: question.q,
+        image: question.image,
+        answers: question.answers.map((answer: any) => ({
+          type: answer.image ? "image" : "text",
+          text: answer.text,
+          image: answer.image,
+          correct: Boolean(answer.correct),
+        })),
+      }));
+
+      return parsed;
+    }
+
+    if (templateId === "fishing_game") {
+      parsed.question = templateMeta.question;
+      parsed.targetCategory = templateMeta.targetCategory || "strength";
+      parsed.targetCount = Number(templateMeta.targetCount || 5);
+
+      parsed.items = templateItems.map((item) => ({
+        text: item.text,
+        image: item.image,
+        category: item.category,
+      }));
+
+      return parsed;
+    }
 
     if (templateId === "drag_dynamic_kid") {
       parsed.instruction = templateMeta.instruction;
@@ -466,6 +744,17 @@ export default function TabContentPage({
   }
 
 
+  function getPreviousGameFromBody() {
+    if (!form.body) return null;
+
+    try {
+      const saved = JSON.parse(form.body);
+      return saved?.game_config || saved?.game || null;
+    } catch {
+      return null;
+    }
+  }
+
   async function generateTemplateGame() {
     setUploading(true);
 
@@ -480,19 +769,27 @@ export default function TabContentPage({
         return;
       }
 
-      const res = await fetch("/api/template-game", {
+      const stableId =
+        editingId ||
+        `game-${templateId}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+      const previousGame = getPreviousGameFromBody();
+
+      const res = await fetch("/api/template-game-data", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          id: stableId,
           template_id: templateId,
           game,
+          previous_game: previousGame,
         }),
       });
 
       const result = await res.json();
 
       if (!res.ok || !result.success) {
-        alert(result.message || "فشل توليد اللعبة من التمبليت");
+        alert(result.message || "فشل حفظ بيانات اللعبة");
         setUploading(false);
         return;
       }
@@ -500,14 +797,20 @@ export default function TabContentPage({
       setForm((prev) => ({
         ...prev,
         iframe_url: result.game_url,
-        file_url: result.game_url,
+        file_url: result.data_path,
         body: JSON.stringify({
           template_id: templateId,
-          game_config: game,
+          mode: "static_template",
+          data_path: result.data_path,
+          data_url: result.data_url,
+          template_url: result.game_url,
+          game_config: result.game || game,
         }),
       }));
+
+      alert(result.message || "تم تجهيز اللعبة");
     } catch (e: any) {
-      alert(e?.message || "حدث خطأ أثناء توليد اللعبة");
+      alert(e?.message || "حدث خطأ أثناء حفظ بيانات اللعبة");
     }
 
     setUploading(false);
@@ -558,6 +861,11 @@ export default function TabContentPage({
       return;
     }
 
+    if (form.content_type === "interactive_story" && !form.iframe_url) {
+      alert("احفظ بيانات القصة أولًا");
+      return;
+    }
+
     const payload = {
       tab_id: tabId,
       content_type: form.content_type,
@@ -596,28 +904,82 @@ export default function TabContentPage({
     fetchData();
   }
 
-  const selectedType = contentTypes.find((x) => x.value === form.content_type);
+  const availableContentTypes = getContentTypesForTab(tab?.type);
+  const selectedType = availableContentTypes.find((x) => x.value === form.content_type) || contentTypes.find((x) => x.value === form.content_type);
 
   return (
-    <main dir="rtl" className="min-h-screen bg-[#F4FAF8] p-6">
+    <main dir="rtl">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-8 rounded-[2.5rem] bg-[#0B4D6B] p-8 text-white shadow-xl">
-          <h1 className="text-4xl font-black">محتوى التاب</h1>
+        <div className="mb-6 rounded-[2rem] bg-white p-6 shadow-lg">
+          <h1 className="text-3xl font-black text-[#0B4D6B]">محتوى التاب</h1>
 
-          <p className="mt-3 text-white/70">
+          <p className="mt-2 text-[#6E7A99]">
             {tab
               ? `${tab.title} — أضف المحتوى الذي سيظهر للطفل.`
               : "إدارة محتوى التاب"}
           </p>
         </div>
+<div className="space-y-8">
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-[2rem] bg-white p-5 shadow-lg">
+            <div>
+              <h2 className="text-2xl font-black text-[#0B4D6B]">المحتوى المضاف</h2>
+              <p className="mt-1 text-sm font-bold text-[#6E7A99]">
+                اعرض المحتوى هنا، والإضافة أو التعديل تتم من نافذة كبيرة.
+              </p>
+            </div>
 
-        <div className="grid gap-8 xl:grid-cols-[430px_1fr]">
-          <div className="rounded-[2rem] bg-white p-8 shadow-xl">
-            <h2 className="mb-6 text-2xl font-black text-[#0B4D6B]">
-              {editingId ? "تعديل محتوى" : "إضافة محتوى"}
-            </h2>
+            <button
+              type="button"
+              onClick={() => {
+                resetForm();
+                setFormOpen(true);
+              }}
+              className="rounded-full bg-[#42BFA8] px-8 py-4 font-black text-white shadow-lg transition hover:-translate-y-1"
+            >
+              + إضافة محتوى
+            </button>
+          </div>
 
-            <form onSubmit={saveContent} className="space-y-4">
+          {formOpen && (
+            <div className="fixed inset-0 z-[999] flex items-start justify-center overflow-y-auto bg-[#062033]/70 p-4 backdrop-blur-sm">
+              <section className="my-6 w-full max-w-6xl overflow-hidden rounded-[2rem] bg-white shadow-2xl">
+                <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-[#DDEDEA] bg-white/95 p-6 backdrop-blur">
+                  <div>
+                    <h2 className="text-3xl font-black text-[#0B4D6B]">
+                      {editingId ? "تعديل المحتوى" : "إضافة محتوى جديد"}
+                    </h2>
+                    <p className="mt-1 text-sm font-bold text-[#6E7A99]">
+                      نافذة واسعة لإدخال المحتوى بدون حشر.
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={resetForm}
+                    className="rounded-full bg-red-50 px-5 py-3 font-black text-red-600"
+                  >
+                    إغلاق
+                  </button>
+                </div>
+
+                <div className="p-6">
+            <div className="mb-6 rounded-[1.6rem] bg-gradient-to-l from-[#E8F7F3] to-[#F5FBFF] p-5">
+              <div className="flex items-center gap-3">
+                <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#0B4D6B] text-2xl text-white">
+                  {editingId ? "✏️" : "➕"}
+                </div>
+                <div>
+                  <h2 className="text-2xl font-black text-[#0B4D6B]">
+                    {editingId ? "تعديل المحتوى" : "إضافة محتوى جديد"}
+                  </h2>
+                  <p className="mt-1 text-sm font-bold text-[#6E7A99]">
+                    اختر النوع ثم عبئ البيانات بهدوء.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <form onSubmit={saveContent} className="space-y-5">
               <label className="block">
                 <span className="mb-2 block font-black text-[#0B4D6B]">
                   نوع المحتوى
@@ -634,9 +996,9 @@ export default function TabContentPage({
                       iframe_url: "",
                     })
                   }
-                  className="w-full appearance-none rounded-2xl border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] outline-none focus:border-[#42BFA8]"
+                  className="w-full appearance-none rounded-[1.4rem] border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] shadow-sm outline-none transition focus:border-[#42BFA8] focus:ring-4 focus:ring-[#42BFA8]/10"
                 >
-                  {contentTypes.map((type) => (
+                  {availableContentTypes.map((type) => (
                     <option key={type.value} value={type.value}>
                       {type.icon} {type.label}
                     </option>
@@ -644,15 +1006,15 @@ export default function TabContentPage({
                 </select>
               </label>
 
-              <div className="rounded-2xl bg-[#F4FAF8] p-4 text-sm font-bold text-[#6E7A99]">
+              <div className="rounded-[1.4rem] border border-[#DDEDEA] bg-[#F4FAF8] p-4 text-sm font-black text-[#0B4D6B]">
                 النوع المختار: {selectedType?.icon} {selectedType?.label}
               </div>
 
               <input
-                placeholder="عنوان اختياري"
+                placeholder={form.content_type === "interactive_story" ? "اسم القصة" : "عنوان اختياري"}
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
-                className="w-full rounded-2xl border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] outline-none focus:border-[#42BFA8]"
+                className="w-full rounded-[1.4rem] border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] shadow-sm outline-none transition focus:border-[#42BFA8] focus:ring-4 focus:ring-[#42BFA8]/10"
               />
 
               {form.content_type === "text" && (
@@ -660,7 +1022,7 @@ export default function TabContentPage({
                   placeholder="اكتب النص هنا"
                   value={form.body}
                   onChange={(e) => setForm({ ...form, body: e.target.value })}
-                  className="h-44 w-full rounded-2xl border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] outline-none focus:border-[#42BFA8]"
+                  className="h-44 w-full rounded-[1.4rem] border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] shadow-sm outline-none transition focus:border-[#42BFA8] focus:ring-4 focus:ring-[#42BFA8]/10"
                 />
               )}
 
@@ -683,7 +1045,7 @@ export default function TabContentPage({
                       const file = e.target.files?.[0];
                       if (file) uploadFile(file);
                     }}
-                    className="w-full cursor-pointer rounded-xl bg-white p-3 text-sm"
+                    className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-white p-4 text-sm font-bold text-[#0B4D6B]"
                   />
 
                   {uploading && (
@@ -724,6 +1086,245 @@ export default function TabContentPage({
                 </div>
               )}
 
+
+              {form.content_type === "interactive_story" && (
+                <div className="space-y-5 rounded-2xl border border-dashed border-[#42BFA8] bg-[#F4FAF8] p-5">
+                  <div className="rounded-2xl bg-white p-4">
+                    <label className="mb-3 block font-black text-[#0B4D6B]">
+                      بيانات القصة التفاعلية
+                    </label>
+
+                    <textarea
+                      placeholder="وصف قصير اختياري يظهر في شاشة البداية"
+                      value={storyDescription}
+                      onChange={(e) => setStoryDescription(e.target.value)}
+                      className="h-24 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                    />
+                  </div>
+
+                  <div className="space-y-4">
+                    {storyScenes.map((scene, sceneIndex) => (
+                      <div key={sceneIndex} className="rounded-2xl bg-white p-4 shadow-sm">
+                        <div className="mb-3 flex items-center justify-between gap-3">
+                          <div className="text-lg font-black text-[#0B4D6B]">
+                            🎬 المشهد {sceneIndex + 1}
+                          </div>
+
+                          {storyScenes.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => setStoryScenes(storyScenes.filter((_, i) => i !== sceneIndex))}
+                              className="rounded-full bg-red-50 px-4 py-2 text-xs font-black text-red-600"
+                            >
+                              حذف المشهد
+                            </button>
+                          )}
+                        </div>
+
+                        <input
+                          placeholder="اسم داخلي للمشهد اختياري"
+                          value={scene.title}
+                          onChange={(e) => {
+                            const next = [...storyScenes];
+                            next[sceneIndex].title = e.target.value;
+                            setStoryScenes(next);
+                          }}
+                          className="mb-3 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                        />
+
+                        <label className="mb-2 block text-sm font-black text-[#0B4D6B]">
+                          فيديو المشهد
+                        </label>
+                        <input
+                          type="file"
+                          accept="video/*"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            try {
+                              setUploading(true);
+                              await uploadStoryVideo(file, sceneIndex);
+                            } catch (err: any) {
+                              alert(err?.message || "فشل رفع الفيديو");
+                            }
+                            setUploading(false);
+                          }}
+                          className="mb-3 w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-[#F4FAF8] p-4 text-sm font-bold text-[#0B4D6B]"
+                        />
+
+                        {scene.videoUrl && (
+                          <p className="mb-3 break-all rounded-xl bg-[#F4FAF8] p-3 text-xs font-bold text-[#6E7A99]">
+                            {scene.videoUrl}
+                          </p>
+                        )}
+
+                        <input
+                          placeholder="السؤال بعد انتهاء الفيديو"
+                          value={scene.question}
+                          onChange={(e) => {
+                            const next = [...storyScenes];
+                            next[sceneIndex].question = e.target.value;
+                            setStoryScenes(next);
+                          }}
+                          className="mb-4 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                        />
+
+                        <div className="space-y-3 rounded-2xl bg-[#F4FAF8] p-4">
+                          <div className="font-black text-[#0B4D6B]">الخيارات ونتيجة كل خيار</div>
+
+                          {scene.answers.map((answer: any, answerIndex: number) => (
+                            <div key={answerIndex} className="rounded-2xl border border-[#DDEDEA] bg-white p-3">
+                              <input
+                                placeholder={`نص الخيار ${answerIndex + 1}`}
+                                value={answer.text}
+                                onChange={(e) => {
+                                  const next = [...storyScenes];
+                                  next[sceneIndex].answers[answerIndex].text = e.target.value;
+                                  setStoryScenes(next);
+                                }}
+                                className="mb-2 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                              />
+
+                              <label className="mb-3 flex items-center gap-2 text-sm font-black text-[#0B4D6B]">
+                                <input
+                                  type="checkbox"
+                                  checked={answer.isCorrect}
+                                  onChange={(e) => {
+                                    const next = [...storyScenes];
+                                    next[sceneIndex].answers[answerIndex].isCorrect = e.target.checked;
+                                    setStoryScenes(next);
+                                  }}
+                                />
+                                إجابة صحيحة
+                              </label>
+
+                              <label className="mb-2 block text-sm font-black text-[#0B4D6B]">
+                                فيديو نتيجة هذا الخيار
+                              </label>
+                              <input
+                                type="file"
+                                accept="video/*"
+                                onChange={async (e) => {
+                                  const file = e.target.files?.[0];
+                                  if (!file) return;
+                                  try {
+                                    setUploading(true);
+                                    await uploadStoryVideo(file, sceneIndex, answerIndex);
+                                  } catch (err: any) {
+                                    alert(err?.message || "فشل رفع الفيديو");
+                                  }
+                                  setUploading(false);
+                                }}
+                                className="mb-2 w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-[#F4FAF8] p-4 text-sm font-bold text-[#0B4D6B]"
+                              />
+
+                              {answer.feedbackVideoUrl && (
+                                <p className="mb-3 break-all rounded-xl bg-[#F4FAF8] p-3 text-xs font-bold text-[#6E7A99]">
+                                  {answer.feedbackVideoUrl}
+                                </p>
+                              )}
+
+                              <select
+                                value={answer.nextQuestionIndex}
+                                onChange={(e) => {
+                                  const next = [...storyScenes];
+                                  next[sceneIndex].answers[answerIndex].nextQuestionIndex = e.target.value;
+                                  setStoryScenes(next);
+                                }}
+                                className="w-full rounded-xl border border-[#DDEDEA] bg-white p-3 font-bold text-[#0B4D6B]"
+                              >
+                                <option value="end">تنتهي القصة بعد فيديو النتيجة</option>
+                                {storyScenes.map((_, targetIndex) => (
+                                  <option key={targetIndex} value={targetIndex}>
+                                    الانتقال إلى المشهد {targetIndex + 1}
+                                  </option>
+                                ))}
+                              </select>
+
+                              {scene.answers.length > 2 && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const next = [...storyScenes];
+                                    next[sceneIndex].answers = next[sceneIndex].answers.filter((_: any, i: number) => i !== answerIndex);
+                                    setStoryScenes(next);
+                                  }}
+                                  className="mt-3 rounded-full bg-red-50 px-4 py-2 text-xs font-black text-red-600"
+                                >
+                                  حذف الخيار
+                                </button>
+                              )}
+                            </div>
+                          ))}
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const next = [...storyScenes];
+                              next[sceneIndex].answers.push({
+                                text: "",
+                                isCorrect: false,
+                                feedbackVideoUrl: "",
+                                nextQuestionIndex: "end",
+                              });
+                              setStoryScenes(next);
+                            }}
+                            className="rounded-full bg-[#42BFA8] px-5 py-2 text-sm font-black text-white"
+                          >
+                            + إضافة خيار
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setStoryScenes([
+                        ...storyScenes,
+                        {
+                          title: `المشهد ${storyScenes.length + 1}`,
+                          videoUrl: "",
+                          question: "",
+                          answers: [
+                            { text: "", isCorrect: true, feedbackVideoUrl: "", nextQuestionIndex: "end" },
+                            { text: "", isCorrect: false, feedbackVideoUrl: "", nextQuestionIndex: "end" },
+                          ],
+                        },
+                      ])
+                    }
+                    className="w-full rounded-full bg-[#42BFA8] py-3 font-black text-white"
+                  >
+                    + إضافة مشهد جديد
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={uploading}
+                    onClick={generateInteractiveStory}
+                    className="w-full rounded-full bg-[#0B4D6B] py-3 font-black text-white disabled:opacity-50"
+                  >
+                    حفظ بيانات القصة وتجهيز الرابط
+                  </button>
+
+                  {uploading && (
+                    <p className="rounded-xl bg-[#FFF7D8] p-3 font-bold text-[#9A6B00]">
+                      جاري حفظ البيانات...
+                    </p>
+                  )}
+
+                  {form.iframe_url && (
+                    <div className="rounded-2xl bg-white p-4">
+                      <div className="mb-3 text-sm font-black text-[#0B4D6B]">
+                        تم تجهيز رابط القصة بنجاح 🎉
+                      </div>
+                      <p className="break-all text-xs text-[#6E7A99]">{form.iframe_url}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {form.content_type === "zip_game" && (
                 <div className="space-y-5 rounded-2xl border border-dashed border-[#42BFA8] bg-[#F4FAF8] p-5">
                   <div className="rounded-2xl bg-white p-4">
@@ -740,10 +1341,23 @@ export default function TabContentPage({
                           title: "",
                           question: "",
                           instruction: "",
-                          targetCategory: "correct",
+                          targetCategory: e.target.value === "fishing_game" ? "strength" : "correct",
+                          targetCount: "5",
                         });
                         setTemplateItems([
                           { text: "", image: "", category: "correct" },
+                        ]);
+                        setTemplateQuestions([
+                          {
+                            q: "",
+                            image: "",
+                            answers: [
+                              { text: "", image: "", correct: true },
+                              { text: "", image: "", correct: false },
+                              { text: "", image: "", correct: false },
+                              { text: "", image: "", correct: false },
+                            ],
+                          },
                         ]);
                       }}
                       className="mb-3 w-full rounded-xl border border-[#DDEDEA] bg-white p-3 font-bold text-[#0B4D6B]"
@@ -771,10 +1385,10 @@ export default function TabContentPage({
                             title: e.target.value,
                           })
                         }
-                        className="mb-3 w-full rounded-xl border border-[#DDEDEA] p-3"
+                        className="mb-3 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
                       />
 
-                      {templateId !== "drag_dynamic_kid" ? (
+                      {templateId !== "drag_dynamic_kid" && templateId !== "maze_quiz" ? (
                         <>
                           <input
                             placeholder="السؤال"
@@ -785,7 +1399,7 @@ export default function TabContentPage({
                                 question: e.target.value,
                               })
                             }
-                            className="mb-3 w-full rounded-xl border border-[#DDEDEA] p-3"
+                            className="mb-3 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
                           />
 
                           <input
@@ -797,10 +1411,26 @@ export default function TabContentPage({
                                 targetCategory: e.target.value,
                               })
                             }
-                            className="w-full rounded-xl border border-[#DDEDEA] p-3"
+                            className="mb-3 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
                           />
+
+                          {templateId === "fishing_game" && (
+                            <input
+                              type="number"
+                              min="1"
+                              placeholder="عدد نقاط القوة المطلوبة"
+                              value={templateMeta.targetCount}
+                              onChange={(e) =>
+                                setTemplateMeta({
+                                  ...templateMeta,
+                                  targetCount: e.target.value,
+                                })
+                              }
+                              className="w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                            />
+                          )}
                         </>
-                      ) : (
+                      ) : templateId === "drag_dynamic_kid" ? (
                         <textarea
                           placeholder="تعليمات اللعبة"
                           value={templateMeta.instruction}
@@ -810,11 +1440,113 @@ export default function TabContentPage({
                               instruction: e.target.value,
                             })
                           }
-                          className="h-28 w-full rounded-xl border border-[#DDEDEA] p-3"
+                          className="h-28 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
                         />
-                      )}
+                      ) : null}
                     </div>
 
+                    {templateId === "maze_quiz" && (
+                      <div className="mb-4 rounded-2xl bg-[#F4FAF8] p-4">
+                        <div className="mb-3 text-sm font-black text-[#0B4D6B]">
+                          أسئلة المتاهة
+                        </div>
+
+                        <div className="space-y-4">
+                          {templateQuestions.map((question, qIndex) => (
+                            <div
+                              key={qIndex}
+                              className="rounded-2xl border border-[#DDEDEA] bg-white p-4"
+                            >
+                              <input
+                                placeholder={`السؤال ${qIndex + 1}`}
+                                value={question.q}
+                                onChange={(e) => {
+                                  const next = [...templateQuestions];
+                                  next[qIndex].q = e.target.value;
+                                  setTemplateQuestions(next);
+                                }}
+                                className="mb-3 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                              />
+
+                              <div className="space-y-2">
+                                {question.answers.map((answer: any, aIndex: number) => (
+                                  <div
+                                    key={aIndex}
+                                    className="grid gap-2 rounded-xl bg-[#F4FAF8] p-3 md:grid-cols-[1fr_auto]"
+                                  >
+                                    <input
+                                      placeholder={`الإجابة ${aIndex + 1}`}
+                                      value={answer.text}
+                                      onChange={(e) => {
+                                        const next = [...templateQuestions];
+                                        next[qIndex].answers[aIndex].text = e.target.value;
+                                        setTemplateQuestions(next);
+                                      }}
+                                      className="rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                                    />
+
+                                    <label className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-sm font-black text-[#0B4D6B]">
+                                      <input
+                                        type="radio"
+                                        name={`correct-${qIndex}`}
+                                        checked={answer.correct}
+                                        onChange={() => {
+                                          const next = [...templateQuestions];
+                                          next[qIndex].answers = next[qIndex].answers.map((a: any, i: number) => ({
+                                            ...a,
+                                            correct: i === aIndex,
+                                          }));
+                                          setTemplateQuestions(next);
+                                        }}
+                                      />
+                                      صح
+                                    </label>
+                                  </div>
+                                ))}
+                              </div>
+
+                              {templateQuestions.length > 1 && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setTemplateQuestions(
+                                      templateQuestions.filter((_, i) => i !== qIndex)
+                                    )
+                                  }
+                                  className="mt-3 rounded-full bg-red-50 px-4 py-2 text-xs font-black text-red-600"
+                                >
+                                  حذف السؤال
+                                </button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setTemplateQuestions([
+                              ...templateQuestions,
+                              {
+                                q: "",
+                                image: "",
+                                answers: [
+                                  { text: "", image: "", correct: true },
+                                  { text: "", image: "", correct: false },
+                                  { text: "", image: "", correct: false },
+                                  { text: "", image: "", correct: false },
+                                ],
+                              },
+                            ])
+                          }
+                          className="mt-3 rounded-full bg-[#42BFA8] px-5 py-2 text-sm font-black text-white"
+                        >
+                          + إضافة سؤال
+                        </button>
+                      </div>
+                    )}
+
+{templateId !== "maze_quiz" && (
 <div className="mb-4 rounded-2xl bg-[#F4FAF8] p-4">
                       <div className="mb-3 text-sm font-black text-[#0B4D6B]">
                         العناصر / الإجابات
@@ -834,7 +1566,7 @@ export default function TabContentPage({
                                 next[index].text = e.target.value;
                                 setTemplateItems(next);
                               }}
-                              className="mb-2 w-full rounded-xl border border-[#DDEDEA] p-3"
+                              className="mb-2 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
                             />
 
                             <input
@@ -845,7 +1577,7 @@ export default function TabContentPage({
                                 next[index].category = e.target.value;
                                 setTemplateItems(next);
                               }}
-                              className="mb-2 w-full rounded-xl border border-[#DDEDEA] p-3"
+                              className="mb-2 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
                             />
 
                             <input
@@ -869,7 +1601,7 @@ export default function TabContentPage({
 
                                 setUploading(false);
                               }}
-                              className="w-full rounded-xl bg-[#F4FAF8] p-3 text-sm"
+                              className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-[#F4FAF8] p-4 text-sm font-bold text-[#0B4D6B]"
                             />
 
                             {item.image && (
@@ -914,6 +1646,7 @@ export default function TabContentPage({
                         + إضافة عنصر
                       </button>
                     </div>
+                    )}
 
 
 
@@ -924,11 +1657,11 @@ export default function TabContentPage({
                       onClick={generateTemplateGame}
                       className="mt-3 w-full rounded-full bg-[#0B4D6B] py-3 font-black text-white disabled:opacity-50"
                     >
-                      توليد اللعبة + الصوت + الرفع
+                      حفظ بيانات اللعبة وتوليد الأصوات الجديدة فقط
                     </button>
 
                     <p className="mt-3 text-xs font-bold leading-6 text-[#6E7A99]">
-                      ملاحظة: الصوت يتولد محليًا بـ Edge TTS على الجهاز/السيرفر الذي يشغّل لوحة واعي، ثم تُرفع ملفات MP3 جاهزة على Hostinger.
+                      ملاحظة: عند التعديل يتم إعادة استخدام الأصوات القديمة إذا النص لم يتغير، ويتم توليد الصوت فقط للكلمات/الجمل الجديدة.
                     </p>
                   </div>
 
@@ -944,13 +1677,13 @@ export default function TabContentPage({
                         const file = e.target.files?.[0];
                         if (file) uploadZipGame(file);
                       }}
-                      className="w-full cursor-pointer rounded-xl bg-[#F4FAF8] p-3 text-sm"
+                      className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-[#F4FAF8] p-4 text-sm font-bold text-[#0B4D6B]"
                     />
                   </div>
 
                   {uploading && (
                     <p className="rounded-xl bg-[#FFF7D8] p-3 font-bold text-[#9A6B00]">
-                      جاري تجهيز اللعبة...
+                      جاري حفظ البيانات وتوليد الناقص فقط...
                     </p>
                   )}
 
@@ -985,7 +1718,7 @@ export default function TabContentPage({
                   onChange={(e) =>
                     setForm({ ...form, youtube_url: e.target.value })
                   }
-                  className="w-full rounded-2xl border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] outline-none focus:border-[#42BFA8]"
+                  className="w-full rounded-[1.4rem] border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] shadow-sm outline-none transition focus:border-[#42BFA8] focus:ring-4 focus:ring-[#42BFA8]/10"
                 />
               )}
 
@@ -996,7 +1729,7 @@ export default function TabContentPage({
                   onChange={(e) =>
                     setForm({ ...form, iframe_url: e.target.value })
                   }
-                  className="h-32 w-full rounded-2xl border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] outline-none focus:border-[#42BFA8]"
+                  className="h-32 w-full rounded-[1.4rem] border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] shadow-sm outline-none transition focus:border-[#42BFA8] focus:ring-4 focus:ring-[#42BFA8]/10"
                 />
               )}
 
@@ -1007,30 +1740,47 @@ export default function TabContentPage({
                 onChange={(e) =>
                   setForm({ ...form, sort_order: Number(e.target.value) })
                 }
-                className="w-full rounded-2xl border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] outline-none focus:border-[#42BFA8]"
+                className="w-full rounded-[1.4rem] border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] shadow-sm outline-none transition focus:border-[#42BFA8] focus:ring-4 focus:ring-[#42BFA8]/10"
               />
 
-              <button
-                type="submit"
-                disabled={uploading}
-                className="w-full rounded-full bg-[#42BFA8] py-4 font-black text-white disabled:opacity-50"
-              >
-                {editingId ? "حفظ التعديل" : "حفظ المحتوى"}
-              </button>
-
-              {editingId && (
+              <div className="sticky bottom-0 -mx-2 rounded-[1.5rem] bg-white/95 p-3 shadow-[0_-12px_30px_rgba(11,77,107,.08)] backdrop-blur">
                 <button
-                  type="button"
-                  onClick={resetForm}
-                  className="w-full rounded-full bg-gray-100 py-4 font-black text-[#0B4D6B]"
+                  type="submit"
+                  disabled={uploading}
+                  className="w-full rounded-full bg-[#42BFA8] py-4 font-black text-white shadow-lg disabled:opacity-50"
                 >
-                  إلغاء التعديل
+                  {editingId ? "حفظ التعديل" : "حفظ المحتوى"}
                 </button>
-              )}
-            </form>
-          </div>
 
-          <div>
+                {editingId && (
+                  <button
+                    type="button"
+                    onClick={resetForm}
+                    className="mt-3 w-full rounded-full bg-gray-100 py-4 font-black text-[#0B4D6B]"
+                  >
+                    إلغاء التعديل
+                  </button>
+                )}
+              </div>
+            </form>
+                </div>
+              </section>
+            </div>
+          )}
+
+          <section>
+            <div className="mb-5 flex items-center justify-between rounded-[1.6rem] bg-white p-5 shadow-lg">
+              <div>
+                <h2 className="text-2xl font-black text-[#0B4D6B]">قائمة المحتوى</h2>
+                <p className="mt-1 text-sm font-bold text-[#6E7A99]">
+                  الكروت الموجودة داخل هذا التاب.
+                </p>
+              </div>
+              <span className="rounded-full bg-[#D9F5EE] px-5 py-2 text-sm font-black text-[#0B4D6B]">
+                {contents.length} عنصر
+              </span>
+            </div>
+
             {loading ? (
               <div className="rounded-[2rem] bg-white p-12 text-center shadow-xl">
                 جاري التحميل...
@@ -1046,7 +1796,7 @@ export default function TabContentPage({
                 </p>
               </div>
             ) : (
-              <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-6 md:grid-cols-2 2xl:grid-cols-3">
                 {contents.map((item) => {
                   const type = contentTypes.find(
                     (x) => x.value === item.content_type
@@ -1055,7 +1805,7 @@ export default function TabContentPage({
                   return (
                     <div
                       key={item.id}
-                      className="overflow-hidden rounded-[2rem] bg-white shadow-xl transition hover:-translate-y-2"
+                      className="overflow-hidden rounded-[2rem] border border-white/80 bg-white shadow-xl transition hover:-translate-y-1 hover:shadow-2xl"
                     >
                       {item.content_type === "image" && item.file_url && (
                         <img
@@ -1073,9 +1823,9 @@ export default function TabContentPage({
                         />
                       )}
 
-                      {item.content_type === "zip_game" && (
+                      {(item.content_type === "zip_game" || item.content_type === "interactive_story") && (
                         <div className="flex h-44 w-full items-center justify-center bg-gradient-to-br from-[#0B4D6B] to-[#42BFA8] text-6xl">
-                          🕹️
+                          {item.content_type === "interactive_story" ? "🎭" : "🕹️"}
                         </div>
                       )}
 
@@ -1094,27 +1844,23 @@ export default function TabContentPage({
                           {item.title || "بدون عنوان"}
                         </h2>
 
-                        {item.body && (
+                        {item.body && item.content_type === "text" && (
                           <p className="mt-4 line-clamp-4 leading-8 text-[#6E7A99]">
                             {item.body}
                           </p>
                         )}
 
-                        {item.file_url && item.content_type !== "image" && (
-                          <p className="mt-4 truncate rounded-xl bg-[#F4FAF8] p-3 text-xs text-[#6E7A99]">
-                            {item.file_url}
-                          </p>
+                        {(item.content_type === "zip_game" || item.content_type === "interactive_story") && (
+                          <div className="mt-4 rounded-2xl bg-[#F4FAF8] p-4 text-sm font-black text-[#0B4D6B]">
+                            {item.content_type === "interactive_story"
+                              ? "قصة جاهزة للعرض داخل البرنامج"
+                              : "لعبة جاهزة للعرض داخل البرنامج"}
+                          </div>
                         )}
 
                         {item.youtube_url && (
                           <p className="mt-4 truncate rounded-xl bg-[#F4FAF8] p-3 text-xs text-[#6E7A99]">
                             {item.youtube_url}
-                          </p>
-                        )}
-
-                        {item.iframe_url && (
-                          <p className="mt-4 truncate rounded-xl bg-[#F4FAF8] p-3 text-xs text-[#6E7A99]">
-                            {item.iframe_url}
                           </p>
                         )}
 
@@ -1139,7 +1885,7 @@ export default function TabContentPage({
                 })}
               </div>
             )}
-          </div>
+          </section>
         </div>
       </div>
     </main>

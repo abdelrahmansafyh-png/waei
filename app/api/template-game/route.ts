@@ -16,6 +16,9 @@ const TEMPLATES: Record<string, { file: string; label: string }> = {
   balloon_plane: { file: "balloon_plane.zip", label: "الطائرة والبالونات" },
   subway: { file: "subway.zip", label: "السيارات" },
   drag_dynamic_kid: { file: "drag_dynamic_kid.zip", label: "اسحب وصنّف" },
+  maze_quiz: { file: "maze_quiz.zip", label: "المتاهة" },
+  fishing_game: { file: "fishing_game.zip", label: "لعبة الصيد" },
+  interactive_story: { file: "decision_theater.zip", label: "قصة تفاعلية" },
 };
 
 function bufferToStream(buffer: Buffer) {
@@ -105,6 +108,45 @@ function normalizeTemplateGame(templateId: string, input: any) {
     delete game.question;
   }
 
+  if (templateId === "fishing_game") {
+    game.title = game.title || "لعبة الصيد";
+    game.question = game.question || "اختر الإجابات الصحيحة";
+    game.targetCount = Number(game.targetCount || 5);
+    game.targetCategory = game.targetCategory || "strength";
+
+    if (!Array.isArray(game.items)) {
+      game.items = [];
+    }
+
+    game.items = game.items.map((item: any) => ({
+      text: item?.text || item?.label || "",
+      image: item?.image || "",
+      category: item?.category || item?.type || "strength",
+    }));
+  }
+
+  if (templateId === "maze_quiz") {
+    game.title = game.title || "المتاهة";
+
+    if (!Array.isArray(game.questions)) {
+      game.questions = [];
+    }
+
+    game.questions = game.questions.map((q: any, qIndex: number) => ({
+      type: q?.image ? "image" : "text",
+      q: q?.q || q?.question || q?.text || `السؤال ${qIndex + 1}`,
+      image: q?.image || "",
+      answers: Array.isArray(q?.answers)
+        ? q.answers.map((a: any, aIndex: number) => ({
+            type: a?.image ? "image" : "text",
+            text: a?.text || a?.label || "",
+            image: a?.image || "",
+            correct: Boolean(a?.correct),
+          }))
+        : [],
+    }));
+  }
+
   return game;
 }
 
@@ -173,15 +215,37 @@ function buildTtsFromGame(game: any) {
   if (Array.isArray(game.questions)) {
     game.questions = game.questions.map((q: any, qIndex: number) => {
       const qFile = `question_${qIndex}.mp3`;
-      addTts(tts, `question_${qIndex}`, q?.question || q?.text || q?.title, qFile);
-      const nextQ = { ...q, audio: `audio/${qFile}` };
+
+      addTts(
+        tts,
+        `question_${qIndex}`,
+        q?.q || q?.question || q?.text || q?.title,
+        qFile
+      );
+
+      const nextQ: any = {
+        ...q,
+        audio: `audio/${qFile}`,
+      };
+
       if (Array.isArray(q.answers)) {
         nextQ.answers = q.answers.map((a: any, aIndex: number) => {
-          const aFile = `q_${qIndex}_answer_${aIndex}.mp3`;
-          addTts(tts, `q_${qIndex}_answer_${aIndex}`, a?.text || a?.label, aFile);
-          return { ...a, audio: `audio/${aFile}` };
+          const aFile = `question_${qIndex}_answer_${aIndex}.mp3`;
+
+          addTts(
+            tts,
+            `question_${qIndex}_answer_${aIndex}`,
+            a?.text || a?.label || a?.answer,
+            aFile
+          );
+
+          return {
+            ...a,
+            audio: `audio/${aFile}`,
+          };
         });
       }
+
       return nextQ;
     });
   }
@@ -234,6 +298,57 @@ function generateAudioWithEdgeTts(workDir: string) {
   }
 }
 
+
+function buildInteractiveStoryZip(story: any) {
+  const cleanStory = {
+    title: story?.title || "قصة تفاعلية",
+    footerText: story?.footerText || "كل اختيار يفتح مسارًا مختلفًا.",
+    startSceneId: story?.startSceneId || story?.scenes?.[0]?.id || "scene_1",
+    maxScore:
+      Number(story?.maxScore) ||
+      (Array.isArray(story?.scenes)
+        ? story.scenes.filter((s: any) => Array.isArray(s.answers) && s.answers.length > 0).length
+        : 0),
+    autoplay: true,
+    endTitle: story?.endTitle || "انتهت اللعبة",
+    endText: story?.endText || "رائع! شاهدت المواقف واتخذت قراراتك.",
+    scenes: Array.isArray(story?.scenes) ? story.scenes : [],
+  };
+
+  const templatePath = path.join(process.cwd(), "game-templates", "decision_theater.zip");
+
+  if (!fs.existsSync(templatePath)) {
+    throw new Error("ملف قالب القصة التفاعلية غير موجود: decision_theater.zip");
+  }
+
+  const zip = new AdmZip(templatePath);
+
+  const indexEntry = zip.getEntries().find((entry) => {
+    if (entry.isDirectory) return false;
+    return entry.entryName.toLowerCase().replace(/\\/g, "/").endsWith("index.html");
+  });
+
+  if (!indexEntry) {
+    throw new Error("قالب القصة التفاعلية لا يحتوي على index.html");
+  }
+
+  const gameDir = dirname(indexEntry.entryName);
+  const prefix = gameDir ? `${gameDir}/` : "";
+
+  const gameJsonPath = `${prefix}game.json`;
+  const existingGameJson = zip.getEntry(gameJsonPath);
+
+  if (existingGameJson) {
+    zip.updateFile(gameJsonPath, Buffer.from(JSON.stringify(cleanStory, null, 2), "utf8"));
+  } else {
+    zip.addFile(gameJsonPath, Buffer.from(JSON.stringify(cleanStory, null, 2), "utf8"));
+  }
+
+  zip.addFile(`${prefix}story.json`, Buffer.from(JSON.stringify(cleanStory, null, 2), "utf8"));
+
+  return zip;
+}
+
 export async function POST(req: NextRequest) {
   const client = new ftp.Client();
   let workDir = "";
@@ -243,6 +358,40 @@ export async function POST(req: NextRequest) {
     const templateId = safeId(String(body.template_id || ""));
     const contentId = String(body.content_id || "");
     const gameInput = body.game || {};
+
+    if (templateId === "interactive_story") {
+      const finalZip = buildInteractiveStoryZip(gameInput);
+      finalZip.addFile("waei-capture.js", Buffer.from(WAEI_CAPTURE_SCRIPT, "utf8"));
+      finalZip.addFile("html2canvas.min.js", await getHtml2CanvasBuffer());
+
+      const gameId = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+      const basePath = process.env.FTP_BASE_PATH!;
+      const remoteBase = `${basePath}/uploads/games/${gameId}`;
+
+      await client.access({
+        host: process.env.FTP_HOST!,
+        user: process.env.FTP_USER!,
+        password: process.env.FTP_PASSWORD!,
+        port: Number(process.env.FTP_PORT || 21),
+        secure: process.env.FTP_SECURE === "true",
+        secureOptions: { rejectUnauthorized: false },
+      });
+
+      await client.ensureDir(remoteBase);
+      await uploadDir(client, finalZip.getEntries(), remoteBase);
+      client.close();
+
+      const gameUrl = `${process.env.NEXT_PUBLIC_FILES_URL}/uploads/games/${gameId}/index.html`;
+      return NextResponse.json({
+        success: true,
+        game_url: gameUrl,
+        iframe_url: gameUrl,
+        game_folder: `/uploads/games/${gameId}`,
+        content_id: contentId || null,
+        tts_count: 0,
+        message: "تم توليد القصة التفاعلية ورفعها بنجاح",
+      });
+    }
 
     const template = TEMPLATES[templateId];
     if (!template) {
@@ -271,6 +420,14 @@ export async function POST(req: NextRequest) {
     const { game, tts } = buildTtsFromGame(normalizedGame);
 
     zip.updateFile(`${prefix}game.json`, Buffer.from(JSON.stringify(game, null, 2), "utf8"));
+
+    if (templateId === "maze_quiz") {
+      zip.updateFile(
+        `${prefix}questions.json`,
+        Buffer.from(JSON.stringify(game.questions || [], null, 2), "utf8")
+      );
+    }
+
     zip.addFile(`${prefix}tts_items.json`, Buffer.from(JSON.stringify(tts, null, 2), "utf8"));
 
     const gameId = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
