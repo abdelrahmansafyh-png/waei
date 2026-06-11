@@ -4,6 +4,8 @@ import { createServerClient } from "@supabase/ssr";
 import { supabase } from "@/lib/supabase";
 import { getFileUrl } from "@/lib/files";
 import HomeBannersSlider from "@/components/HomeBannersSlider";
+import LandingAuthActions from "@/components/LandingAuthActions";
+
 
 type Banner = {
   id: string;
@@ -140,12 +142,7 @@ export default async function LandingPage() {
             <a href="#contact">تواصل معنا</a>
           </nav>
 
-          <Link
-            href={user ? "/dashboard" : "/login"}
-            className="rounded-full bg-[#42BFA8] px-8 py-3 font-black text-white shadow-lg shadow-teal-100 transition hover:-translate-y-1"
-          >
-            {user ? "لوحة التحكم" : "تسجيل الدخول"}
-          </Link>
+          <LandingAuthActions />
         </div>
       </header>
 
@@ -528,12 +525,15 @@ export default async function LandingPage() {
           </Link>
 
           {!user && (
-            <Link
-              href="/login"
-              className="rounded-full border border-white/30 px-9 py-4 text-lg font-black text-white"
-            >
-              تسجيل الدخول
-            </Link>
+            // <Link
+            //   href="/login"
+            //   className="rounded-full border border-white/30 px-9 py-4 text-lg font-black text-white"
+            // >
+            //   تسجيل الدخول
+            // </Link>
+
+            <LandingAuthActions />
+            
           )}
         </div>
       </section>
