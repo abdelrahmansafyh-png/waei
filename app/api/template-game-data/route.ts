@@ -26,7 +26,10 @@ function safeId(value: string) {
 }
 
 function textKey(value: any) {
-  return String(value || "").trim().replace(/\s+/g, " ").toLowerCase();
+  return String(value || "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase();
 }
 
 function addTts(tts: TtsItem[], id: string, text: any, file: string) {
@@ -56,7 +59,8 @@ function normalizeTemplateGame(templateId: string, input: any) {
   }
 
   if (templateId === "drag_dynamic_kid") {
-    game.instruction = game.instruction || game.question || "اسحب كل بطاقة إلى المكان الصحيح";
+    game.instruction =
+      game.instruction || game.question || "اسحب كل بطاقة إلى المكان الصحيح";
     game.character = game.character || "images/character.png";
 
     if (!Array.isArray(game.groups)) {
@@ -81,8 +85,19 @@ function normalizeTemplateGame(templateId: string, input: any) {
   if (templateId === "fishing_game") {
     game.title = game.title || "لعبة الصيد";
     game.question = game.question || "اختر الإجابات الصحيحة";
-    game.targetCount = Number(game.targetCount || 5);
+    game.questionAudio = game.questionAudio || "";
+    game.maxAttempts = Number(game.maxAttempts || game.targetCount || 5);
+    game.targetCount = Number(game.targetCount || game.maxAttempts || 5);
     game.targetCategory = game.targetCategory || "strength";
+
+    if (!Array.isArray(game.praiseSounds)) {
+      game.praiseSounds = [];
+    }
+
+    game.praiseSounds = game.praiseSounds.map((praise: any) => ({
+      text: praise?.text || "",
+      audio: praise?.audio || "",
+    }));
 
     if (!Array.isArray(game.items)) {
       game.items = [];
@@ -120,6 +135,23 @@ function normalizeTemplateGame(templateId: string, input: any) {
     }));
   }
 
+
+  if (templateId === "balloon_plane") {
+    game.title = game.title || "الطائرة والبالونات";
+    game.question = game.question || "اضرب البالونات الصحيحة فقط";
+    game.questionAudio = game.questionAudio || game.question_audio || "";
+    game.targetCategory = game.targetCategory || game.target || "correct";
+    game.totalBalloons = Number(game.totalBalloons || game.targetCount || game.maxAttempts || 20);
+
+    if (!Array.isArray(game.items)) game.items = [];
+    game.items = game.items.map((item: any) => ({
+      text: item?.text || item?.label || "",
+      image: item?.image || "",
+      category: item?.category || item?.type || "correct",
+      audio: item?.audio || item?.audio_url || "",
+    }));
+  }
+
   return game;
 }
 
@@ -132,16 +164,34 @@ function collectPreviousAudio(previousGame: any) {
     if (key && value) map.set(key, value);
   }
 
-  remember(previousGame?.title, previousGame?.titleAudio || previousGame?.audio);
+  remember(
+    previousGame?.title,
+    previousGame?.titleAudio || previousGame?.audio,
+  );
   remember(previousGame?.question, previousGame?.questionAudio);
 
   if (Array.isArray(previousGame?.items)) {
-    previousGame.items.forEach((item: any) => remember(item?.text || item?.label, item?.audio));
+    previousGame.items.forEach((item: any) =>
+      remember(item?.text || item?.label, item?.audio),
+    );
+  }
+
+  if (Array.isArray(previousGame?.praiseSounds)) {
+    previousGame.praiseSounds.forEach((praise: any) =>
+      remember(praise?.text, praise?.audio),
+    );
   }
 
   if (Array.isArray(previousGame?.cards)) {
     previousGame.cards.forEach((card: any) =>
-      remember(card?.text || card?.label || card?.front || card?.back || card?.question, card?.audio)
+      remember(
+        card?.text ||
+          card?.label ||
+          card?.front ||
+          card?.back ||
+          card?.question,
+        card?.audio,
+      ),
     );
   }
 
@@ -149,7 +199,9 @@ function collectPreviousAudio(previousGame: any) {
     previousGame.levels.forEach((level: any) => {
       remember(level?.question || level?.title, level?.audio);
       if (Array.isArray(level?.items)) {
-        level.items.forEach((item: any) => remember(item?.text || item?.label, item?.audio));
+        level.items.forEach((item: any) =>
+          remember(item?.text || item?.label, item?.audio),
+        );
       }
     });
   }
@@ -158,7 +210,9 @@ function collectPreviousAudio(previousGame: any) {
     previousGame.questions.forEach((q: any) => {
       remember(q?.q || q?.question || q?.text || q?.title, q?.audio);
       if (Array.isArray(q?.answers)) {
-        q.answers.forEach((a: any) => remember(a?.text || a?.label || a?.answer, a?.audio));
+        q.answers.forEach((a: any) =>
+          remember(a?.text || a?.label || a?.answer, a?.audio),
+        );
       }
     });
   }
@@ -171,8 +225,15 @@ function assignAudioWithCache(game: any, gameId: string, previousGame: any) {
   const tts: TtsItem[] = [];
   const audioBase = `/uploads/game-audio/${gameId}`;
 
-  function audioFor(id: string, text: any, fallbackFile: string) {
+  function audioFor(
+    id: string,
+    text: any,
+    fallbackFile: string,
+    explicitAudio?: any,
+  ) {
     const clean = String(text || "").trim();
+    const manualAudio = String(explicitAudio || "").trim();
+    if (manualAudio) return manualAudio;
     if (!clean) return "";
 
     const oldAudio = previousAudio.get(textKey(clean));
@@ -183,11 +244,21 @@ function assignAudioWithCache(game: any, gameId: string, previousGame: any) {
   }
 
   if (game.title) {
-    game.titleAudio = audioFor("title", game.title, "title.mp3");
+    game.titleAudio = audioFor(
+      "title",
+      game.title,
+      "title.mp3",
+      game.titleAudio || game.audio,
+    );
   }
 
   if (game.question) {
-    game.questionAudio = audioFor("question", game.question, "question.mp3");
+    game.questionAudio = audioFor(
+      "question",
+      game.question,
+      "question.mp3",
+      game.questionAudio,
+    );
   }
 
   if (Array.isArray(game.items)) {
@@ -195,7 +266,27 @@ function assignAudioWithCache(game: any, gameId: string, previousGame: any) {
       const text = item?.text || item?.label || "";
       return {
         ...item,
-        audio: audioFor(`item_${index}`, text, `item_${index}.mp3`),
+        audio: audioFor(
+          `item_${index}`,
+          text,
+          `item_${index}.mp3`,
+          item?.audio,
+        ),
+      };
+    });
+  }
+
+  if (Array.isArray(game.praiseSounds)) {
+    game.praiseSounds = game.praiseSounds.map((praise: any, index: number) => {
+      const text = praise?.text || "";
+      return {
+        ...praise,
+        audio: audioFor(
+          `praise_${index}`,
+          text,
+          `praise_${index}.mp3`,
+          praise?.audio,
+        ),
       };
     });
   }
@@ -208,7 +299,7 @@ function assignAudioWithCache(game: any, gameId: string, previousGame: any) {
         audio: audioFor(
           `level_${levelIndex}_question`,
           levelText,
-          `level_${levelIndex}_question.mp3`
+          `level_${levelIndex}_question.mp3`,
         ),
         targetCategory: level?.targetCategory || level?.target || "correct",
       };
@@ -222,7 +313,8 @@ function assignAudioWithCache(game: any, gameId: string, previousGame: any) {
             audio: audioFor(
               `level_${levelIndex}_item_${itemIndex}`,
               text,
-              `level_${levelIndex}_item_${itemIndex}.mp3`
+              `level_${levelIndex}_item_${itemIndex}.mp3`,
+              item?.audio,
             ),
           };
         });
@@ -234,10 +326,20 @@ function assignAudioWithCache(game: any, gameId: string, previousGame: any) {
 
   if (Array.isArray(game.cards)) {
     game.cards = game.cards.map((card: any, index: number) => {
-      const text = card?.text || card?.label || card?.front || card?.back || card?.question;
+      const text =
+        card?.text ||
+        card?.label ||
+        card?.front ||
+        card?.back ||
+        card?.question;
       return {
         ...card,
-        audio: audioFor(`card_${index}`, text, `card_${index}.mp3`),
+        audio: audioFor(
+          `card_${index}`,
+          text,
+          `card_${index}.mp3`,
+          card?.audio,
+        ),
       };
     });
   }
@@ -247,7 +349,12 @@ function assignAudioWithCache(game: any, gameId: string, previousGame: any) {
       const qText = q?.q || q?.question || q?.text || q?.title;
       const nextQ: any = {
         ...q,
-        audio: audioFor(`question_${qIndex}`, qText, `question_${qIndex}.mp3`),
+        audio: audioFor(
+          `question_${qIndex}`,
+          qText,
+          `question_${qIndex}.mp3`,
+          q?.audio,
+        ),
       };
 
       if (Array.isArray(q.answers)) {
@@ -258,7 +365,8 @@ function assignAudioWithCache(game: any, gameId: string, previousGame: any) {
             audio: audioFor(
               `question_${qIndex}_answer_${aIndex}`,
               aText,
-              `question_${qIndex}_answer_${aIndex}.mp3`
+              `question_${qIndex}_answer_${aIndex}.mp3`,
+              a?.audio,
             ),
           };
         });
@@ -289,21 +397,36 @@ function generateAudioWithEdgeTts(workDir: string) {
     throw new Error("ملف scripts/generate_audio_edge.py غير موجود");
   }
 
-  execFileSync(python, [script, workDir, process.env.EDGE_TTS_VOICE || "ar-SA-HamedNeural"], {
-    stdio: "pipe",
-    timeout: 120000,
-  });
+  execFileSync(
+    python,
+    [script, workDir, process.env.EDGE_TTS_VOICE || "ar-SA-HamedNeural"],
+    {
+      stdio: "pipe",
+      timeout: 120000,
+    },
+  );
 }
 
-async function uploadFileBuffer(client: ftp.Client, remoteDir: string, fileName: string, buffer: Buffer) {
+async function uploadFileBuffer(
+  client: ftp.Client,
+  remoteDir: string,
+  fileName: string,
+  buffer: Buffer,
+) {
   await client.ensureDir(remoteDir);
   await client.uploadFrom(bufferToStream(buffer), fileName);
 }
 
-async function uploadAudioFolder(client: ftp.Client, localAudioDir: string, remoteDir: string) {
+async function uploadAudioFolder(
+  client: ftp.Client,
+  localAudioDir: string,
+  remoteDir: string,
+) {
   if (!fs.existsSync(localAudioDir)) return 0;
 
-  const files = fs.readdirSync(localAudioDir).filter((name) => name.toLowerCase().endsWith(".mp3"));
+  const files = fs
+    .readdirSync(localAudioDir)
+    .filter((name) => name.toLowerCase().endsWith(".mp3"));
   for (const fileName of files) {
     const buffer = fs.readFileSync(path.join(localAudioDir, fileName));
     await uploadFileBuffer(client, remoteDir, fileName, buffer);
@@ -335,23 +458,24 @@ export async function POST(req: NextRequest) {
     const requestedId = safeId(String(body.id || body.content_id || ""));
 
     if (!templateId) {
-      return NextResponse.json({ success: false, message: "template_id مطلوب" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: "template_id مطلوب" },
+        { status: 400 },
+      );
     }
 
-    const gameId = requestedId || `${templateId}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const gameId =
+      requestedId ||
+      `${templateId}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const filesBaseUrl = process.env.NEXT_PUBLIC_FILES_URL || "";
     const basePath = process.env.FTP_BASE_PATH!;
 
-    const normalizedGame = normalizeTemplateGame(templateId, inputGame);
-    const { game, tts } = assignAudioWithCache(normalizedGame, gameId, previousGame);
+    const game = normalizeTemplateGame(templateId, inputGame);
+    const tts: TtsItem[] = [];
 
-    workDir = path.join(os.tmpdir(), `waei-game-data-${gameId}`);
-    fs.mkdirSync(workDir, { recursive: true });
-    fs.writeFileSync(path.join(workDir, "tts_items.json"), JSON.stringify(tts, null, 2), "utf8");
-
-    if (tts.length > 0) {
-      generateAudioWithEdgeTts(workDir);
-    }
+    // ملاحظة: تم إيقاف توليد الأصوات تلقائيًا.
+    // الأصوات الآن تُرفع من الأدمن وتُحفظ كروابط داخل game.json فقط.
+    workDir = "";
 
     await client.access({
       host: process.env.FTP_HOST!,
@@ -371,10 +495,10 @@ export async function POST(req: NextRequest) {
       client,
       dataRemoteDir,
       dataFileName,
-      Buffer.from(JSON.stringify(game, null, 2), "utf8")
+      Buffer.from(JSON.stringify(game, null, 2), "utf8"),
     );
 
-    const uploadedAudioCount = await uploadAudioFolder(client, path.join(workDir, "audio"), audioRemoteDir);
+    const uploadedAudioCount = 0;
 
     client.close();
 
@@ -393,10 +517,13 @@ export async function POST(req: NextRequest) {
       data_url: dataUrl,
       tts_count: tts.length,
       uploaded_audio_count: uploadedAudioCount,
-      reused_audio_count: Math.max(0, JSON.stringify(game).split("/uploads/game-audio/").length - 1 - tts.length),
-      message: tts.length
-        ? `تم حفظ بيانات اللعبة وتوليد ${tts.length} صوت جديد فقط`
-        : "تم حفظ بيانات اللعبة بدون توليد أصوات جديدة",
+      reused_audio_count: Math.max(
+        0,
+        JSON.stringify(game).split("/uploads/game-audio/").length -
+          1 -
+          tts.length,
+      ),
+      message: "تم حفظ بيانات اللعبة باستخدام الأصوات المرفوعة من الأدمن",
     });
   } catch (error: any) {
     client.close();
@@ -406,7 +533,7 @@ export async function POST(req: NextRequest) {
         success: false,
         message: error?.message || "فشل حفظ بيانات اللعبة",
       },
-      { status: 500 }
+      { status: 500 },
     );
   } finally {
     if (workDir && fs.existsSync(workDir)) {

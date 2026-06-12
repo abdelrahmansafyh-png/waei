@@ -28,11 +28,18 @@ export async function POST(req: NextRequest) {
     if (!file) {
       return NextResponse.json(
         { success: false, message: "No file uploaded" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    const allowedFolders = ["banners", "programs", "files", "games", "game-images"];
+    const allowedFolders = [
+      "banners",
+      "programs",
+      "files",
+      "games",
+      "game-images",
+      "game-audio",
+    ];
     const safeFolder = allowedFolders.includes(folder) ? folder : "files";
 
     const bytes = await file.arrayBuffer();
@@ -47,14 +54,14 @@ export async function POST(req: NextRequest) {
     client.ftp.verbose = true;
 
     await client.access({
-    host: process.env.FTP_HOST!,
-    user: process.env.FTP_USER!,
-    password: process.env.FTP_PASSWORD!,
-    port: 21,
-    secure: false,
-    secureOptions: {
+      host: process.env.FTP_HOST!,
+      user: process.env.FTP_USER!,
+      password: process.env.FTP_PASSWORD!,
+      port: 21,
+      secure: false,
+      secureOptions: {
         rejectUnauthorized: false,
-    },
+      },
     });
 
     await client.ensureDir(remoteDir);
@@ -75,7 +82,7 @@ export async function POST(req: NextRequest) {
         success: false,
         message: error?.message || "Upload failed",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
