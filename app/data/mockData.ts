@@ -1,7 +1,7 @@
 export const banners = [
   {
     id: 1,
-    title: "برامج واعية لأطفال أكثر ثقة",
+    title: "برامج راشدة لأطفال أكثر ثقة",
     description: "أنشطة تفاعلية وألعاب تربوية تساعد الطفل على فهم مشاعره وتنمية مهاراته.",
     image: "/images/banner-1.png",
     buttonText: "استكشف البرامج",

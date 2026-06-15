@@ -76,10 +76,10 @@ export default function RegisterPage() {
       <div className="relative mx-auto grid min-h-screen max-w-6xl items-center gap-8 px-5 py-8 lg:grid-cols-[1fr_1.1fr]">
         <section className="hidden lg:block">
           <div className="rounded-[2.5rem] bg-gradient-to-br from-[#E7F8FF] to-[#E8FFF4] p-10 shadow-xl">
-            <img src="/images/logo.png" alt="واعي" className="mb-8 h-28 w-auto" />
+            <img src="/images/logo.png" alt="راشد" className="mb-8 h-28 w-auto" />
 
             <h1 className="text-5xl font-black leading-[1.25] text-[#0B4D6B]">
-              أهلاً بك في واعي
+              أهلاً بك في راشد
             </h1>
 
             <p className="mt-5 max-w-md text-lg font-semibold leading-9 text-[#587086]">
@@ -96,7 +96,7 @@ export default function RegisterPage() {
 
         <form onSubmit={handleRegister} className="rounded-[2.5rem] bg-white p-6 shadow-2xl md:p-9">
           <div className="mb-8 flex items-center justify-between">
-            <img src="/images/logo.png" alt="واعي" className="h-16 w-auto" />
+            <img src="/images/logo.png" alt="راشد" className="h-16 w-auto" />
 
             <button
               type="button"

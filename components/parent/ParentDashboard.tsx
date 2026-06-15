@@ -91,7 +91,7 @@ export default function ParentDashboard({ profile }: { profile: any }) {
               </h1>
 
               <p className="mt-4 max-w-2xl text-lg font-bold leading-8 text-[#667085]">
-                تابع أبناءك، نتائجهم، وقت التعلم، وتقدمهم في برامج واعي.
+                تابع أبناءك، نتائجهم، وقت التعلم، وتقدمهم في برامج راشد.
               </p>
             </div>
           </div>

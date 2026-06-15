@@ -121,7 +121,7 @@ export default function ChildProgramsPage() {
               <div className="flex flex-wrap items-center justify-between gap-5">
                 <div>
                   <div className="mb-3 inline-flex rounded-full bg-[#E8F8F3] px-5 py-2 font-black text-[#42BFA8]">
-                    برامج واعي 🗺️
+                    برامج راشد 🗺️
                   </div>
 
                   <h1 className="text-5xl font-black leading-[1.2] text-[#20294f]">

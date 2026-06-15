@@ -275,7 +275,7 @@ function findPythonCommand() {
       return cmd;
     } catch {}
   }
-  throw new Error("Python غير موجود على الجهاز الذي يشغل واعي. شغّل المشروع محليًا على جهاز فيه Python أو على VPS.");
+  throw new Error("Python غير موجود على الجهاز الذي يشغل راشد. شغّل المشروع محليًا على جهاز فيه Python أو على VPS.");
 }
 
 function generateAudioWithEdgeTts(workDir: string) {
@@ -292,7 +292,7 @@ function generateAudioWithEdgeTts(workDir: string) {
     const stderr = error?.stderr?.toString?.() || "";
     const stdout = error?.stdout?.toString?.() || "";
     if ((stderr + stdout).includes("No module named") || (stderr + stdout).includes("edge_tts")) {
-      throw new Error("مكتبة edge-tts غير مثبتة على الجهاز الذي يشغل واعي. ثبّتها مرة واحدة: pip install edge-tts");
+      throw new Error("مكتبة edge-tts غير مثبتة على الجهاز الذي يشغل راشد. ثبّتها مرة واحدة: pip install edge-tts");
     }
     throw new Error(`فشل توليد الصوت Edge TTS: ${stderr || stdout || error?.message}`);
   }

@@ -18,14 +18,14 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
   useEffect(() => {
     if (isLogin) return;
-    const admin = localStorage.getItem("waei_admin");
+    const admin = localStorage.getItem("rashid_admin");
     if (!admin) router.replace("/admin/login");
   }, [isLogin, router]);
 
   if (isLogin) return <>{children}</>;
 
   function logout() {
-    localStorage.removeItem("waei_admin");
+    localStorage.removeItem("rashid_admin");
     router.replace("/admin/login");
   }
 
@@ -33,8 +33,8 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
     <div dir="rtl" className="min-h-screen bg-[#F5FAF8] text-[#0B4D6B]">
       <aside className="fixed right-0 top-0 z-50 hidden h-screen w-72 flex-col border-l border-[#E4EFEA] bg-white p-5 shadow-xl lg:flex">
         <div className="mb-8 rounded-3xl bg-[#F5FAF8] p-4">
-          <img src="/images/logo.png" alt="واعي" className="mb-3 h-14 w-auto" />
-          <div className="text-xl font-black">لوحة واعي</div>
+          <img src="/images/logo.png" alt="راشد" className="mb-3 h-14 w-auto" />
+          <div className="text-xl font-black">لوحة راشد</div>
           <div className="mt-1 text-xs font-bold text-[#6E7A99]">إدارة المنصة</div>
         </div>
 

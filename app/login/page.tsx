@@ -55,7 +55,7 @@ export default function LoginPage() {
      <div className="absolute right-10 top-20 animate-pulse rounded-full bg-white/90 p-3 shadow-2xl backdrop-blur">
         <img
             src="/images/logo.png"
-            alt="واعي"
+            alt="راشد"
             className="h-16 w-16 object-contain"
         />
     </div>
@@ -80,19 +80,19 @@ export default function LoginPage() {
             <div className="relative z-10">
               {/* <img
                 src="/images/logo.png"
-                alt="واعي"
+                alt="راشد"
                 className="mb-8 h-28 w-auto rounded-3xl bg-white/10 p-2 backdrop-blur"
               /> */}
 
               <div className="mb-5 inline-flex rounded-full bg-white/10 px-5 py-2 text-sm font-black text-[#D8F36A] backdrop-blur">
-                وعي · انتباه · عمق · ينمو
+                تعلم · لعب · قصص · تقدم
               </div>
 
               <h1 className="max-w-xl text-6xl font-black leading-[1.2]">
                 {greeting}
                 <br />
                 أهلاً بعودتك إلى
-                <span className="text-[#D8F36A]"> واعي</span>
+                <span className="text-[#D8F36A]"> راشد</span>
               </h1>
 
               <p className="mt-6 max-w-lg text-xl leading-10 text-white/75">
@@ -125,13 +125,13 @@ export default function LoginPage() {
                 <div className="flex h-24 w-24 items-center justify-center rounded-full bg-white text-6xl shadow-xl">
                   <img
                     src="/images/logo.png"
-                    alt="واعي"
+                    alt="راشد"
                 />
                 </div>
 
                 <div>
                   <h3 className="text-2xl font-black">
-                    واعي رفيقك الذكي
+                    راشد رفيقك الذكي
                   </h3>
 
                   <p className="mt-2 leading-8 text-white/75">
@@ -157,7 +157,7 @@ export default function LoginPage() {
                 <Link href="/">
                   <img
                     src="/images/logo.png"
-                    alt="واعي"
+                    alt="راشد"
                     className="mx-auto mb-5 h-28 w-auto transition hover:scale-105"
                   />
                 </Link>
@@ -227,7 +227,7 @@ export default function LoginPage() {
                   disabled={loading}
                   className="mt-3 w-full rounded-full bg-gradient-to-r from-[#0B4D6B] to-[#2D9B87] py-4 text-lg font-black text-white shadow-xl transition hover:-translate-y-1 disabled:opacity-50"
                 >
-                  {loading ? "جاري تسجيل الدخول..." : "الدخول إلى واعي"}
+                  {loading ? "جاري تسجيل الدخول..." : "الدخول إلى راشد"}
                 </button>
 
                 <button

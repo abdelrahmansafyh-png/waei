@@ -6,7 +6,6 @@ import { getFileUrl } from "@/lib/files";
 import HomeBannersSlider from "@/components/HomeBannersSlider";
 import LandingAuthActions from "@/components/LandingAuthActions";
 
-
 type Banner = {
   id: string;
   title: string;
@@ -30,9 +29,7 @@ type Program = {
   access_type: string | null;
   is_published: boolean;
   sort_order: number;
-  categories?: {
-    name: string;
-  } | null;
+  categories?: { name: string } | null;
 };
 
 type Plan = {
@@ -63,7 +60,7 @@ async function getPrograms(): Promise<Program[]> {
     .from("programs")
     .select("*, categories(name)")
     .eq("is_published", true)
-      .or("is_deleted.is.null,is_deleted.eq.false")
+    .or("is_deleted.is.null,is_deleted.eq.false")
     .order("sort_order", { ascending: true });
 
   return (data as Program[]) || [];
@@ -102,6 +99,33 @@ async function getCurrentUser() {
   return user;
 }
 
+const methodology = [
+  {
+    icon: "🎮",
+    title: "التعلم باللعب",
+    desc: "نحوّل المهارات والقيم إلى ألعاب قصيرة ممتعة تجعل الطفل يتفاعل بدل أن يكتفي بالمشاهدة.",
+    color: "from-[#19C6D4] to-[#0F9EB2]",
+  },
+  {
+    icon: "🎭",
+    title: "قصص تفاعلية",
+    desc: "مواقف تربوية يختار فيها الطفل القرار، فيرى أثر قراره ويتعلم بطريقة قريبة من حياته.",
+    color: "from-[#8B5CF6] to-[#6847F5]",
+  },
+  {
+    icon: "🌱",
+    title: "نمو متدرج",
+    desc: "المحتوى يتدرج حسب عمر الطفل ومستواه، من الفهم البسيط إلى بناء العادات والسلوك.",
+    color: "from-[#6ED46E] to-[#3AAE55]",
+  },
+  {
+    icon: "⭐",
+    title: "تحفيز وتقدم",
+    desc: "نقاط، إنجازات، ومتابعة واضحة تساعد الطفل وولي الأمر على رؤية التطور خطوة بخطوة.",
+    color: "from-[#FFD54A] to-[#F59E0B]",
+  },
+];
+
 export default async function LandingPage() {
   const banners = await getBanners();
   const programs = await getPrograms();
@@ -109,194 +133,174 @@ export default async function LandingPage() {
   const user = await getCurrentUser();
 
   return (
-    <main dir="rtl" className="min-h-screen bg-[#F4FAF8] text-[#0B4D6B]">
+    <main dir="rtl" className="min-h-screen overflow-hidden bg-[#F5FBFF] text-[#14224A]">
       <style>{`
-        @keyframes floatSoft {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-16px); }
+        @keyframes floatY { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-14px) } }
+        @keyframes floatX { 0%,100%{ transform: translateX(0) rotate(0deg) } 50%{ transform: translateX(10px) rotate(4deg) } }
+        @keyframes shimmer { 0%{ opacity:.35; transform: scale(.95) } 50%{ opacity:.8; transform: scale(1.08) } 100%{ opacity:.35; transform: scale(.95) } }
+        @keyframes slideUp { from{ opacity:0; transform: translateY(24px) } to{ opacity:1; transform: translateY(0) } }
+        .rashid-float-y{ animation: floatY 5s ease-in-out infinite; }
+        .rashid-float-x{ animation: floatX 6s ease-in-out infinite; }
+        .rashid-shimmer{ animation: shimmer 4s ease-in-out infinite; }
+        .rashid-slide-up{ animation: slideUp .8s ease both; }
+        .rashid-hero-card{
+          position: relative;
+          border: 1px solid rgba(255,255,255,.82);
+          background: linear-gradient(135deg, rgba(255,255,255,.88), rgba(255,255,255,.58));
+          box-shadow: 0 28px 80px rgba(20,34,74,.16);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border-radius: 42px;
+          padding: clamp(22px, 4vw, 44px);
         }
-        @keyframes pulseSoft {
-          0%, 100% { opacity: .35; transform: scale(1); }
-          50% { opacity: .6; transform: scale(1.08); }
+        .rashid-hero-title{
+          color:#101B3D;
+          letter-spacing:-.03em;
+          text-shadow: 0 3px 0 rgba(255,255,255,.85), 0 16px 35px rgba(20,34,74,.16);
         }
-        .float-soft { animation: floatSoft 4.5s ease-in-out infinite; }
-        .pulse-soft { animation: pulseSoft 5s ease-in-out infinite; }
+        .rashid-hero-word{
+          color:#0E9FAA;
+          text-shadow: 0 3px 0 rgba(255,255,255,.92), 0 14px 30px rgba(14,159,170,.20);
+          -webkit-text-stroke: 1px rgba(255,255,255,.78);
+        }
+        .rashid-hero-desc{
+          color:#203154;
+          text-shadow: 0 2px 0 rgba(255,255,255,.8);
+        }
+        @media (max-width: 768px){
+          .rashid-hero-card{ border-radius: 32px; }
+          .rashid-hero-title{ letter-spacing:-.015em; }
+        }
       `}</style>
 
-      <header className="sticky top-0 z-50 border-b border-[#DDEDEA] bg-white/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <header className="fixed left-0 right-0 top-0 z-50 px-4 pt-4">
+        <div className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-white/70 bg-white/75 px-5 py-3 shadow-[0_18px_55px_rgba(18,34,74,.10)] backdrop-blur-xl">
           <Link href="/" className="flex items-center gap-3">
-            <img src="/images/logo.png" alt="واعي" className="h-20 w-auto" />
-            <div>
-              <h1 className="text-3xl font-black">واعي</h1>
-              <p className="text-sm font-medium text-[#2D9B87]">
-                وعي · انتباه · عمق · ينمو
-              </p>
-            </div>
+            <img src="/images/logo-horrizental.png" alt="راشد" className="h-14 w-auto object-contain" />
           </Link>
 
-          <nav className="hidden items-center gap-9 text-base font-bold md:flex">
-            <a href="#how">منهجية واعي</a>
-            <a href="#programs">البرامج</a>
-            <a href="#plans">الاشتراكات</a>
-            <a href="#contact">تواصل معنا</a>
+          <nav className="hidden items-center gap-8 text-base font-black text-[#14224A] md:flex">
+            <a className="transition hover:text-[#12AFC0]" href="#home">الرئيسية</a>
+            <a className="transition hover:text-[#12AFC0]" href="#methodology">المنهجية</a>
+            <a className="transition hover:text-[#12AFC0]" href="#programs">البرامج</a>
+            <a className="transition hover:text-[#12AFC0]" href="#stories">القصص والألعاب</a>
+            <a className="transition hover:text-[#12AFC0]" href="#plans">الاشتراكات</a>
           </nav>
 
           <LandingAuthActions />
         </div>
       </header>
 
-      <section className="relative overflow-hidden bg-[#0B4D6B]">
-        <div className="absolute -bottom-36 -right-20 h-96 w-96 rounded-full border-[55px] border-[#42BFA8]/10 pulse-soft" />
-        <div className="absolute bottom-10 right-20 h-56 w-56 rounded-full border-[35px] border-[#42BFA8]/10 pulse-soft" />
-        <div className="absolute left-24 top-24 h-48 w-48 rounded-full bg-[#42BFA8]/10 blur-3xl" />
+      <section id="home" className="relative min-h-[850px] overflow-hidden pt-28">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/images/rashid-hero-bg.png')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-white/10 to-[#F5FBFF]" />
+        <div className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-[#F5FBFF] to-transparent" />
 
-        <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-24 lg:grid-cols-2">
-          <div className="relative z-10">
-            <div className="mb-8 inline-flex rounded-full border border-[#D8F36A]/40 bg-white/10 px-6 py-2 text-lg font-bold text-[#D8F36A]">
-              منصة واعي للطفل والأسرة
+        <div className="rashid-shimmer absolute left-[10%] top-[22%] h-3 w-3 rounded-full bg-white shadow-[0_0_30px_12px_rgba(255,255,255,.65)]" />
+        <div className="rashid-shimmer absolute right-[22%] top-[18%] h-2 w-2 rounded-full bg-white shadow-[0_0_22px_10px_rgba(255,255,255,.6)]" />
+        <div className="rashid-float-x absolute left-[18%] top-[28%] hidden rounded-3xl bg-white/80 px-5 py-3 text-3xl shadow-xl md:block">📘</div>
+        <div className="rashid-float-y absolute left-[44%] top-[28%] hidden rounded-full bg-white/80 px-5 py-4 text-3xl shadow-xl md:block">⭐</div>
+        <div className="rashid-float-x absolute left-[36%] top-[68%] hidden rounded-full bg-white/80 px-5 py-4 text-3xl shadow-xl md:block">🎵</div>
+
+        <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-6 pb-24 pt-16 lg:grid-cols-[.95fr_1.05fr]">
+          <div className="rashid-slide-up rashid-hero-card max-w-2xl pt-8">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/75 px-5 py-2 text-sm font-black text-[#0E9FAA] shadow-lg backdrop-blur">
+              <span>🌟</span>
+              <span>منصة تعليمية تفاعلية للأطفال</span>
             </div>
 
-            <h2 className="max-w-2xl text-5xl font-black leading-[1.25] text-white md:text-7xl">
-              نساعد طفلك يكبر بثقة و
-              <span className="text-[#D8F36A]"> نفسية سليمة</span>
-            </h2>
+            <h1 className="rashid-hero-title text-5xl font-black leading-[1.22] md:text-7xl">
+              تعلّم، العب، واكتشف
+              <br />
+              <span className="rashid-hero-word inline-block">
+                مع راشد
+              </span>
+            </h1>
 
-            <p className="mt-8 max-w-xl text-xl leading-10 text-white/75">
-              جلسات وبرامج تفاعلية مصممة بعناية لمساعدة الطفل على بناء وعيه
-              بنفسه، وتنمية تركيزه ومهاراته بطريقة ممتعة.
+            <p className="rashid-hero-desc mt-7 max-w-xl text-xl font-bold leading-10">
+              منصة آمنة وممتعة تقدم برامج تربوية، ألعاب تعليمية، وقصص تفاعلية تساعد الطفل على بناء المهارات والقيم بطريقة شيّقة.
             </p>
 
-            <div className="mt-10 flex flex-wrap gap-4">
+            <div className="mt-9 flex flex-wrap gap-4">
               <Link
                 href={user ? "/dashboard" : "/register"}
-                className="rounded-full bg-[#42BFA8] px-9 py-4 text-lg font-black text-white shadow-xl transition hover:-translate-y-1"
+                className="group inline-flex items-center gap-3 rounded-full bg-gradient-to-l from-[#19C6D4] to-[#0E9FAA] px-8 py-4 text-lg font-black text-white shadow-[0_15px_35px_rgba(17,187,203,.35)] transition hover:-translate-y-1"
               >
-                {user ? "اذهب للوحة التحكم" : "ابدأ الآن"}
+                <span>🎮</span>
+                <span>{user ? "اذهب للوحة التحكم" : "ابدأ اللعب الآن"}</span>
               </Link>
 
               <a
-                href="#how"
-                className="rounded-full border border-white/35 bg-white/10 px-9 py-4 text-lg font-black text-white transition hover:bg-white hover:text-[#0B4D6B]"
+                href="#methodology"
+                className="inline-flex items-center gap-3 rounded-full border border-[#11BBCB]/30 bg-white/80 px-8 py-4 text-lg font-black text-[#0B8398] shadow-xl backdrop-blur transition hover:-translate-y-1 hover:bg-white"
               >
-                تعرف على المنصة
+                <span>▷</span>
+                <span>تعرف على المنهجية</span>
               </a>
             </div>
           </div>
 
-          <div className="relative z-10">
-            <div className="float-soft mx-auto max-w-md rounded-[2rem] border border-white/20 bg-white/10 p-8 shadow-2xl backdrop-blur">
-              <h3 className="mb-8 text-center text-3xl font-black text-white">
-                منهجية واعي
-              </h3>
-              <p className="mb-8 text-center text-xl text-white/70">
-                وعي · انتباه · عمق · ينمو
-              </p>
+          <div className="relative hidden min-h-[520px] lg:block">
+            <img
+              src="/images/logo.png"
+              alt="راشد"
+              className="rashid-float-y absolute left-0 right-0 top-[18%] mx-auto w-[560px] max-w-full object-contain drop-shadow-[0_25px_35px_rgba(18,34,74,.18)]"
+            />
+          </div>
+        </div>
 
-              <div className="flex items-center justify-center gap-4">
-                {[
-                  ["و", "#2A6BB0"],
-                  ["ا", "#42BFA8"],
-                  ["ع", "#5AAD32"],
-                  ["ي", "#D8F36A"],
-                ].map(([letter, color]) => (
-                  <div
-                    key={letter}
-                    className="flex h-16 w-16 items-center justify-center rounded-full text-2xl font-black shadow-xl"
-                    style={{
-                      backgroundColor: color,
-                      color: letter === "ي" ? "#0B4D6B" : "white",
-                    }}
-                  >
-                    {letter}
-                  </div>
-                ))}
+        <div className="relative mx-auto -mt-12 max-w-6xl px-6">
+          <div className="grid gap-4 rounded-[2.2rem] border border-white/70 bg-white/85 p-5 shadow-[0_25px_70px_rgba(18,34,74,.12)] backdrop-blur-xl md:grid-cols-4">
+            {[
+              ["🎮", "ألعاب تعليمية", "ألعاب تفاعلية تنمي التفكير والذكاء."],
+              ["🎥", "برامج آمنة", "محتوى هادف وممتع بجودة عالية."],
+              ["📖", "قصص تربوية", "قصص ممتعة تغرس القيم وتنمي الخيال."],
+              ["⭐", "تقدم وتحفيز", "نظام نقاط وشارات يحفّز الطفل على التعلم."],
+            ].map(([icon, title, desc]) => (
+              <div key={title} className="flex items-start gap-4 rounded-[1.6rem] p-4 transition hover:bg-[#F2FEFF]">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#19C6D4] to-[#0E9FAA] text-3xl text-white shadow-lg">
+                  {icon}
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-[#14224A]">{title}</h3>
+                  <p className="mt-2 text-sm font-semibold leading-7 text-[#526079]">{desc}</p>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
       <HomeBannersSlider banners={banners} />
 
-      <section
-        id="how"
-        dir="rtl"
-        className="relative overflow-hidden bg-[#0d4f6b] py-12 md:py-14"
-      >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(255,255,255,0.08),transparent_35%),radial-gradient(circle_at_100%_100%,rgba(255,255,255,0.06),transparent_30%)]" />
-        <div className="absolute -left-20 -top-24 h-80 w-80 rounded-full border border-white/5" />
-        <div className="absolute -right-16 -bottom-24 h-72 w-72 rounded-full border border-white/5" />
+      <section id="methodology" className="relative overflow-hidden bg-[#F5FBFF] px-6 py-24">
+        <div className="absolute -left-32 top-16 h-80 w-80 rounded-full bg-[#19C6D4]/10 blur-3xl" />
+        <div className="absolute -right-32 bottom-16 h-80 w-80 rounded-full bg-[#FFD54A]/20 blur-3xl" />
 
-        <div className="relative mx-auto flex max-w-[1200px] items-center justify-between gap-12 px-6 lg:px-8">
-          <div className="w-full max-w-[470px] text-right text-white">
-            <p className="mb-3 text-xl font-bold text-[#5fd0a4]">
-              منهجية واعي
-            </p>
-
-            <h2 className="text-3xl font-extrabold leading-[1.35] md:text-4xl">
-              منهجية متكاملة لنمو
-              <br />
-              طفلك من الداخل للخارج
+        <div className="relative mx-auto max-w-7xl">
+          <div className="mx-auto mb-14 max-w-3xl text-center">
+            <div className="mb-5 inline-flex rounded-full bg-white px-5 py-2 text-sm font-black text-[#0E9FAA] shadow-lg">
+              منهجية راشد
+            </div>
+            <h2 className="text-4xl font-black leading-[1.3] text-[#14224A] md:text-6xl">
+              منهجية تبني المهارة والقيمة بطريقة ممتعة
             </h2>
-
-            <div className="my-5 h-1 w-12 rounded-full bg-[#5fd0a4]" />
-
-            <p className="text-base font-semibold leading-8 text-white/90">
-              تعتمد على أربع ركائز أساسية تساعد الطفل على بناء
-              <br className="hidden md:block" />
-              وعي ذاتي قوي، وتنمية مهاراته، وتحقيق أفضل نسخة منه.
+            <p className="mx-auto mt-5 max-w-2xl text-lg font-semibold leading-9 text-[#526079]">
+              في راشد لا نقدم محتوى جامد؛ بل رحلة تفاعلية تجمع اللعب، القصة، التدريب، والمتابعة حتى يتعلم الطفل بسعادة وثقة.
             </p>
           </div>
 
-          <div className="grid flex-1 grid-cols-4 gap-4" dir="rtl">
-            {[
-              {
-                letter: "و",
-                title: "وعي",
-                desc: "تبني الوعي الذاتي لدى الطفل بمشاعره وأفكاره",
-                color: "bg-[#2d82b7]",
-                card: "from-[#f7fbff] to-[#eef7ff]",
-              },
-              {
-                letter: "ا",
-                title: "انتباه",
-                desc: "تنمي الانتباه والتركيز من خلال أنشطة ممتعة",
-                color: "bg-[#37b79e]",
-                card: "from-[#f3fffb] to-[#e8fbf7]",
-              },
-              {
-                letter: "ع",
-                title: "عمق",
-                desc: "تعمق الفهم والإدراك بمحتوى مناسب لعمر الطفل",
-                color: "bg-[#4ab66d]",
-                card: "from-[#f6fff8] to-[#ecfff1]",
-              },
-              {
-                letter: "ي",
-                title: "ينمو",
-                desc: "تحقق النمو والازدهار بنتائج قابلة للقياس.",
-                color: "bg-[#ffc107]",
-                card: "from-[#fff8dc] to-[#fff2bd]",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className={`min-h-[215px] rounded-[22px] bg-gradient-to-br ${item.card} px-6 py-6 text-center shadow-[0_16px_35px_rgba(0,0,0,0.18)]`}
-              >
-                <div
-                  className={`mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full ${item.color} text-2xl font-extrabold text-white shadow-lg`}
-                >
-                  {item.letter}
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {methodology.map((item) => (
+              <div key={item.title} className="group rounded-[2rem] border border-white bg-white p-6 shadow-[0_18px_45px_rgba(18,34,74,.08)] transition hover:-translate-y-2">
+                <div className={`mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} text-3xl text-white shadow-lg`}>
+                  {item.icon}
                 </div>
-
-                <h3 className="mb-3 text-2xl font-extrabold text-[#26364a]">
-                  {item.title}
-                </h3>
-
-                <p className="mx-auto max-w-[140px] text-sm font-semibold leading-7 text-[#1f2937]">
-                  {item.desc}
-                </p>
+                <h3 className="text-2xl font-black text-[#14224A]">{item.title}</h3>
+                <p className="mt-4 text-base font-semibold leading-8 text-[#526079]">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -307,86 +311,39 @@ export default async function LandingPage() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
-              <div className="mb-5 inline-flex rounded-full bg-[#E8F8F3] px-5 py-2 font-black text-[#42BFA8]">
-                برامج واعي
+              <div className="mb-5 inline-flex rounded-full bg-[#E8FBFD] px-5 py-2 font-black text-[#0E9FAA]">
+                برامج راشد
               </div>
-
-              <h2 className="text-5xl font-black text-[#0B4D6B]">
-                جرّب برامجنا التفاعلية
-              </h2>
+              <h2 className="text-4xl font-black text-[#14224A] md:text-5xl">جرّب برامجنا التفاعلية</h2>
             </div>
 
-            <Link
-              href="/programs"
-              className="group inline-flex items-center gap-3 rounded-full bg-white px-7 py-4 text-[#0B4D6B] shadow-[0_8px_25px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-[#42BFA8] hover:bg-[#42BFA8] hover:text-white"
-            >
+            <Link href="/child/programs" className="group inline-flex items-center gap-3 rounded-full bg-[#F5FBFF] px-7 py-4 text-[#14224A] shadow-lg transition hover:-translate-y-1 hover:bg-[#19C6D4] hover:text-white">
               <span className="text-base font-black">عرض كل البرامج</span>
-
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#F4FAF8] text-[#42BFA8] transition-all duration-300 group-hover:bg-white group-hover:text-[#42BFA8]">
-                ←
-              </div>
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#0E9FAA]">←</span>
             </Link>
           </div>
 
           {programs.length > 0 ? (
-            <div
-              className={`grid gap-6 ${
-                programs.length === 1
-                  ? "mx-auto max-w-[420px]"
-                  : programs.length === 2
-                  ? "mx-auto max-w-4xl md:grid-cols-2"
-                  : "sm:grid-cols-2 lg:grid-cols-3"
-              }`}
-            >
+            <div className={`grid gap-6 ${programs.length === 1 ? "mx-auto max-w-[420px]" : programs.length === 2 ? "mx-auto max-w-4xl md:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3"}`}>
               {programs.slice(0, 6).map((program) => (
-                <Link
-                  key={program.id}
-                  href={`/child/programs/${program.slug}`}
-                  className="overflow-hidden rounded-[2rem] border border-[#DDEDEA] bg-[#F9FFFD] shadow-xl shadow-teal-50 transition hover:-translate-y-2"
-                >
+                <Link key={program.id} href={`/child/programs/${program.slug}`} className="overflow-hidden rounded-[2rem] border border-[#E7F0F7] bg-white shadow-[0_18px_45px_rgba(18,34,74,.08)] transition hover:-translate-y-2">
                   {program.image_url ? (
-                    <img
-                      src={getFileUrl(program.image_url)}
-                      alt={program.title}
-                      className="h-44 w-full object-cover"
-                    />
+                    <img src={getFileUrl(program.image_url)} alt={program.title} className="h-44 w-full object-cover" />
                   ) : (
-                    <div className="h-44 bg-gradient-to-br from-[#42BFA8] to-[#D8F36A]" />
+                    <div className="h-44 bg-gradient-to-br from-[#19C6D4] via-[#8B5CF6] to-[#FFD54A]" />
                   )}
 
                   <div className="p-6">
                     <div className="mb-4 flex flex-wrap gap-2">
-                      {program.categories?.name && (
-                        <span className="rounded-full bg-[#D9F5EE] px-4 py-2 text-sm font-black text-[#0B4D6B]">
-                          {program.categories.name}
-                        </span>
-                      )}
-
-                      <span
-                        className={`rounded-full px-4 py-2 text-sm font-black ${
-                          program.access_type === "pro"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-green-100 text-green-700"
-                        }`}
-                      >
+                      {program.categories?.name && <span className="rounded-full bg-[#E8FBFD] px-4 py-2 text-sm font-black text-[#0E9FAA]">{program.categories.name}</span>}
+                      <span className={`rounded-full px-4 py-2 text-sm font-black ${program.access_type === "pro" ? "bg-yellow-100 text-yellow-700" : "bg-green-100 text-green-700"}`}>
                         {program.access_type === "pro" ? "👑 Pro" : "🟢 مجاني"}
                       </span>
                     </div>
-
-                    <h3 className="text-2xl font-black text-[#0B4D6B]">
-                      {program.title}
-                    </h3>
-
-                    {program.description && (
-                      <p className="mt-3 line-clamp-2 leading-7 text-[#6E7A99]">
-                        {program.description}
-                      </p>
-                    )}
-
-                    <div className="mt-6 inline-flex rounded-full bg-[#42BFA8] px-6 py-3 font-black text-white">
-                      {program.access_type === "pro"
-                        ? "مشاهدة التفاصيل"
-                        : "جرّب الآن"}
+                    <h3 className="text-2xl font-black text-[#14224A]">{program.title}</h3>
+                    {program.description && <p className="mt-3 line-clamp-2 leading-7 text-[#526079]">{program.description}</p>}
+                    <div className="mt-6 inline-flex rounded-full bg-[#19C6D4] px-6 py-3 font-black text-white">
+                      {program.access_type === "pro" ? "مشاهدة التفاصيل" : "جرّب الآن"}
                     </div>
                   </div>
                 </Link>
@@ -394,188 +351,81 @@ export default async function LandingPage() {
             </div>
           ) : (
             <div className="rounded-[2.5rem] border-2 border-dashed border-[#DDEDEA] bg-[#F9FFFD] p-12 text-center">
-              <h3 className="text-3xl font-black text-[#0B4D6B]">
-                لا توجد برامج منشورة حاليًا
-              </h3>
+              <h3 className="text-3xl font-black text-[#14224A]">لا توجد برامج منشورة حاليًا</h3>
             </div>
           )}
         </div>
       </section>
 
-      <section id="plans" className="bg-[#F4FAF8] px-6 py-24">
+      <section id="stories" className="bg-[#F5FBFF] px-6 py-24">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-2">
+          <div className="rounded-[2.5rem] bg-white p-8 shadow-[0_20px_60px_rgba(18,34,74,.08)]">
+            <img src="/images/gamestory.png" alt="عالم راشد" className="h-80 w-full rounded-[2rem] object-cover" />
+          </div>
+          <div>
+            <div className="mb-5 inline-flex rounded-full bg-white px-5 py-2 font-black text-[#8B5CF6] shadow-lg">القصص والألعاب</div>
+            <h2 className="text-4xl font-black leading-[1.35] text-[#14224A] md:text-5xl">كل نشاط داخل راشد مصمم ليعلّم الطفل قرارًا أو مهارة</h2>
+            <p className="mt-6 text-lg font-semibold leading-9 text-[#526079]">
+              القصص التفاعلية تجعل الطفل يعيش الموقف، والألعاب تحول التدريب إلى تجربة ممتعة قابلة للقياس والمتابعة.
+            </p>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              {[["🎭", "قصص بقرارات"], ["🧩", "ألعاب مهارات"], ["🔊", "أصوات موجهة"], ["🏆", "نتائج وتقدم"]].map(([icon, title]) => (
+                <div key={title} className="rounded-2xl bg-white p-5 text-lg font-black text-[#14224A] shadow-lg"><span className="ml-2">{icon}</span>{title}</div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="plans" className="bg-white px-6 py-24">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center">
-            <div className="mb-5 inline-flex rounded-full bg-[#D9F5EE] px-5 py-2 font-black text-[#0B4D6B]">
-              خطط الاشتراك
-            </div>
-
-            <h2 className="text-5xl font-black">
-              اختر الخطة المناسبة لطفلك
-            </h2>
-
-            <p className="mx-auto mt-5 max-w-2xl text-lg leading-9 text-[#6E7A99]">
-              خطط مرنة للأطفال، ويتم تعديل الأسعار والمميزات من لوحة التحكم.
-            </p>
+            <div className="mb-5 inline-flex rounded-full bg-[#E8FBFD] px-5 py-2 font-black text-[#0E9FAA]">خطط الاشتراك</div>
+            <h2 className="text-4xl font-black text-[#14224A] md:text-5xl">اختر الخطة المناسبة لطفلك</h2>
+            <p className="mx-auto mt-5 max-w-2xl text-lg leading-9 text-[#526079]">خطط مرنة للأطفال، ويتم تعديل الأسعار والمميزات من لوحة التحكم.</p>
           </div>
 
           {plans.length > 0 ? (
             <div className="grid gap-8 md:grid-cols-3">
               {plans.map((plan) => (
-                <div
-                  key={plan.id}
-                  className={`rounded-[2.5rem] p-8 shadow-xl transition hover:-translate-y-2 ${
-                    plan.is_featured
-                      ? "bg-[#0B4D6B] text-white"
-                      : "bg-white text-[#0B4D6B]"
-                  }`}
-                >
-                  {plan.is_featured && (
-                    <div className="mb-5 inline-flex rounded-full bg-[#D8F36A] px-4 py-2 text-sm font-black text-[#0B4D6B]">
-                      الأكثر اختيارًا
-                    </div>
-                  )}
-
+                <div key={plan.id} className={`rounded-[2.5rem] p-8 shadow-xl transition hover:-translate-y-2 ${plan.is_featured ? "bg-[#14224A] text-white" : "bg-[#F5FBFF] text-[#14224A]"}`}>
+                  {plan.is_featured && <div className="mb-5 inline-flex rounded-full bg-[#FFD54A] px-4 py-2 text-sm font-black text-[#14224A]">الأكثر اختيارًا</div>}
                   <h3 className="text-3xl font-black">{plan.name}</h3>
-
-                  {plan.description && (
-                    <p
-                      className={`mt-3 leading-7 ${
-                        plan.is_featured ? "text-white/70" : "text-[#6E7A99]"
-                      }`}
-                    >
-                      {plan.description}
-                    </p>
-                  )}
-
-                  <div className="mt-7 flex items-end gap-2">
-                    <span className="text-5xl font-black">{plan.price}</span>
-
-                    {plan.currency && (
-                      <span
-                        className={
-                          plan.is_featured ? "text-white/60" : "text-[#6E7A99]"
-                        }
-                      >
-                        {plan.currency}
-                        {plan.period ? ` / ${plan.period}` : ""}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="mt-8 space-y-4">
-                    {plan.features?.map((feature, index) => (
-                      <div
-                        key={`${feature}-${index}`}
-                        className="flex items-center gap-3 font-bold"
-                      >
-                        <span
-                          className={`flex h-7 w-7 items-center justify-center rounded-full ${
-                            plan.is_featured
-                              ? "bg-white/15 text-[#D8F36A]"
-                              : "bg-[#D9F5EE] text-[#42BFA8]"
-                          }`}
-                        >
-                          ✓
-                        </span>
-                        {feature}
-                      </div>
-                    ))}
-                  </div>
-
-                  <Link
-                    href={user ? "/dashboard" : "/register"}
-                    className={`mt-9 block w-full rounded-full py-4 text-center font-black ${
-                      plan.is_featured
-                        ? "bg-[#D8F36A] text-[#0B4D6B]"
-                        : "bg-[#42BFA8] text-white"
-                    }`}
-                  >
-                    {user ? "إدارة الاشتراك" : "ابدأ الآن"}
-                  </Link>
+                  {plan.description && <p className={`mt-3 leading-7 ${plan.is_featured ? "text-white/70" : "text-[#526079]"}`}>{plan.description}</p>}
+                  <div className="mt-7 flex items-end gap-2"><span className="text-5xl font-black">{plan.price}</span>{plan.currency && <span className={plan.is_featured ? "text-white/60" : "text-[#526079]"}>{plan.currency}{plan.period ? ` / ${plan.period}` : ""}</span>}</div>
+                  <div className="mt-8 space-y-4">{plan.features?.map((feature, index) => <div key={`${feature}-${index}`} className="flex items-center gap-3 font-bold"><span className={`flex h-7 w-7 items-center justify-center rounded-full ${plan.is_featured ? "bg-white/15 text-[#FFD54A]" : "bg-white text-[#19C6D4]"}`}>✓</span>{feature}</div>)}</div>
+                  <Link href={user ? "/dashboard" : "/register"} className={`mt-9 block w-full rounded-full py-4 text-center font-black ${plan.is_featured ? "bg-[#FFD54A] text-[#14224A]" : "bg-[#19C6D4] text-white"}`}>{user ? "إدارة الاشتراك" : "ابدأ الآن"}</Link>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="mx-auto max-w-3xl rounded-[2.5rem] border-2 border-dashed border-[#DDEDEA] bg-white p-12 text-center">
-              <h3 className="text-3xl font-black">لا توجد خطط مفعّلة حاليًا</h3>
-              <p className="mt-4 text-[#6E7A99]">
-                عند إضافة خطط من لوحة الإدارة ستظهر هنا تلقائيًا.
-              </p>
-            </div>
+            <div className="mx-auto max-w-3xl rounded-[2.5rem] border-2 border-dashed border-[#DDEDEA] bg-[#F5FBFF] p-12 text-center"><h3 className="text-3xl font-black">لا توجد خطط مفعّلة حاليًا</h3><p className="mt-4 text-[#526079]">عند إضافة خطط من لوحة الإدارة ستظهر هنا تلقائيًا.</p></div>
           )}
         </div>
       </section>
 
-      <section
-        id="contact"
-        className="bg-[#0B4D6B] px-6 py-24 text-center text-white"
-      >
-        <h2 className="text-5xl font-black">ابدأ رحلة طفلك اليوم 🌱</h2>
-
-        <p className="mx-auto mt-5 max-w-2xl text-xl leading-9 text-white/70">
-          انضم للأسر والمراكز التي تبني جيلًا واعيًا ومتوازنًا.
-        </p>
-
-        <div className="mt-10 flex justify-center gap-4">
-          <Link
-            href={user ? "/dashboard" : "/register"}
-            className="rounded-full bg-[#D8F36A] px-9 py-4 text-lg font-black text-[#0B4D6B]"
-          >
-            {user ? "لوحة التحكم" : "إنشاء حساب"}
-          </Link>
-
-          {!user && (
-            // <Link
-            //   href="/login"
-            //   className="rounded-full border border-white/30 px-9 py-4 text-lg font-black text-white"
-            // >
-            //   تسجيل الدخول
-            // </Link>
-
-            <LandingAuthActions />
-            
-          )}
+      <section className="relative overflow-hidden px-6 py-24 text-center text-white">
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/images/rashid-hero-bg.png')" }} />
+        <div className="absolute inset-0 bg-[#14224A]/60 backdrop-blur-[1px]" />
+        <div className="relative mx-auto max-w-4xl">
+          <img src="/images/logo-horrizental.png" alt="راشد" className="mx-auto mb-8 h-24 w-auto" />
+          <h2 className="text-4xl font-black md:text-6xl">ابدأ رحلة طفلك مع راشد اليوم</h2>
+          <p className="mx-auto mt-5 max-w-2xl text-xl leading-9 text-white/80">انضم لمنصة تجمع بين التعلم والمرح والمتابعة الذكية في مكان واحد.</p>
+          <div className="mt-10 flex justify-center gap-4"><Link href={user ? "/dashboard" : "/register"} className="rounded-full bg-[#FFD54A] px-9 py-4 text-lg font-black text-[#14224A]">{user ? "لوحة التحكم" : "إنشاء حساب"}</Link></div>
         </div>
       </section>
 
-      <footer className="bg-[#07384D] px-6 py-14 text-white">
+      <footer className="bg-[#101B3D] px-6 py-14 text-white">
         <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-4">
           <div>
-            <div className="flex items-center gap-3">
-              <img src="/images/logo.png" alt="واعي" className="h-16 w-auto" />
-              <h3 className="text-2xl font-black">واعي</h3>
-            </div>
-
-            <p className="mt-4 leading-8 text-white/60">
-              منصة تربوية صحية هادفة للأطفال، تبني جيلًا واعيًا ومتوازنًا.
-            </p>
+            <img src="/images/logo-horrizental.png" alt="راشد" className="mb-4 h-16 w-auto" />
+            <p className="leading-8 text-white/60">منصة تعليمية تفاعلية آمنة للأطفال، تبني المهارات والقيم بطريقة ممتعة.</p>
           </div>
-
-          <div>
-            <h4 className="mb-4 font-black">المنصة</h4>
-            <p className="mb-3 text-white/55">من نحن</p>
-            <p className="mb-3 text-white/55">البرامج</p>
-            <p className="mb-3 text-white/55">منهجية واعي</p>
-          </div>
-
-          <div>
-            <h4 className="mb-4 font-black">الحسابات</h4>
-            <p className="mb-3 text-white/55">ولي الأمر</p>
-            <p className="mb-3 text-white/55">الطفل</p>
-            <p className="mb-3 text-white/55">الأدمن</p>
-          </div>
-
-          <div>
-            <h4 className="mb-4 font-black">تواصل معنا</h4>
-            <p className="mb-3 text-white/55">info@waei.health</p>
-            <p className="mb-3 text-white/55">waeihealth@</p>
-            <p className="mb-3 text-white/55">+974 5030 6611</p>
-          </div>
+          <div><h4 className="mb-4 font-black">المنصة</h4><p className="mb-3 text-white/55">عن راشد</p><p className="mb-3 text-white/55">البرامج</p><p className="mb-3 text-white/55">منهجية راشد</p></div>
+          <div><h4 className="mb-4 font-black">الحسابات</h4><p className="mb-3 text-white/55">ولي الأمر</p><p className="mb-3 text-white/55">الطفل</p><p className="mb-3 text-white/55">الإدارة</p></div>
+          <div><h4 className="mb-4 font-black">تواصل معنا</h4><p className="mb-3 text-white/55">info@rashid.app</p><p className="mb-3 text-white/55">@rashid</p><p className="mb-3 text-white/55">+974 5030 6611</p></div>
         </div>
-
-        <div className="mx-auto mt-10 max-w-7xl border-t border-white/10 pt-6 text-sm text-white/40">
-          © 2026 منصة واعي — جميع الحقوق محفوظة
-        </div>
+        <div className="mx-auto mt-10 max-w-7xl border-t border-white/10 pt-6 text-sm text-white/40">© 2026 منصة راشد — جميع الحقوق محفوظة</div>
       </footer>
     </main>
   );

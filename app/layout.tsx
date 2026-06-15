@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "واعي",
+  title: "راشد",
   description: "منصة برامج تربوية تفاعلية للأطفال",
 };
 

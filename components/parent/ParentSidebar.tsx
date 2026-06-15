@@ -25,9 +25,9 @@ export default function ParentSidebar() {
   return (
     <aside className="sticky top-0 hidden h-screen w-[240px] shrink-0 overflow-y-auto border-l border-[#E6F1EE] bg-white px-5 py-6 lg:block">
       <Link href="/" className="mb-8 flex items-center gap-3">
-        <img src="/images/logo.png" alt="واعي" className="h-16 w-auto" />
+        <img src="/images/logo.png" alt="راشد" className="h-16 w-auto" />
         <div>
-          <h2 className="text-2xl font-black text-[#0B4D6B]">واعي</h2>
+          <h2 className="text-2xl font-black text-[#0B4D6B]">راشد</h2>
           <p className="text-xs font-black text-[#42BFA8]">لوحة ولي الأمر</p>
         </div>
       </Link>

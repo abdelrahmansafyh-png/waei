@@ -29,7 +29,7 @@ export default function ChildSidebar({ profile, activeHref = "/dashboard" }: Chi
 
       <Link href="/" className="relative mb-7 flex items-center justify-center">
         <div className="text-center">
-          <img src="/images/logo.png" alt="واعي" className="mx-auto h-20 w-auto brightness-0 invert" />
+          <img src="/images/logo.png" alt="راشد" className="mx-auto h-20 w-auto brightness-0 invert" />
           <p className="-mt-2 text-sm font-black text-white/85">عالم الطفل</p>
         </div>
       </Link>
@@ -42,7 +42,7 @@ export default function ChildSidebar({ profile, activeHref = "/dashboard" }: Chi
 
         <h3 className="mt-4 text-3xl font-black">{childName}</h3>
         <p className="mt-2 text-sm font-bold leading-7 text-white/85">
-          مستعد تكمل رحلة واعي اليوم؟
+          مستعد تكمل رحلة راشد اليوم؟
         </p>
       </div>
 

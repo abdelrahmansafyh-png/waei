@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabase";
 export default function AdminLoginPage() {
   const router = useRouter();
 
-  const [email, setEmail] = useState("admin@waei.com");
+  const [email, setEmail] = useState("admin@rashid.app");
   const [password, setPassword] = useState("123456");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -31,7 +31,7 @@ export default function AdminLoginPage() {
       return;
     }
 
-    localStorage.setItem("waei_admin", JSON.stringify(data));
+    localStorage.setItem("rashid_admin", JSON.stringify(data));
     router.push("/admin");
   }
 
@@ -39,12 +39,12 @@ export default function AdminLoginPage() {
     <main dir="rtl" className="min-h-screen bg-[#F4FAF8] flex items-center justify-center px-6">
       <div className="w-full max-w-md rounded-[2rem] bg-white p-8 shadow-2xl">
         <div className="mb-8 text-center">
-          <img src="/images/logo.png" alt="واعي" className="mx-auto h-24 w-auto" />
+          <img src="/images/logo.png" alt="راشد" className="mx-auto h-24 w-auto" />
           <h1 className="mt-4 text-3xl font-black text-[#0B4D6B]">
             دخول الأدمن
           </h1>
           <p className="mt-2 text-[#6E7A99]">
-            لوحة تحكم منصة واعي
+            لوحة تحكم منصة راشد
           </p>
         </div>
 
@@ -58,7 +58,7 @@ export default function AdminLoginPage() {
               className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none focus:border-[#42BFA8]"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@waei.com"
+              placeholder="admin@rashid.app"
             />
           </div>
 
