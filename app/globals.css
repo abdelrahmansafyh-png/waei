@@ -1,26 +1,5 @@
 @import "tailwindcss";
-
-:root {
-  --primary: #4F7DF3;
-  --primary-dark: #3563E9;
-
-  --sky: #DDF2FF;
-  --sky-2: #BEE7FF;
-
-  --green: #8EDB92;
-  --green-dark: #58B96A;
-
-  --purple: #B497FF;
-  --purple-dark: #8E6DF4;
-
-  --yellow: #FFD96A;
-
-  --text: #2D3A5F;
-  --text-light: #6E7A99;
-
-  --card: #FFFFFF;
-  --background: #F4FAFF;
-}
+@import "../styles/tokens.css";
 
 html,
 body {

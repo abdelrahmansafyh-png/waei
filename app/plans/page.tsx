@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import ParentLayout from "@/components/parent/ParentLayout";
-import ChildLayout from "@/components/dashboard/ChildLayout";
+import ChildLayout from "@/components/child/ChildLayout";
 
 type Profile = {
   id: string;

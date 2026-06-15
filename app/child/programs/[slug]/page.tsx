@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { getFileUrl } from "@/lib/files";
-import ChildLayout from "@/components/dashboard/ChildLayout";
-import { getChildAvatar, getChildName, isProActive } from "@/components/dashboard/childUtils";
+import ChildLayout from "@/components/child/ChildLayout";
+import { getChildAvatar, getChildName, isProActive } from "@/components/child/childUtils";
 
 type Program = {
   id: string;
@@ -35,6 +35,7 @@ type Content = {
   file_url: string | null;
   youtube_url: string | null;
   iframe_url: string | null;
+  game_folder?: string | null;
   sort_order: number;
 };
 
@@ -59,12 +60,49 @@ function icon(type: string) {
   return "📘";
 }
 
+function calculateXp(score: number, maxScore: number, percentage: number) {
+  if (maxScore > 0) return Math.max(0, score) * 10;
+  if (percentage >= 90) return 150;
+  if (percentage >= 70) return 120;
+  if (percentage > 0) return 100;
+  return 0;
+}
 
+function isPlayableContent(item: Content) {
+  return (
+    (item.content_type === "iframe" ||
+      item.content_type === "zip_game" ||
+      item.content_type === "interactive_story") &&
+    Boolean(item.iframe_url)
+  );
+}
+
+function isTimedExternalPlayableContent(item: Content | null | undefined) {
+  if (!item?.iframe_url) return false;
+  if (item.game_folder) return false;
+
+  const url = normalizeIframeUrl(item.iframe_url).toLowerCase();
+
+  // Wordwall / external iframe activities do not send game results.
+  // They are counted as completed after the child stays on their sub-tab for 25 seconds.
+  return item.content_type === "iframe" || url.includes("wordwall.net");
+}
+
+function getContentKind(contentType: string) {
+  if (contentType === "interactive_story" || contentType === "interactive_stories") return "story";
+  if (contentType === "iframe" || contentType === "zip_game") return "game";
+  return "content";
+}
 
 export default function ChildProgramPage() {
   const params = useParams();
+
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+
   const router = useRouter();
+  const searchParams = useSearchParams();
   const slug = params.slug as string;
+  const resumeContentId = searchParams.get("content") || "";
 
   const [profile, setProfile] = useState<any>(null);
   const [program, setProgram] = useState<Program | null>(null);
@@ -75,14 +113,16 @@ export default function ChildProgramPage() {
   const [gameResult, setGameResult] = useState<any>(null);
   const [gameAnswers, setGameAnswers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [finished, setFinished] = useState(false);
   const [fullscreenGame, setFullscreenGame] = useState<string | null>(null);
+  const [completedContentIds, setCompletedContentIds] = useState<string[]>([]);
 
   const startTimeRef = useRef<number>(Date.now());
+  const elapsedSecondsRef = useRef(0);
   const savedFinalRef = useRef(false);
 
   const selectedGameRef = useRef<Content | null>(null);
+  const externalIframeTimersRef = useRef<Record<string, number>>({});
 
   const proActive = isProActive(profile);
   const locked = program?.access_type === "pro" && !proActive;
@@ -95,14 +135,80 @@ export default function ChildProgramPage() {
   }, []);
 
   useEffect(() => {
-    startTimeRef.current = Date.now();
+    elapsedSecondsRef.current = elapsedSeconds;
+  }, [elapsedSeconds]);
 
-    const interval = setInterval(() => {
-      setElapsedSeconds(Math.floor((Date.now() - startTimeRef.current) / 1000));
+  useEffect(() => {
+    if (!profile?.id || !program?.id) return;
+
+    let cancelled = false;
+
+    (async () => {
+      const { data, error } = await supabase
+        .from("child_program_progress")
+        .select("elapsed_seconds")
+        .eq("child_profile_id", profile.id)
+        .eq("program_id", program.id)
+        .maybeSingle();
+
+      if (!cancelled && !error && typeof data?.elapsed_seconds === "number") {
+        setElapsedSeconds(data.elapsed_seconds);
+        elapsedSecondsRef.current = data.elapsed_seconds;
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [profile?.id, program?.id]);
+
+  useEffect(() => {
+    if (!profile?.id || !program?.id || finished) return;
+
+    const interval = window.setInterval(() => {
+      setElapsedSeconds((prev) => prev + 1);
     }, 1000);
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => window.clearInterval(interval);
+  }, [profile?.id, program?.id, finished]);
+
+  useEffect(() => {
+    if (!profile?.id || !program?.id) return;
+
+    const saveElapsed = async () => {
+      await supabase.from("child_program_progress").upsert(
+        {
+          child_profile_id: profile.id,
+          program_id: program.id,
+          elapsed_seconds: elapsedSecondsRef.current,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "child_profile_id,program_id" }
+      );
+    };
+
+    const interval = window.setInterval(saveElapsed, 10000);
+
+    const onBeforeUnload = () => {
+      void saveElapsed();
+    };
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        void saveElapsed();
+      }
+    };
+
+    window.addEventListener("beforeunload", onBeforeUnload);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    return () => {
+      window.clearInterval(interval);
+      void saveElapsed();
+      window.removeEventListener("beforeunload", onBeforeUnload);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [profile?.id, program?.id]);
 
   async function fetchPage() {
     setLoading(true);
@@ -168,7 +274,33 @@ export default function ChildProgramPage() {
     setTabs((tabsData as Tab[]) || []);
     setContents(contentData);
 
-    if (tabsData?.length) setActiveTab(tabsData[0].id);
+    const { data: progressData } = await supabase
+      .from("child_content_progress")
+      .select("content_id")
+      .eq("child_profile_id", profileData.id)
+      .eq("program_id", programData.id)
+      .eq("completed", true);
+
+    setCompletedContentIds(
+      Array.from(
+        new Set(
+          ((progressData || []) as any[])
+            .map((item) => item.content_id)
+            .filter(Boolean)
+        )
+      )
+    );
+
+    if (tabsData?.length) {
+      const resumeContent = resumeContentId
+        ? contentData.find((item) => item.id === resumeContentId)
+        : null;
+
+      setActiveTab(resumeContent?.tab_id || tabsData[0].id);
+      if (resumeContent && isPlayableContent(resumeContent)) {
+        setActiveGameId(resumeContent.id);
+      }
+    }
 
     setLoading(false);
   }
@@ -179,13 +311,13 @@ export default function ChildProgramPage() {
 
       if (!data || typeof data !== "object" || !data.type) return;
 
-      if (data.type === "WAEI_GAME_EVENT" && data.event === "question_snapshot") {
+      if (data.type === "RASHID_GAME_EVENT" && data.event === "question_snapshot") {
         if (Array.isArray(data.answers)) {
           setGameAnswers(data.answers);
         }
       }
 
-      if (data.type === "WAEI_GAME_RESULT") {
+      if (data.type === "RASHID_GAME_RESULT" || data.type === "WAEI_GAME_RESULT") {
         setGameResult(data);
 
         if (Array.isArray(data.answers)) {
@@ -202,26 +334,179 @@ export default function ChildProgramPage() {
   }, [profile, program]);
 
   async function saveAttempt(data: any) {
-    if (!profile?.id || !program?.id) return;
+    if (!profile?.id || !program?.id || !selectedGameRef.current?.id) return;
+
+    const content = selectedGameRef.current;
 
     try {
-      await supabase.from("game_attempts").insert({
-        child_profile_id: profile.id,
-        parent_profile_id: profile.parent_profile_id || null,
-        content_id: selectedGameRef.current?.id || null,
-        program_id: program.id,
-        score: data.score || 0,
-        max_score: data.maxScore || 0,
-        percentage: data.percentage || 0,
-        completed: true,
-        duration_seconds: Math.floor((Date.now() - startTimeRef.current) / 1000),
-        attempt_number: 1,
-        result: data,
-        answers: data.answers || [],
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const token = session?.access_token;
+
+      if (!token) {
+        console.error("save attempt/progress failed", "missing session token");
+        return;
+      }
+
+      const response = await fetch("/api/child/progress/result", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          program_id: program.id,
+          content_id: content.id,
+          content_type: content.content_type,
+          last_position: currentStepIndex,
+          duration_seconds: Math.floor((Date.now() - startTimeRef.current) / 1000),
+          result: data,
+          answers: data.answers || [],
+        }),
       });
+
+      const json = await response.json();
+
+      if (!response.ok || !json.success) {
+        console.error("save attempt/progress failed", json.message || json);
+        return;
+      }
+
+      setCompletedContentIds((prev) =>
+        prev.includes(content.id) ? prev : [...prev, content.id]
+      );
+
+      if (typeof json.total_xp === "number") {
+        setProfile((prev: any) => (prev ? { ...prev, xp: json.total_xp } : prev));
+      }
     } catch (err) {
-      console.error("save attempt failed", err);
+      console.error("save attempt/progress failed", err);
     }
+  }
+
+  async function saveCurrentPosition(nextContent?: Content | null) {
+    if (!profile?.id || !program?.id) return;
+
+    const content = nextContent || selectedGameRef.current || normalContents[0] || null;
+    if (!content?.id) return;
+
+    try {
+      await supabase.from("child_content_progress").upsert(
+        {
+          child_profile_id: profile.id,
+          program_id: program.id,
+          content_id: content.id,
+          content_type: getContentKind(content.content_type),
+          last_position: currentStepIndex,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "child_profile_id,content_id" }
+      );
+    } catch (err) {
+      console.error("save position failed", err);
+    }
+  }
+
+  async function markContentCompleted(content: Content | null | undefined) {
+    if (!profile?.id || !program?.id || !content?.id) return;
+
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const token = session?.access_token;
+
+      if (!token) {
+        console.error("mark content completed failed", "missing session token");
+        return;
+      }
+
+      const response = await fetch("/api/child/progress/result", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          program_id: program.id,
+          content_id: content.id,
+          content_type: content.content_type,
+          last_position: currentStepIndex,
+          duration_seconds: Math.floor((Date.now() - startTimeRef.current) / 1000),
+          result: {
+            type: "RASHID_PASSIVE_COMPLETION",
+            source: getContentKind(content.content_type),
+            completed: true,
+            score: 0,
+            maxScore: 0,
+            percentage: 0,
+          },
+          answers: [],
+        }),
+      });
+
+      const json = await response.json();
+
+      if (!response.ok || !json.success) {
+        console.error("mark content completed failed", json.message || json);
+        return;
+      }
+
+      setCompletedContentIds((prev) =>
+        prev.includes(content.id) ? prev : [...prev, content.id]
+      );
+
+      if (typeof json.total_xp === "number") {
+        setProfile((prev: any) => (prev ? { ...prev, xp: json.total_xp } : prev));
+      }
+    } catch (err) {
+      console.error("mark content completed failed", err);
+    }
+  }
+
+  function isAutoCompleteContent(item: Content) {
+    return ["text", "image", "images", "video", "youtube", "file", "files"].includes(
+      item.content_type
+    );
+  }
+
+  function markTabAutoContentsCompleted(tabId: string) {
+    const items = contents.filter(
+      (item) => item.tab_id === tabId && isAutoCompleteContent(item)
+    );
+
+    items.forEach((item) => {
+      if (!completedContentIds.includes(item.id)) {
+        markContentCompleted(item);
+      }
+    });
+  }
+
+  function getGameIframeSrc(game: Content | null | undefined) {
+    if (!game?.iframe_url) return "";
+
+    const baseUrl = normalizeIframeUrl(game.iframe_url);
+
+    // External iframe activities مثل Wordwall لا نضيف عليها game_data
+    // لأنها ممكن تخرب رابط النشاط. نخليها مثل ما هي.
+    if (game.content_type === "iframe" && !game.game_folder) {
+      return baseUrl;
+    }
+
+    // ألعاب وقصص راشد المرفوعة عندنا يكون معها game_folder،
+    // والـ game.json موجود داخل نفس فولدر اللعبة على السيرفر.
+    if (game.game_folder) {
+      const separator = baseUrl.includes("?") ? "&" : "?";
+      const folder = game.game_folder.replace(/\/$/, "");
+      const gameDataPath = `${folder}/game.json`;
+
+      return `${baseUrl}${separator}game_data=${encodeURIComponent(gameDataPath)}`;
+    }
+
+    return baseUrl;
   }
 
   const activeContents = useMemo(
@@ -231,11 +516,7 @@ export default function ChildProgramPage() {
 
   const iframeGames = useMemo(
     () =>
-      activeContents.filter(
-        (item) =>
-          (item.content_type === "iframe" || item.content_type === "zip_game" || item.content_type === "interactive_story") &&
-          item.iframe_url
-      ),
+      activeContents.filter(isPlayableContent),
     [activeContents]
   );
 
@@ -252,6 +533,28 @@ export default function ChildProgramPage() {
 
   selectedGameRef.current = selectedGame || null;
 
+  useEffect(() => {
+    if (!activeTab) return;
+    markTabAutoContentsCompleted(activeTab);
+  }, [activeTab, contents, profile?.id, program?.id]);
+
+  useEffect(() => {
+    // الألعاب/القصص/الأنشطة الفرعية الخارجية مثل Wordwall لا ترسل نتيجة.
+    // لذلك إذا بقي الطفل داخل نفس التاب الفرعي 25 ثانية نحسبه مكتمل.
+    // ألعاب راشد الداخلية التي لديها game_folder تبقى تعتمد على RASHID_GAME_RESULT فقط.
+    if (!selectedGame) return;
+    if (!isTimedExternalPlayableContent(selectedGame)) return;
+    if (completedContentIds.includes(selectedGame.id)) return;
+    if (externalIframeTimersRef.current[selectedGame.id]) return;
+
+    const contentToComplete = selectedGame;
+
+    externalIframeTimersRef.current[contentToComplete.id] = window.setTimeout(() => {
+      markContentCompleted(contentToComplete);
+      delete externalIframeTimersRef.current[contentToComplete.id];
+    }, 25000);
+  }, [selectedGame?.id, completedContentIds.join("|")]);
+
   const activeIndex = tabs.findIndex((x) => x.id === activeTab);
 
   const isLastTab = activeIndex === tabs.length - 1;
@@ -260,23 +563,49 @@ export default function ChildProgramPage() {
     (game) => game.id === selectedGame?.id
   );
 
+  const activeTabTitle = tabs.find((t) => t.id === activeTab)?.title;
+
   const hasGames = iframeGames.length > 0;
   const isLastGame = !hasGames || selectedGameIndex === iframeGames.length - 1;
   const isEndStep = isLastTab && isLastGame;
 
+  function isTabCompleted(tabId: string) {
+    const tabContentIds = contents
+      .filter((item) => item.tab_id === tabId)
+      .map((item) => item.id);
+
+    return (
+      tabContentIds.length > 0 &&
+      tabContentIds.every((id) => completedContentIds.includes(id))
+    );
+  }
+
+  const totalProgramContents = contents.length;
+  const completedProgramContents = contents.filter((item) =>
+    completedContentIds.includes(item.id)
+  ).length;
+
+  const canFinishProgram =
+    totalProgramContents > 0 &&
+    completedProgramContents === totalProgramContents;
+
+  const missingProgramContents = contents.filter(
+    (item) => !completedContentIds.includes(item.id)
+  );
+
   useEffect(() => {
     const games = contents.filter(
-      (item) =>
-        item.tab_id === activeTab &&
-        (item.content_type === "iframe" || item.content_type === "zip_game" || item.content_type === "interactive_story") &&
-        item.iframe_url
+      (item) => item.tab_id === activeTab && isPlayableContent(item)
     );
 
     setGameResult(null);
     setGameAnswers([]);
 
     if (games.length > 0) {
-      setActiveGameId(games[0].id);
+      const resumeGame = resumeContentId
+        ? games.find((game) => game.id === resumeContentId)
+        : null;
+      setActiveGameId(resumeGame?.id || games[0].id);
     } else {
       setActiveGameId("");
     }
@@ -290,12 +619,7 @@ export default function ChildProgramPage() {
   }
 
   function getTabGamesCount(tabId: string) {
-    return contents.filter(
-      (item) =>
-        item.tab_id === tabId &&
-        (item.content_type === "iframe" || item.content_type === "zip_game" || item.content_type === "interactive_story") &&
-        item.iframe_url
-    ).length;
+    return contents.filter((item) => item.tab_id === tabId && isPlayableContent(item)).length;
   }
 
   const totalSteps = useMemo(() => {
@@ -336,10 +660,20 @@ export default function ChildProgramPage() {
   async function finishProgram() {
     if (savedFinalRef.current) return;
 
+    if (!canFinishProgram) {
+      const firstMissing = missingProgramContents[0];
+      alert(
+        firstMissing?.title
+          ? `أكمل "${firstMissing.title}" أولًا 🌟`
+          : "أكمل كل الدروس والأنشطة أولًا 🌟"
+      );
+      return;
+    }
+
     savedFinalRef.current = true;
     setFinished(true);
 
-    const duration = Math.floor((Date.now() - startTimeRef.current) / 1000);
+    const duration = elapsedSecondsRef.current;
 
     if (profile?.id && program?.id) {
       await supabase.from("game_attempts").insert({
@@ -371,7 +705,9 @@ export default function ChildProgramPage() {
     if (!tabs.length) return;
 
     if (hasGames && !isLastGame) {
-      setActiveGameId(iframeGames[selectedGameIndex + 1].id);
+      const nextGame = iframeGames[selectedGameIndex + 1];
+      saveCurrentPosition(nextGame);
+      setActiveGameId(nextGame.id);
       return;
     }
 
@@ -381,6 +717,8 @@ export default function ChildProgramPage() {
     }
 
     const next = activeIndex + 1;
+    markTabAutoContentsCompleted(activeTab);
+    saveCurrentPosition();
     setActiveTab(tabs[next].id);
   }
 
@@ -388,11 +726,15 @@ export default function ChildProgramPage() {
     if (!tabs.length) return;
 
     if (hasGames && selectedGameIndex > 0) {
-      setActiveGameId(iframeGames[selectedGameIndex - 1].id);
+      const prevGame = iframeGames[selectedGameIndex - 1];
+      saveCurrentPosition(prevGame);
+      setActiveGameId(prevGame.id);
       return;
     }
 
     const prev = activeIndex - 1 < 0 ? 0 : activeIndex - 1;
+    markTabAutoContentsCompleted(activeTab);
+    saveCurrentPosition();
     setActiveTab(tabs[prev].id);
   }
 
@@ -638,6 +980,20 @@ export default function ChildProgramPage() {
                 cursor: pointer;
               }
 
+              .tab-done-check {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 20px;
+                height: 20px;
+                margin-inline-start: 6px;
+                border-radius: 999px;
+                background: #22c55e;
+                color: white;
+                font-size: 13px;
+                font-weight: 900;
+              }
+
               .tab-btn.active {
                 background: linear-gradient(135deg, #8b5cf6, #6847f5);
                 color: white;
@@ -770,6 +1126,26 @@ export default function ChildProgramPage() {
               .game-tab.active {
                 background: linear-gradient(135deg, #8b5cf6, #6847f5);
                 color: white;
+              }
+
+              .game-done-check {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 20px;
+                height: 20px;
+                margin-inline-start: 6px;
+                border-radius: 999px;
+                background: #22c55e;
+                color: white;
+                font-size: 13px;
+                font-weight: 900;
+                vertical-align: middle;
+              }
+
+              .game-tab.active .game-done-check {
+                background: white;
+                color: #16a34a;
               }
 
               .game-player-shell {
@@ -935,7 +1311,7 @@ export default function ChildProgramPage() {
                 font-size: 13px;
                 font-weight: 900;
                 background: #eef7ff;
-                color: #0B4D6B;
+                color: #0E9FAA;
               }
 
               .answer-pill.ok {
@@ -952,7 +1328,7 @@ export default function ChildProgramPage() {
                 font-size: 22px;
                 line-height: 1.8;
                 font-weight: 900;
-                color: #0B4D6B;
+                color: #0E9FAA;
               }
 
               .selected-answer-box {
@@ -1051,7 +1427,7 @@ export default function ChildProgramPage() {
               .pro-lock-title {
                 font-size: 28px;
                 font-weight: 900;
-                color: #0B4D6B;
+                color: #0E9FAA;
               }
 
               .pro-lock-text {
@@ -1065,7 +1441,7 @@ export default function ChildProgramPage() {
               .pro-lock-link {
                 display: inline-flex;
                 margin-top: 18px;
-                background: #0B4D6B;
+                background: #0E9FAA;
                 color: white;
                 text-decoration: none;
                 padding: 16px 28px;
@@ -1075,42 +1451,233 @@ export default function ChildProgramPage() {
 
               @media (max-width: 900px) {
                 .preview-page {
-                  padding: 14px;
+                  padding: 10px;
+                  font-family: Arial, sans-serif;
                 }
 
+                .preview-shell {
+                  max-width: 100%;
+                }
+
+                /* الموبايل: لا نخلي كروت الطفل/التقدم/الوقت تاخذ شاشة كاملة */
                 .top-bar {
-                  flex-direction: column;
-                  align-items: stretch;
+                  position: sticky;
+                  top: 0;
+                  z-index: 50;
+                  display: grid;
+                  grid-template-columns: 1fr 1fr 1fr;
+                  gap: 10px;
+                  margin: -2px -2px 12px;
+                  padding: 8px;
+                  border-radius: 0 0 26px 26px;
+                  background: rgba(245, 251, 255, .86);
+                  backdrop-filter: blur(14px);
+                  -webkit-backdrop-filter: blur(14px);
+                  box-shadow: 0 10px 26px rgba(20,34,74,.08);
                 }
 
                 .child-card {
+                  min-width: 0;
                   justify-content: center;
+                  gap: 8px;
+                  padding: 10px 12px;
+                  border-radius: 22px;
+                  box-shadow: 0 8px 20px rgba(62,87,120,.09);
+                }
+
+                .child-card:nth-child(1) {
+                  grid-column: 1 / -1;
+                  justify-content: space-between;
+                  padding-inline: 14px;
+                }
+
+                .child-card:nth-child(2),
+                .child-card:nth-child(3),
+                .top-btn {
+                  min-height: 78px;
+                }
+
+                .avatar-emoji {
+                  width: 50px;
+                  height: 50px;
+                  font-size: 32px;
+                  flex: 0 0 auto;
+                }
+
+                .child-name {
+                  font-size: 16px;
+                  line-height: 1.25;
+                }
+
+                .xp {
+                  font-size: 14px;
+                  line-height: 1.35;
+                }
+
+                .xp-bar {
+                  width: 100px;
+                  height: 8px;
+                  margin-top: 6px;
+                }
+
+                .top-btn {
+                  grid-column: auto;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  padding: 10px 8px;
+                  border-radius: 20px;
+                  text-align: center;
+                  font-size: 14px;
+                  line-height: 1.5;
+                }
+
+                .preview-badge {
+                  display: none;
+                }
+
+                .hero {
+                  border-radius: 28px;
+                  padding: 14px;
+                  box-shadow: 0 12px 30px rgba(62,87,120,.10);
                 }
 
                 .hero-inner {
                   grid-template-columns: 1fr;
+                  gap: 14px;
+                }
+
+                .age-pill {
+                  display: inline-flex;
+                  margin-bottom: 10px;
+                  padding: 8px 14px;
+                  font-size: 13px;
                 }
 
                 .hero-title {
-                  font-size: 38px;
+                  font-size: 30px;
                   text-align: center;
+                  line-height: 1.35;
                 }
 
                 .hero-desc {
                   text-align: center;
-                  font-size: 18px;
+                  font-size: 16px;
+                  line-height: 1.9;
+                  margin-top: 10px;
                 }
 
                 .stats {
-                  grid-template-columns: 1fr;
+                  grid-template-columns: repeat(3, 1fr);
+                  gap: 8px;
+                  margin-top: 16px;
+                }
+
+                .stat {
+                  border-radius: 20px;
+                  padding: 12px 6px;
+                }
+
+                .stat-icon {
+                  font-size: 24px;
+                }
+
+                .stat-label {
+                  font-size: 11px;
+                }
+
+                .stat-value {
+                  font-size: 12px;
+                  line-height: 1.35;
+                }
+
+                .hero-image-wrap {
+                  padding: 8px;
+                  border-radius: 24px;
                 }
 
                 .hero-image {
-                  height: 250px;
+                  height: 190px;
+                  border-radius: 18px;
+                }
+
+                .tabs-panel {
+                  margin-top: 14px;
+                  border-radius: 28px;
+                  padding: 12px;
+                }
+
+                .tabs-row {
+                  gap: 10px;
+                  padding: 4px 2px 14px;
+                  margin-bottom: 12px;
+                  scroll-snap-type: x mandatory;
+                }
+
+                .tab-btn {
+                  padding: 12px 16px;
+                  border-radius: 18px;
+                  font-size: 15px;
+                  scroll-snap-align: start;
+                }
+
+                .tab-btn.active::after {
+                  bottom: -7px;
+                  width: 14px;
+                  height: 14px;
+                }
+
+                .content-list {
+                  gap: 14px;
+                }
+
+                .content-card {
+                  border-radius: 26px;
+                  padding: 16px;
+                }
+
+                .content-title {
+                  font-size: 24px;
+                  margin-bottom: 14px;
+                  line-height: 1.45;
                 }
 
                 .text-content {
                   grid-template-columns: 1fr;
+                  gap: 0;
+                }
+
+                .text-body {
+                  font-size: 17px;
+                  line-height: 2;
+                  text-align: center;
+                }
+
+                .media-wrap {
+                  padding: 8px;
+                  border-radius: 24px;
+                }
+
+                .media-image {
+                  max-height: 230px;
+                  border-radius: 18px;
+                }
+
+                .video-frame {
+                  border-radius: 18px;
+                }
+
+                .game-tabs {
+                  gap: 9px;
+                  padding-bottom: 12px;
+                  margin-bottom: 12px;
+                }
+
+                .game-tab {
+                  max-width: 150px;
+                  border-radius: 16px;
+                  padding: 12px 16px;
+                  font-size: 14px;
                 }
 
                 .game-player-desktop {
@@ -1123,10 +1690,27 @@ export default function ChildProgramPage() {
 
                 .game-player-mobile-preview {
                   display: block;
+                  border-radius: 24px;
+                }
+
+                .game-player-mobile-overlay {
+                  font-size: 24px;
+                }
+
+                .game-player-mobile-overlay span {
+                  padding: 14px 24px;
+                  box-shadow: 0 8px 0 #4c34c9, 0 14px 28px rgba(76,52,201,.30);
                 }
 
                 .bottom-nav {
+                  position: sticky;
+                  bottom: 8px;
+                  z-index: 40;
                   gap: 10px;
+                  margin-top: 14px;
+                  border-radius: 24px;
+                  padding: 10px;
+                  box-shadow: 0 -10px 28px rgba(62,87,120,.11);
                 }
 
                 .dots {
@@ -1135,10 +1719,43 @@ export default function ChildProgramPage() {
 
                 .nav-btn {
                   flex: 1;
-                  padding: 15px 14px;
+                  padding: 13px 12px;
+                  font-size: 15px;
+                }
+
+                .answers-report {
+                  gap: 12px;
+                }
+
+                .answer-card {
+                  border-radius: 22px;
+                  padding: 14px;
+                }
+
+                .answer-head {
+                  flex-direction: column;
+                  align-items: stretch;
+                }
+
+                .answer-question {
+                  font-size: 18px;
+                  text-align: center;
+                }
+
+                .selected-answer-box {
+                  font-size: 15px;
+                  line-height: 1.8;
                 }
               }
-            `}</style>
+
+
+                .nav-btn.next.disabled {
+                  opacity: 0.55;
+                  cursor: not-allowed;
+                  filter: grayscale(0.25);
+                  transform: none !important;
+                }
+              `}</style>
 
             <div className="preview-shell">
               <header className="top-bar">
@@ -1175,7 +1792,7 @@ export default function ChildProgramPage() {
                 </div>
 
                 <Link href="/dashboard" className="top-btn">
-                  عودة للخلف ←
+                  رجوع ←
                 </Link>
 
                 {/* <div className="preview-badge">
@@ -1264,12 +1881,12 @@ export default function ChildProgramPage() {
                           {tabs.map((tab) => (
                             <button
                               key={tab.id}
-                              onClick={() => setActiveTab(tab.id)}
+                              onClick={() => { markTabAutoContentsCompleted(activeTab); saveCurrentPosition(); setActiveTab(tab.id); }}
                               className={`tab-btn ${
                                 activeTab === tab.id ? "active" : ""
                               }`}
                             >
-                              {icon(tab.type)} {tab.title}
+                              {icon(tab.type)} {tab.title} {isTabCompleted(tab.id) ? <span className="tab-done-check">✓</span> : null}
                             </button>
                           ))}
                         </div>
@@ -1369,9 +1986,13 @@ export default function ChildProgramPage() {
                               <article className="content-card" style={{ overflow: "hidden" }}>
                                
                                 <h2 className="content-title">
-                                  {tabs.find((t) => t.id === activeTab)?.title === "الأنشطة"
+
+                                  {activeTabTitle === "الأنشطة"
                                     ? "أنشطة البرنامج ✨"
+                                    : activeTabTitle === "التعلم بالقصص"
+                                    ? "قصص البرنامج 🎭"
                                     : "ألعاب البرنامج 🎮"}
+                                                                      
                                 </h2>
 
                                 <div
@@ -1384,7 +2005,7 @@ export default function ChildProgramPage() {
                                   {iframeGames.map((game, index) => (
                                     <button
                                       key={game.id}
-                                      onClick={() => setActiveGameId(game.id)}
+                                      onClick={() => { saveCurrentPosition(game); setActiveGameId(game.id); }}
                                       className={`game-tab ${
                                         selectedGame?.id === game.id
                                           ? "active"
@@ -1392,6 +2013,9 @@ export default function ChildProgramPage() {
                                       }`}
                                     >
                                       {game.content_type === "interactive_story" ? "🎭" : "🎮"} {game.title || `لعبة ${index + 1}`}
+                                      {completedContentIds.includes(game.id) ? (
+                                        <span className="game-done-check">✓</span>
+                                      ) : null}
                                     </button>
                                   ))}
                                 </div>
@@ -1405,9 +2029,7 @@ export default function ChildProgramPage() {
                                             type="button"
                                             className="desktop-fullscreen-btn"
                                             onClick={() =>
-                                              setFullscreenGame(
-                                                normalizeIframeUrl(selectedGame.iframe_url || "")
-                                              )
+                                              setFullscreenGame(getGameIframeSrc(selectedGame))
                                             }
                                             aria-label="فتح اللعبة على كامل الشاشة"
                                             title="كامل الشاشة"
@@ -1416,9 +2038,7 @@ export default function ChildProgramPage() {
                                           </button>
 
                                           <iframe
-                                            src={normalizeIframeUrl(
-                                              selectedGame.iframe_url
-                                            )}
+                                            src={getGameIframeSrc(selectedGame)}
                                             
                                             className="game-player-iframe"
                                             allowFullScreen
@@ -1430,15 +2050,13 @@ export default function ChildProgramPage() {
                                       <div
                                         className="game-player-mobile-preview"
                                         onClick={() =>
-                                          setFullscreenGame(
-                                            normalizeIframeUrl(selectedGame.iframe_url || "")
-                                          )
+                                          setFullscreenGame(getGameIframeSrc(selectedGame))
                                         }
                                         role="button"
                                         tabIndex={0}
                                       >
                                         <iframe
-                                          src={normalizeIframeUrl(selectedGame.iframe_url)}
+                                          src={getGameIframeSrc(selectedGame)}
                                           className="game-player-mobile-preview-frame"
                                           allowFullScreen
                                           allow="fullscreen; autoplay; clipboard-write; encrypted-media"
@@ -1455,7 +2073,7 @@ export default function ChildProgramPage() {
                                         style={{
                                           marginTop: 20,
                                           background: "#E9FFF7",
-                                          border: "2px solid #42BFA8",
+                                          border: "2px solid #0E9FAA",
                                           borderRadius: 24,
                                           padding: 20,
                                           fontWeight: 900,
@@ -1484,7 +2102,7 @@ export default function ChildProgramPage() {
                                             <div
                                               style={{
                                                 fontSize: 26,
-                                                color: "#0B4D6B",
+                                                color: "#0E9FAA",
                                               }}
                                             >
                                               {gameResult.score ?? 0}
@@ -1505,7 +2123,7 @@ export default function ChildProgramPage() {
                                             <div
                                               style={{
                                                 fontSize: 26,
-                                                color: "#0B4D6B",
+                                                color: "#0E9FAA",
                                               }}
                                             >
                                               {gameResult.maxScore ?? "-"}
@@ -1526,7 +2144,7 @@ export default function ChildProgramPage() {
                                             <div
                                               style={{
                                                 fontSize: 26,
-                                                color: "#0B4D6B",
+                                                color: "#0E9FAA",
                                               }}
                                             >
                                               {gameResult.percentage ?? 0}%
@@ -1627,9 +2245,25 @@ export default function ChildProgramPage() {
                       ))}
                     </div>
 
-                    <button onClick={nextTab} className="nav-btn next">
+                    <button
+                      onClick={nextTab}
+                      disabled={isEndStep && !canFinishProgram}
+                      title={
+                        isEndStep && !canFinishProgram
+                          ? `باقي ${Math.max(
+                              totalProgramContents - completedProgramContents,
+                              0
+                            )} محتوى لإكمال البرنامج`
+                          : undefined
+                      }
+                      className={`nav-btn next ${
+                        isEndStep && !canFinishProgram ? "disabled" : ""
+                      }`}
+                    >
                       {isEndStep
-                        ? "إنهاء البرنامج 🎉"
+                        ? canFinishProgram
+                          ? "إنهاء البرنامج 🎉"
+                          : `أكمل الباقي (${completedProgramContents}/${totalProgramContents})`
                         : hasGames && !isLastGame
                         ? "اللعبة التالية 🎮"
                         : "التالي →"}
@@ -1662,3 +2296,7 @@ export default function ChildProgramPage() {
     </ChildLayout>
   );
 }
+
+// RASHID_MOBILE_CHILD_PROGRAM_FIXED
+
+// RASHID_MOBILE_BACK_BUTTON_THIRD_ITEM

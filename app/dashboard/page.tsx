@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
-import ChildDashboard from "@/components/dashboard/ChildDashboard";
+import ChildDashboard from "@/components/child/ChildDashboard";
 import ParentDashboard from "@/components/parent/ParentDashboard";
 
 export default function DashboardPage() {

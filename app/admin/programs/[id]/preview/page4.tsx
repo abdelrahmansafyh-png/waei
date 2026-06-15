@@ -82,7 +82,7 @@ export default function ProgramPreviewPage({
 
       if (!data || typeof data !== "object" || !data.type) return;
 
-      if (data.type === "WAEI_GAME_RESULT") {
+      if (data.type === "RASHID_GAME_RESULT") {
         setGameResult(data);
       }
     }

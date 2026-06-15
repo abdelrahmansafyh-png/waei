@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { getFileUrl } from "@/lib/files";
-import ChildLayout from "@/components/dashboard/ChildLayout";
-import { getChildAvatar, getChildName, isProActive } from "@/components/dashboard/childUtils";
+import ChildLayout from "@/components/child/ChildLayout";
+import { getChildAvatar, getChildName, isProActive } from "@/components/child/childUtils";
 
 type Program = {
   id: string;
@@ -24,6 +24,7 @@ type Program = {
 type Attempt = {
   id: string;
   program_id: string | null;
+  content_id: string | null;
   completed: boolean;
   percentage: number | null;
   created_at: string;
@@ -81,7 +82,7 @@ export default function ChildProgramsPage() {
 
     const { data: attemptsData } = await supabase
       .from("game_attempts")
-      .select("id,program_id,completed,percentage,created_at")
+      .select("id,program_id,content_id,completed,percentage,created_at")
       .eq("child_profile_id", profileData.id)
       .eq("completed", true)
       .order("created_at", { ascending: false });
@@ -92,7 +93,16 @@ export default function ChildProgramsPage() {
   }
 
   function isProgramCompleted(programId: string) {
-    return attempts.some((a) => a.program_id === programId && a.completed);
+    // إكمال لعبة/قصة لا يعني أن البرنامج اكتمل.
+    // البرنامج يعتبر مكتمل فقط عند وجود محاولة إنهاء البرنامج:
+    // content_id = null و percentage = 100
+    return attempts.some(
+      (a) =>
+        a.program_id === programId &&
+        a.completed &&
+        a.content_id === null &&
+        (a.percentage || 0) >= 100
+    );
   }
 
   function getBestScore(programId: string) {
@@ -117,10 +127,10 @@ export default function ChildProgramsPage() {
           
         >
           <div className="mx-auto max-w-7xl">
-            <header className="mb-8 rounded-[2.8rem] border border-white/40 bg-white/88 p-7 shadow-[0_22px_70px_rgba(62,87,120,.18)] backdrop-blur-xl">
+            <header className="mb-8 rounded-[2.8rem] border border-white/40 bg-white/90 p-7 shadow-[0_22px_70px_rgba(62,87,120,.18)] backdrop-blur-xl">
               <div className="flex flex-wrap items-center justify-between gap-5">
                 <div>
-                  <div className="mb-3 inline-flex rounded-full bg-[#E8F8F3] px-5 py-2 font-black text-[#42BFA8]">
+                  <div className="mb-3 inline-flex rounded-full bg-[#E8F8F3] px-5 py-2 font-black text-[#0E9FAA]">
                     برامج راشد 🗺️
                   </div>
 
@@ -149,7 +159,7 @@ export default function ChildProgramsPage() {
               <section className="mb-8 rounded-[2.5rem] border border-[#F4E7A2] bg-[#FFF8D9]/95 p-6 shadow-[0_16px_40px_rgba(216,180,60,0.12)]">
                 <div className="flex flex-wrap items-center justify-between gap-5">
                   <div>
-                    <h2 className="text-3xl font-black text-[#0B4D6B]">
+                    <h2 className="text-3xl font-black text-[#0E9FAA]">
                       فعّل اشتراكك للوصول إلى برامج Pro 👑
                     </h2>
                     <p className="mt-3 max-w-2xl font-bold leading-8 text-[#7A6B22]">
@@ -159,7 +169,7 @@ export default function ChildProgramsPage() {
 
                   <Link
                     href="/plans"
-                    className="rounded-full bg-[#0B4D6B] px-8 py-4 font-black text-white shadow-lg transition hover:-translate-y-1"
+                    className="rounded-full bg-[#0E9FAA] px-8 py-4 font-black text-white shadow-lg transition hover:-translate-y-1"
                   >
                     مشاهدة الخطط والاشتراكات
                   </Link>
@@ -202,27 +212,27 @@ export default function ChildProgramsPage() {
                               }`}
                             />
                           ) : (
-                            <div className="flex h-44 items-center justify-center bg-gradient-to-br from-[#42BFA8] to-[#D8F36A] text-7xl">
+                            <div className="flex h-44 items-center justify-center bg-gradient-to-br from-[#0E9FAA] to-[#D8F36A] text-7xl">
                               🧠
                             </div>
                           )}
 
                           {completed && (
-                            <div className="absolute left-4 top-4 rounded-full bg-[#42BFA8] px-4 py-2 text-sm font-black text-white shadow-lg">
+                            <div className="absolute left-4 top-4 rounded-full bg-[#0E9FAA] px-4 py-2 text-sm font-black text-white shadow-lg">
                               تم الانتهاء ✅
                             </div>
                           )}
 
                           {locked && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-[#0B4D6B]/35 backdrop-blur-[1px]">
-                              <div className="rounded-2xl bg-white px-5 py-3 text-center font-black text-[#0B4D6B] shadow-xl">
+                            <div className="absolute inset-0 flex items-center justify-center bg-[#0E9FAA]/35 backdrop-blur-[1px]">
+                              <div className="rounded-2xl bg-white px-5 py-3 text-center font-black text-[#0E9FAA] shadow-xl">
                                 فعّل اشتراكك للدخول 🔒
                               </div>
                             </div>
                           )}
 
                           {bestScore !== null && (
-                            <div className="absolute bottom-4 right-4 rounded-full bg-white/95 px-4 py-2 text-sm font-black text-[#0B4D6B] shadow-lg">
+                            <div className="absolute bottom-4 right-4 rounded-full bg-white/95 px-4 py-2 text-sm font-black text-[#0E9FAA] shadow-lg">
                               أفضل نتيجة {bestScore}%
                             </div>
                           )}
@@ -231,7 +241,7 @@ export default function ChildProgramsPage() {
                         <div className="p-6">
                           <div className="mb-4 flex flex-wrap gap-2">
                             {program.categories?.name && (
-                              <span className="rounded-full bg-[#D9F5EE] px-4 py-2 text-sm font-black text-[#0B4D6B]">
+                              <span className="rounded-full bg-[#D9F5EE] px-4 py-2 text-sm font-black text-[#0E9FAA]">
                                 {program.categories.name}
                               </span>
                             )}
@@ -253,7 +263,7 @@ export default function ChildProgramsPage() {
                             </span>
                           </div>
 
-                          <h3 className="text-2xl font-black text-[#0B4D6B]">
+                          <h3 className="text-2xl font-black text-[#0E9FAA]">
                             {program.title}
                           </h3>
 
@@ -269,14 +279,14 @@ export default function ChildProgramsPage() {
                         {locked ? (
                           <Link
                             href="/plans"
-                            className="block rounded-full bg-[#0B4D6B] px-6 py-3 text-center font-black text-white transition hover:-translate-y-1"
+                            className="block rounded-full bg-[#0E9FAA] px-6 py-3 text-center font-black text-white transition hover:-translate-y-1"
                           >
                             فعّل اشتراكك
                           </Link>
                         ) : (
                           <Link
                             href={`/child/programs/${program.slug}`}
-                            className="inline-flex rounded-full bg-[#42BFA8] px-6 py-3 font-black text-white transition group-hover:bg-[#0B4D6B]"
+                            className="inline-flex rounded-full bg-[#0E9FAA] px-6 py-3 font-black text-white transition group-hover:bg-[#0E9FAA]"
                           >
                             {completed ? "إعادة البرنامج" : "ابدأ الآن"}
                           </Link>
@@ -288,7 +298,7 @@ export default function ChildProgramsPage() {
               </div>
             ) : (
               <div className="rounded-[2.5rem] border-2 border-dashed border-[#DDEDEA] bg-white/95 p-12 text-center">
-                <h3 className="text-3xl font-black text-[#0B4D6B]">
+                <h3 className="text-3xl font-black text-[#0E9FAA]">
                   لا توجد برامج منشورة حاليًا
                 </h3>
               </div>
