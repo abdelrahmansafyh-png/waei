@@ -112,21 +112,26 @@ export async function POST(req: NextRequest) {
     const maxScore = toNumber(result.maxScore ?? result.max_score ?? result.total ?? result.totalQuestions ?? result.max_score, 0);
     const rawPercentage = toNumber(result.percentage, maxScore > 0 ? Math.round((score / maxScore) * 100) : 0);
     const percentage = Math.max(0, Math.min(100, rawPercentage));
+    const contentKind = getContentKind(String(content.content_type || ""));
 
-    await supabase.from("game_attempts").insert({
-      child_profile_id: profile.id,
-      parent_profile_id: profile.parent_profile_id || null,
-      content_id: contentId,
-      program_id: programId,
-      score,
-      max_score: maxScore,
-      percentage,
-      completed: true,
-      duration_seconds: durationSeconds,
-      attempt_number: 1,
-      result,
-      answers,
-    });
+    // لا نسجل محاولات للتابات التعليمية العادية (نص/صورة/فيديو/يوتيوب).
+    // المحاولات تظهر عند ولي الأمر فقط للألعاب/القصص/أنشطة iframe الخارجية.
+    if (contentKind !== "content") {
+      await supabase.from("game_attempts").insert({
+        child_profile_id: profile.id,
+        parent_profile_id: profile.parent_profile_id || null,
+        content_id: contentId,
+        program_id: programId,
+        score,
+        max_score: maxScore,
+        percentage,
+        completed: true,
+        duration_seconds: durationSeconds,
+        attempt_number: 1,
+        result,
+        answers,
+      });
+    }
 
     const { data: existingProgress } = await supabase
       .from("child_content_progress")
@@ -144,7 +149,7 @@ export async function POST(req: NextRequest) {
       child_profile_id: profile.id,
       program_id: programId,
       content_id: contentId,
-      content_type: getContentKind(String(content.content_type || "")),
+      content_type: contentKind,
       completed: true,
       score: Math.max(score, toNumber(existingProgress?.score, 0)),
       max_score: Math.max(maxScore, toNumber(existingProgress?.max_score, 0)),

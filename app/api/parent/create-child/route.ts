@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
@@ -21,10 +20,22 @@ function makeAccessCode() {
   return Math.random().toString(36).slice(2, 8).toUpperCase();
 }
 
+function normalizeUsername(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9_-]/g, "");
+}
+
+function childEmail(username: string) {
+  return `child.${username}@children.rashid.app`;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const authHeader = req.headers.get("authorization") || "";
-    const token = authHeader.replace("Bearer ", "");
+    const token = authHeader.replace("Bearer ", "").trim();
 
     if (!token) {
       return NextResponse.json(
@@ -62,36 +73,51 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-
     const fullName = String(body.full_name || "").trim();
-    const nickname = String(body.nickname || "").trim();
-    const email = String(body.email || "").trim().toLowerCase();
-    const password = String(body.password || "");
-    const age = Number(body.age || 7);
+    const username = normalizeUsername(String(body.username || ""));
+    const rawAge = Number(body.age || 7);
+    const age = Math.min(9, Math.max(5, rawAge));
     const gender = body.gender === "female" ? "female" : "male";
 
-    if (!fullName || !email || !password) {
+    if (!fullName || !username) {
       return NextResponse.json(
-        { success: false, message: "الاسم والإيميل وكلمة المرور مطلوبة" },
+        { success: false, message: "اسم الطفل واسم المستخدم مطلوبان" },
         { status: 400 }
       );
     }
 
-    if (password.length < 6) {
+    if (username.length < 3) {
       return NextResponse.json(
-        { success: false, message: "كلمة المرور يجب أن تكون 6 أحرف على الأقل" },
+        { success: false, message: "اسم المستخدم يجب أن يكون 3 أحرف على الأقل" },
         { status: 400 }
       );
     }
+
+    const { data: existingUsername } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("username", username)
+      .maybeSingle();
+
+    if (existingUsername) {
+      return NextResponse.json(
+        { success: false, message: "اسم المستخدم مستخدم مسبقًا" },
+        { status: 400 }
+      );
+    }
+
+    const accessCode = makeAccessCode();
+    const email = childEmail(username);
 
     const { data: created, error: createError } =
       await supabase.auth.admin.createUser({
         email,
-        password,
+        password: accessCode,
         email_confirm: true,
         user_metadata: {
           full_name: fullName,
           role: "child",
+          username,
         },
       });
 
@@ -111,13 +137,13 @@ export async function POST(req: NextRequest) {
         user_id: created.user.id,
         role: "child",
         full_name: fullName,
-        nickname: nickname || fullName,
+        username,
         age,
         gender,
         parent_profile_id: parentProfile.id,
         parent_user_id: user.id,
         plan: "free",
-        access_code: makeAccessCode(),
+        access_code: accessCode,
         xp: 0,
         completed_programs: 0,
       })
@@ -126,17 +152,13 @@ export async function POST(req: NextRequest) {
 
     if (profileError) {
       await supabase.auth.admin.deleteUser(created.user.id);
-
       return NextResponse.json(
         { success: false, message: profileError.message },
         { status: 400 }
       );
     }
 
-    return NextResponse.json({
-      success: true,
-      child: childProfile,
-    });
+    return NextResponse.json({ success: true, child: childProfile });
   } catch (error: any) {
     return NextResponse.json(
       { success: false, message: error?.message || "حدث خطأ غير متوقع" },

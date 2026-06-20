@@ -45,14 +45,25 @@ type ChildProgress = {
   updated_at: string;
 };
 
+type ProgramProgress = {
+  id: string;
+  child_profile_id: string;
+  program_id: string;
+  elapsed_seconds: number | null;
+  last_tab_id: string | null;
+  last_content_id: string | null;
+  completed: boolean | null;
+  updated_at: string | null;
+};
+
 
 
 export default function ChildDashboard({ profile }: { profile: any }) {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
   const [progressItems, setProgressItems] = useState<ChildProgress[]>([]);
+  const [programProgress, setProgramProgress] = useState<ProgramProgress[]>([]);
   const [loading, setLoading] = useState(true);
-  const [localAccessCode, setLocalAccessCode] = useState(profile?.access_code || "");
 
   const childName = getChildName(profile);
   const childIcon = getChildAvatar(profile);
@@ -60,31 +71,8 @@ export default function ChildDashboard({ profile }: { profile: any }) {
 
   useEffect(() => {
     loadData();
-    ensureAccessCode();
   }, []);
 
-  async function ensureAccessCode() {
-    if (profile?.access_code) {
-      setLocalAccessCode(profile.access_code);
-      return;
-    }
-
-    const generatedCode = Math.random().toString(36).slice(2, 8).toUpperCase();
-
-    setLocalAccessCode(generatedCode);
-
-    await supabase
-      .from("profiles")
-      .update({ access_code: generatedCode })
-      .eq("id", profile.id);
-  }
-
-  async function copyAccessCode() {
-    if (!localAccessCode) return;
-
-    await navigator.clipboard.writeText(localAccessCode);
-    alert("تم نسخ كود الربط ✅");
-  }
 
   async function loadData() {
     setLoading(true);
@@ -109,15 +97,30 @@ export default function ChildDashboard({ profile }: { profile: any }) {
       .eq("child_profile_id", profile.id)
       .order("updated_at", { ascending: false });
 
+    const { data: programProgressData } = await supabase
+      .from("child_program_progress")
+      .select("*")
+      .eq("child_profile_id", profile.id)
+      .order("updated_at", { ascending: false });
+
     setPrograms((programsData as Program[]) || []);
     setAttempts((attemptsData as Attempt[]) || []);
     setProgressItems((progressData as ChildProgress[]) || []);
+    setProgramProgress((programProgressData as ProgramProgress[]) || []);
     setLoading(false);
   }
 
+  function getProgramProgress(programId: string) {
+    return programProgress.find((row) => row.program_id === programId);
+  }
+
   function isProgramCompleted(programId: string) {
-    // مهم: إكمال لعبة واحدة لا يعني أن البرنامج كامل.
-    // البرنامج يعتبر مكتمل فقط من Attempt خاص بزر "إنهاء البرنامج" ويكون content_id = null.
+    const progress = getProgramProgress(programId);
+
+    if (progress?.completed === true) {
+      return true;
+    }
+
     return attempts.some(
       (attempt) =>
         attempt.program_id === programId &&
@@ -146,12 +149,18 @@ export default function ChildDashboard({ profile }: { profile: any }) {
       return "/plans";
     }
 
+    const progress = getProgramProgress(program.id);
+
+    if (progress?.last_content_id && !isProgramCompleted(program.id)) {
+      return `/child/programs/${program.slug}?content=${progress.last_content_id}`;
+    }
+
     return `/child/programs/${program.slug}`;
   }
 
   const completedPrograms = useMemo(
     () => programs.filter((program) => isProgramCompleted(program.id)).length,
-    [programs, attempts]
+    [programs, attempts, programProgress]
   );
 
   const totalXp = useMemo(() => {
@@ -163,8 +172,20 @@ export default function ChildDashboard({ profile }: { profile: any }) {
   const lastAttempt = attempts[0];
 
   const lastIncompleteProgress = useMemo(() => {
+    const fromProgramProgress = programProgress.find(
+      (item) => item.last_content_id && !isProgramCompleted(item.program_id)
+    );
+
+    if (fromProgramProgress) {
+      return {
+        program_id: fromProgramProgress.program_id,
+        content_id: fromProgramProgress.last_content_id,
+        updated_at: fromProgramProgress.updated_at || "",
+      };
+    }
+
     return progressItems.find((item) => !isProgramCompleted(item.program_id));
-  }, [progressItems, attempts]);
+  }, [progressItems, attempts, programProgress]);
 
   const resumeProgram = lastIncompleteProgress
     ? programs.find((program) => program.id === lastIncompleteProgress.program_id)
@@ -183,6 +204,93 @@ export default function ChildDashboard({ profile }: { profile: any }) {
     : nextProgram
     ? "ابدأ البرنامج التالي"
     : "عرض البرامج";
+
+  function isToday(dateValue: string | null | undefined) {
+    if (!dateValue) return false;
+
+    const date = new Date(dateValue);
+    const now = new Date();
+
+    return (
+      date.getFullYear() === now.getFullYear() &&
+      date.getMonth() === now.getMonth() &&
+      date.getDate() === now.getDate()
+    );
+  }
+
+  const lastCompletedProgram = useMemo(() => {
+    const completedProgramIds = new Set<string>();
+
+    programProgress.forEach((row) => {
+      if (row.completed && row.program_id) {
+        completedProgramIds.add(row.program_id);
+      }
+    });
+
+    attempts.forEach((attempt) => {
+      if (
+        attempt.program_id &&
+        attempt.completed &&
+        attempt.content_id === null &&
+        (attempt.percentage || 0) >= 100
+      ) {
+        completedProgramIds.add(attempt.program_id);
+      }
+    });
+
+    const rows = Array.from(completedProgramIds)
+      .map((programId) => {
+        const progress = programProgress.find((row) => row.program_id === programId);
+        const attempt = attempts.find(
+          (row) =>
+            row.program_id === programId &&
+            row.completed &&
+            row.content_id === null &&
+            (row.percentage || 0) >= 100
+        );
+
+        return {
+          programId,
+          at: progress?.updated_at || attempt?.created_at || "",
+        };
+      })
+      .sort((a, b) => {
+        const aTime = a.at ? new Date(a.at).getTime() : 0;
+        const bTime = b.at ? new Date(b.at).getTime() : 0;
+        return bTime - aTime;
+      });
+
+    const row = rows[0];
+    if (!row) return null;
+
+    return programs.find((program) => program.id === row.programId) || null;
+  }, [programProgress, attempts, programs]);
+
+  const todayProgress = useMemo(() => {
+    const todayContentIds = new Set<string>();
+
+    progressItems.forEach((item) => {
+      if (item.completed && isToday(item.updated_at)) {
+        todayContentIds.add(item.content_id);
+      }
+    });
+
+    attempts.forEach((attempt) => {
+      if (attempt.completed && attempt.content_id && isToday(attempt.created_at)) {
+        todayContentIds.add(attempt.content_id);
+      }
+    });
+
+    const completedToday = todayContentIds.size;
+    const dailyTarget = 5;
+    const percentage = Math.min(100, Math.round((completedToday / dailyTarget) * 100));
+
+    return {
+      completedToday,
+      percentage,
+      dailyTarget,
+    };
+  }, [progressItems, attempts]);
 
   return (
     <ChildLayout profile={profile} activeHref="/dashboard">
@@ -269,6 +377,42 @@ export default function ChildDashboard({ profile }: { profile: any }) {
               <div className="relative mt-1 text-xs font-black leading-5 md:mt-2 md:text-base">XP المكتسب</div>
             </div>
           </div>
+
+          <section className="mb-6 grid gap-4 md:grid-cols-3">
+            <div className="rounded-[1.7rem] bg-white/90 p-5 shadow-lg backdrop-blur">
+              <div className="text-3xl">🏁</div>
+              <div className="mt-3 text-sm font-black text-[#0E9FAA]">آخر برنامج مكتمل</div>
+              <div className="mt-1 text-xl font-black text-[#14224A]">
+                {lastCompletedProgram?.title || "لم تكمل برنامجًا بعد"}
+              </div>
+              <div className="mt-2 text-sm font-bold text-[#566681]">سيظهر هنا آخر إنجاز كامل.</div>
+            </div>
+
+            <div className="rounded-[1.7rem] bg-white/90 p-5 shadow-lg backdrop-blur">
+              <div className="text-3xl">🚀</div>
+              <div className="mt-3 text-sm font-black text-[#7050E8]">متابعة آخر برنامج</div>
+              <div className="mt-1 text-xl font-black text-[#14224A]">
+                {resumeProgram?.title || nextProgram?.title || "كل البرامج مكتملة"}
+              </div>
+              <Link href={continueHref} className="mt-3 inline-flex rounded-full bg-[#7050E8] px-5 py-2 text-sm font-black text-white">
+                {continueLabel}
+              </Link>
+            </div>
+
+            <div className="rounded-[1.7rem] bg-white/90 p-5 shadow-lg backdrop-blur">
+              <div className="text-3xl">☀️</div>
+              <div className="mt-3 text-sm font-black text-[#B75A00]">تقدم اليوم</div>
+              <div className="mt-1 text-xl font-black text-[#14224A]">
+                {todayProgress.percentage}%
+              </div>
+              <div className="mt-3 h-3 overflow-hidden rounded-full bg-[#FFEEC2]">
+                <div className="h-full rounded-full bg-gradient-to-l from-[#FFD54A] to-[#F59E0B]" style={{ width: `${todayProgress.percentage}%` }} />
+              </div>
+              <div className="mt-2 text-sm font-bold text-[#566681]">
+                {todayProgress.completedToday} من {todayProgress.dailyTarget} أنشطة اليوم
+              </div>
+            </div>
+          </section>
 
           <section className="mb-6 overflow-hidden rounded-[1.8rem] bg-white/90 p-4 shadow-lg backdrop-blur md:rounded-[2.2rem] md:p-5 md:shadow-xl">
             <div className="flex flex-wrap items-center justify-between gap-4">
@@ -464,40 +608,7 @@ export default function ChildDashboard({ profile }: { profile: any }) {
 
             
           </section>
-
-          <section className="relative mt-6 mb-1 overflow-hidden rounded-[2.6rem] bg-gradient-to-l from-[#5E38D8] to-[#7B4DFF] p-6 text-white shadow-[0_22px_60px_rgba(94,56,216,.28)]">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_40%,rgba(255,255,255,.20),transparent_14%),radial-gradient(circle_at_88%_65%,rgba(255,214,102,.30),transparent_12%)]" />
-            <div className="relative flex flex-wrap items-center justify-between gap-6">
-              <div className="rounded-[1.8rem] bg-white px-8 py-5 text-center shadow-2xl">
-                <div className="text-sm font-black text-[#6E46E8]">كود الربط</div>
-                <div className="mt-2 text-5xl font-black tracking-[0.25em] text-[#0E9FAA]">
-                  {localAccessCode || "------"}
-                </div>
-                <button
-                  type="button"
-                  onClick={copyAccessCode}
-                  className="mt-4 rounded-full bg-[#6E46E8]/15 px-6 py-3 text-sm font-black text-[#6E46E8]"
-                >
-                  نسخ الكود
-                </button>
-              </div>
-
-              <div className="max-w-2xl">
-                <div className="mb-3 inline-flex rounded-full bg-white/15 px-4 py-2 text-sm font-black">
-                  🔗 ربط ولي الأمر
-                </div>
-                <h2 className="text-3xl font-black md:text-4xl">
-                  شارك هذا الكود مع ولي أمرك
-                </h2>
-                <p className="mt-3 text-sm font-bold leading-7 text-white/85">
-                  يمكن لولي الأمر إدخال هذا الكود لربط حسابك ومتابعة تقدمك وبرامجك.
-                </p>
-              </div>
-
-              <div className="hidden text-7xl md:block">⭐</div>
-            </div>
-          </section>
-        </div>
+</div>
       </section>
     </ChildLayout>
   );

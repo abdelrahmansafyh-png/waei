@@ -589,6 +589,34 @@ export default function TabContentPage({
     return result.path;
   }
 
+
+  async function generateTemplateAudio(text: string, name = "audio") {
+    const cleanText = String(text || "").trim();
+
+    if (!cleanText) {
+      throw new Error("اكتب النص أولًا قبل توليد الصوت");
+    }
+
+    const res = await fetch("/api/admin/elevenlabs-audio", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        text: cleanText,
+        name,
+      }),
+    });
+
+    const result = await res.json();
+
+    if (!res.ok || !result.success) {
+      throw new Error(result.message || "فشل توليد الصوت");
+    }
+
+    return result.path as string;
+  }
+
   async function uploadStoryVideo(
     file: File,
     sceneIndex: number,
@@ -814,6 +842,8 @@ export default function TabContentPage({
 
     if (templateId === "drag_dynamic_kid") {
       parsed.instruction = templateMeta.instruction;
+      parsed.question = templateMeta.instruction;
+      parsed.questionAudio = templateMeta.questionAudio || "";
       parsed.character = "images/character.png";
 
       const groups = Array.from(
@@ -829,6 +859,7 @@ export default function TabContentPage({
         text: item.text,
         image: item.image,
         group: item.category,
+        audio: item.audio || "",
       }));
     } else {
       parsed.question = templateMeta.question;
@@ -1587,39 +1618,73 @@ export default function TabContentPage({
                                   className="mb-3 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
                                 />
 
-                                {templateId !== "drag_dynamic_kid" && templateId !== "maze_quiz" && (
+                                {templateId !== "maze_quiz" && (
                                   <div className="mb-3 rounded-2xl bg-[#F4FAF8] p-3">
                                     <label className="mb-2 block text-sm font-black text-[#0B4D6B]">
                                       صوت السؤال
                                     </label>
-                                    <input
-                                      type="file"
-                                      accept="audio/*"
-                                      onChange={async (e) => {
-                                        const file = e.target.files?.[0];
-                                        if (!file) return;
-                                        try {
-                                          setUploading(true);
-                                          const path =
-                                            await uploadTemplateAudio(file);
-                                          setTemplateMeta({
-                                            ...templateMeta,
-                                            questionAudio: path,
-                                          });
-                                        } catch (err: any) {
-                                          alert(
-                                            err?.message ||
-                                              "فشل رفع صوت السؤال",
-                                          );
-                                        }
-                                        setUploading(false);
-                                      }}
-                                      className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-white p-4 text-sm font-bold text-[#0B4D6B]"
-                                    />
+                                    <div className="grid gap-2 md:grid-cols-[1fr_auto]">
+                                      <input
+                                        type="file"
+                                        accept="audio/*"
+                                        onChange={async (e) => {
+                                          const file = e.target.files?.[0];
+                                          if (!file) return;
+                                          try {
+                                            setUploading(true);
+                                            const path =
+                                              await uploadTemplateAudio(file);
+                                            setTemplateMeta({
+                                              ...templateMeta,
+                                              questionAudio: path,
+                                            });
+                                          } catch (err: any) {
+                                            alert(
+                                              err?.message ||
+                                                "فشل رفع صوت السؤال",
+                                            );
+                                          }
+                                          setUploading(false);
+                                        }}
+                                        className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-white p-4 text-sm font-bold text-[#0B4D6B]"
+                                      />
+
+                                      <button
+                                        type="button"
+                                        disabled={uploading || !templateMeta.question.trim()}
+                                        onClick={async () => {
+                                          try {
+                                            setUploading(true);
+                                            const path = await generateTemplateAudio(
+                                              templateMeta.question,
+                                              "question",
+                                            );
+                                            setTemplateMeta({
+                                              ...templateMeta,
+                                              questionAudio: path,
+                                            });
+                                          } catch (err: any) {
+                                            alert(err?.message || "فشل توليد صوت السؤال");
+                                          }
+                                          setUploading(false);
+                                        }}
+                                        className="rounded-[1.2rem] bg-[#42BFA8] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                      >
+                                        توليد الصوت
+                                      </button>
+                                    </div>
+
                                     {templateMeta.questionAudio && (
-                                      <p className="mt-2 break-all rounded-xl bg-white p-2 text-xs font-bold text-[#6E7A99]">
-                                        {templateMeta.questionAudio}
-                                      </p>
+                                      <div className="mt-2 rounded-xl bg-white p-2">
+                                        <audio
+                                          controls
+                                          src={getFileUrl(templateMeta.questionAudio)}
+                                          className="w-full"
+                                        />
+                                        <p className="mt-2 break-all text-xs font-bold text-[#6E7A99]">
+                                          {templateMeta.questionAudio}
+                                        </p>
+                                      </div>
                                     )}
                                   </div>
                                 )}
@@ -1654,17 +1719,88 @@ export default function TabContentPage({
                                 )}
                               </>
                             ) : templateId === "drag_dynamic_kid" ? (
-                              <textarea
-                                placeholder="تعليمات اللعبة"
-                                value={templateMeta.instruction}
-                                onChange={(e) =>
-                                  setTemplateMeta({
-                                    ...templateMeta,
-                                    instruction: e.target.value,
-                                  })
-                                }
-                                className="h-28 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
-                              />
+                              <>
+                                <textarea
+                                  placeholder="السؤال / تعليمات اللعبة"
+                                  value={templateMeta.instruction}
+                                  onChange={(e) =>
+                                    setTemplateMeta({
+                                      ...templateMeta,
+                                      instruction: e.target.value,
+                                    })
+                                  }
+                                  className="h-28 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                                />
+
+                                <div className="mt-3 rounded-2xl bg-[#F4FAF8] p-3">
+                                  <label className="mb-2 block text-sm font-black text-[#0B4D6B]">
+                                    صوت السؤال
+                                  </label>
+
+                                  <div className="grid gap-2 md:grid-cols-[1fr_auto]">
+                                    <input
+                                      type="file"
+                                      accept="audio/*"
+                                      onChange={async (e) => {
+                                        const file = e.target.files?.[0];
+                                        if (!file) return;
+
+                                        try {
+                                          setUploading(true);
+                                          const path = await uploadTemplateAudio(file);
+                                          setTemplateMeta({
+                                            ...templateMeta,
+                                            questionAudio: path,
+                                          });
+                                        } catch (err: any) {
+                                          alert(err?.message || "فشل رفع صوت السؤال");
+                                        }
+
+                                        setUploading(false);
+                                      }}
+                                      className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-white p-4 text-sm font-bold text-[#0B4D6B]"
+                                    />
+
+                                    <button
+                                      type="button"
+                                      disabled={uploading || !String(templateMeta.instruction || "").trim()}
+                                      onClick={async () => {
+                                        try {
+                                          setUploading(true);
+                                          const path = await generateTemplateAudio(
+                                            templateMeta.instruction,
+                                            "drag_question",
+                                          );
+                                          setTemplateMeta({
+                                            ...templateMeta,
+                                            questionAudio: path,
+                                          });
+                                        } catch (err: any) {
+                                          alert(err?.message || "فشل توليد صوت السؤال");
+                                        }
+
+                                        setUploading(false);
+                                      }}
+                                      className="rounded-[1.2rem] bg-[#42BFA8] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                    >
+                                      توليد الصوت
+                                    </button>
+                                  </div>
+
+                                  {templateMeta.questionAudio && (
+                                    <div className="mt-2 rounded-xl bg-white p-2">
+                                      <audio
+                                        controls
+                                        src={getFileUrl(templateMeta.questionAudio)}
+                                        className="w-full"
+                                      />
+                                      <p className="mt-2 break-all text-xs font-bold text-[#6E7A99]">
+                                        {templateMeta.questionAudio}
+                                      </p>
+                                    </div>
+                                  )}
+                                </div>
+                              </>
                             ) : null}
                           </div>
 
@@ -1856,38 +1992,71 @@ export default function TabContentPage({
                                       />
                                     )}
 
-                                    {templateId !== "drag_dynamic_kid" && templateId !== "maze_quiz" && (
+                                    {templateId !== "maze_quiz" && (
                                       <div className="mt-3 rounded-2xl bg-[#F4FAF8] p-3">
                                         <label className="mb-2 block text-sm font-black text-[#0B4D6B]">
                                           صوت هذا الخيار
                                         </label>
-                                        <input
-                                          type="file"
-                                          accept="audio/*"
-                                          onChange={async (e) => {
-                                            const file = e.target.files?.[0];
-                                            if (!file) return;
-                                            try {
-                                              setUploading(true);
-                                              const path =
-                                                await uploadTemplateAudio(file);
-                                              const next = [...templateItems];
-                                              next[index].audio = path;
-                                              setTemplateItems(next);
-                                            } catch (err: any) {
-                                              alert(
-                                                err?.message ||
-                                                  "فشل رفع صوت الخيار",
-                                              );
-                                            }
-                                            setUploading(false);
-                                          }}
-                                          className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-white p-4 text-sm font-bold text-[#0B4D6B]"
-                                        />
+                                        <div className="grid gap-2 md:grid-cols-[1fr_auto]">
+                                          <input
+                                            type="file"
+                                            accept="audio/*"
+                                            onChange={async (e) => {
+                                              const file = e.target.files?.[0];
+                                              if (!file) return;
+                                              try {
+                                                setUploading(true);
+                                                const path =
+                                                  await uploadTemplateAudio(file);
+                                                const next = [...templateItems];
+                                                next[index].audio = path;
+                                                setTemplateItems(next);
+                                              } catch (err: any) {
+                                                alert(
+                                                  err?.message ||
+                                                    "فشل رفع صوت الخيار",
+                                                );
+                                              }
+                                              setUploading(false);
+                                            }}
+                                            className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-white p-4 text-sm font-bold text-[#0B4D6B]"
+                                          />
+
+                                          <button
+                                            type="button"
+                                            disabled={uploading || !String(item.text || "").trim()}
+                                            onClick={async () => {
+                                              try {
+                                                setUploading(true);
+                                                const path = await generateTemplateAudio(
+                                                  item.text,
+                                                  `item_${index}`,
+                                                );
+                                                const next = [...templateItems];
+                                                next[index].audio = path;
+                                                setTemplateItems(next);
+                                              } catch (err: any) {
+                                                alert(err?.message || "فشل توليد صوت الخيار");
+                                              }
+                                              setUploading(false);
+                                            }}
+                                            className="rounded-[1.2rem] bg-[#42BFA8] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                          >
+                                            توليد الصوت
+                                          </button>
+                                        </div>
+
                                         {item.audio && (
-                                          <p className="mt-2 break-all rounded-xl bg-white p-2 text-xs font-bold text-[#6E7A99]">
-                                            {item.audio}
-                                          </p>
+                                          <div className="mt-2 rounded-xl bg-white p-2">
+                                            <audio
+                                              controls
+                                              src={getFileUrl(item.audio)}
+                                              className="w-full"
+                                            />
+                                            <p className="mt-2 break-all text-xs font-bold text-[#6E7A99]">
+                                              {item.audio}
+                                            </p>
+                                          </div>
                                         )}
                                       </div>
                                     )}
@@ -1955,34 +2124,67 @@ export default function TabContentPage({
                                       }}
                                       className="mb-2 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
                                     />
-                                    <input
-                                      type="file"
-                                      accept="audio/*"
-                                      onChange={async (e) => {
-                                        const file = e.target.files?.[0];
-                                        if (!file) return;
-                                        try {
-                                          setUploading(true);
-                                          const path =
-                                            await uploadTemplateAudio(file);
-                                          const next = [
-                                            ...templatePraiseSounds,
-                                          ];
-                                          next[index].audio = path;
-                                          setTemplatePraiseSounds(next);
-                                        } catch (err: any) {
-                                          alert(
-                                            err?.message || "فشل رفع صوت المدح",
-                                          );
-                                        }
-                                        setUploading(false);
-                                      }}
-                                      className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#F59E0B]/60 bg-[#FFF7E8] p-4 text-sm font-bold text-[#0B4D6B]"
-                                    />
+                                    <div className="grid gap-2 md:grid-cols-[1fr_auto]">
+                                      <input
+                                        type="file"
+                                        accept="audio/*"
+                                        onChange={async (e) => {
+                                          const file = e.target.files?.[0];
+                                          if (!file) return;
+                                          try {
+                                            setUploading(true);
+                                            const path =
+                                              await uploadTemplateAudio(file);
+                                            const next = [
+                                              ...templatePraiseSounds,
+                                            ];
+                                            next[index].audio = path;
+                                            setTemplatePraiseSounds(next);
+                                          } catch (err: any) {
+                                            alert(
+                                              err?.message || "فشل رفع صوت المدح",
+                                            );
+                                          }
+                                          setUploading(false);
+                                        }}
+                                        className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#F59E0B]/60 bg-[#FFF7E8] p-4 text-sm font-bold text-[#0B4D6B]"
+                                      />
+
+                                      <button
+                                        type="button"
+                                        disabled={uploading || !String(praise.text || "").trim()}
+                                        onClick={async () => {
+                                          try {
+                                            setUploading(true);
+                                            const path = await generateTemplateAudio(
+                                              praise.text,
+                                              `praise_${index}`,
+                                            );
+                                            const next = [...templatePraiseSounds];
+                                            next[index].audio = path;
+                                            setTemplatePraiseSounds(next);
+                                          } catch (err: any) {
+                                            alert(err?.message || "فشل توليد صوت المدح");
+                                          }
+                                          setUploading(false);
+                                        }}
+                                        className="rounded-[1.2rem] bg-[#F59E0B] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                      >
+                                        توليد الصوت
+                                      </button>
+                                    </div>
+
                                     {praise.audio && (
-                                      <p className="mt-2 break-all rounded-xl bg-[#FFF7E8] p-2 text-xs font-bold text-[#6E7A99]">
-                                        {praise.audio}
-                                      </p>
+                                      <div className="mt-2 rounded-xl bg-[#FFF7E8] p-2">
+                                        <audio
+                                          controls
+                                          src={getFileUrl(praise.audio)}
+                                          className="w-full"
+                                        />
+                                        <p className="mt-2 break-all text-xs font-bold text-[#6E7A99]">
+                                          {praise.audio}
+                                        </p>
+                                      </div>
                                     )}
                                     {templatePraiseSounds.length > 1 && (
                                       <button

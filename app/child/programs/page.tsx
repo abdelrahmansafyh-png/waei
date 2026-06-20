@@ -30,7 +30,12 @@ type Attempt = {
   created_at: string;
 };
 
-
+type ProgramProgress = {
+  program_id: string;
+  last_content_id: string | null;
+  completed: boolean | null;
+  updated_at: string | null;
+};
 
 export default function ChildProgramsPage() {
   const router = useRouter();
@@ -38,6 +43,7 @@ export default function ChildProgramsPage() {
   const [profile, setProfile] = useState<any>(null);
   const [programs, setPrograms] = useState<Program[]>([]);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
+  const [programProgress, setProgramProgress] = useState<ProgramProgress[]>([]);
   const [loading, setLoading] = useState(true);
 
   const proActive = isProActive(profile);
@@ -87,15 +93,29 @@ export default function ChildProgramsPage() {
       .eq("completed", true)
       .order("created_at", { ascending: false });
 
+    const { data: progressData } = await supabase
+      .from("child_program_progress")
+      .select("program_id,last_content_id,completed,updated_at")
+      .eq("child_profile_id", profileData.id)
+      .order("updated_at", { ascending: false });
+
     setPrograms((programsData as Program[]) || []);
     setAttempts((attemptsData as Attempt[]) || []);
+    setProgramProgress((progressData as ProgramProgress[]) || []);
     setLoading(false);
   }
 
+  function getProgress(programId: string) {
+    return programProgress.find((p) => p.program_id === programId);
+  }
+
   function isProgramCompleted(programId: string) {
-    // إكمال لعبة/قصة لا يعني أن البرنامج اكتمل.
-    // البرنامج يعتبر مكتمل فقط عند وجود محاولة إنهاء البرنامج:
-    // content_id = null و percentage = 100
+    const progress = getProgress(programId);
+
+    if (progress?.completed === true) {
+      return true;
+    }
+
     return attempts.some(
       (a) =>
         a.program_id === programId &&
@@ -107,7 +127,7 @@ export default function ChildProgramsPage() {
 
   function getBestScore(programId: string) {
     const scores = attempts
-      .filter((a) => a.program_id === programId)
+      .filter((a) => a.program_id === programId && a.content_id)
       .map((a) => a.percentage || 0)
       .filter((v) => v > 0);
 
@@ -115,196 +135,215 @@ export default function ChildProgramsPage() {
     return Math.max(...scores);
   }
 
+  function getProgramLink(program: Program) {
+    const progress = getProgress(program.id);
+
+    if (progress?.last_content_id && !isProgramCompleted(program.id)) {
+      return `/child/programs/${program.slug}?content=${progress.last_content_id}`;
+    }
+
+    return `/child/programs/${program.slug}`;
+  }
+
   const completedCount = useMemo(
     () => programs.filter((p) => isProgramCompleted(p.id)).length,
-    [programs, attempts]
+    [programs, attempts, programProgress]
   );
 
   return (
     <ChildLayout profile={profile} activeHref="/child/programs">
-        <section
-          className="min-h-screen flex-1 bg-cover bg-fixed bg-center px-4 py-6 md:px-8"
-          
-        >
-          <div className="mx-auto max-w-7xl">
-            <header className="mb-8 rounded-[2.8rem] border border-white/40 bg-white/90 p-7 shadow-[0_22px_70px_rgba(62,87,120,.18)] backdrop-blur-xl">
+      <section className="min-h-screen flex-1 bg-cover bg-fixed bg-center px-4 py-6 md:px-8">
+        <div className="mx-auto max-w-7xl">
+          <header className="mb-8 rounded-[2.8rem] border border-white/40 bg-white/90 p-7 shadow-[0_22px_70px_rgba(62,87,120,.18)] backdrop-blur-xl">
+            <div className="flex flex-wrap items-center justify-between gap-5">
+              <div>
+                <div className="mb-3 inline-flex rounded-full bg-[#E8F8F3] px-5 py-2 font-black text-[#0E9FAA]">
+                  برامج راشد 🗺️
+                </div>
+
+                <h1 className="text-5xl font-black leading-[1.2] text-[#20294f]">
+                  اختر برنامجك التفاعلي 🌱
+                </h1>
+
+                <p className="mt-4 max-w-2xl text-lg font-bold leading-8 text-[#667085]">
+                  ابدأ من أي برنامج، وسيتم حفظ تقدمك أثناء التعلم.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3 rounded-[30px] bg-[#F9FFFD] px-5 py-4 shadow-sm">
+                <div className="text-4xl">{childAvatar}</div>
+                <div>
+                  <div className="text-xl font-black">{childName}</div>
+                  <div className="font-black text-[#f5a800]">
+                    ✅ {completedCount} مكتملة
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          {!proActive && (
+            <section className="mb-8 rounded-[2.5rem] border border-[#F4E7A2] bg-[#FFF8D9]/95 p-6 shadow-[0_16px_40px_rgba(216,180,60,0.12)]">
               <div className="flex flex-wrap items-center justify-between gap-5">
                 <div>
-                  <div className="mb-3 inline-flex rounded-full bg-[#E8F8F3] px-5 py-2 font-black text-[#0E9FAA]">
-                    برامج راشد 🗺️
-                  </div>
-
-                  <h1 className="text-5xl font-black leading-[1.2] text-[#20294f]">
-                    اختر برنامجك التفاعلي 🌱
-                  </h1>
-
-                  <p className="mt-4 max-w-2xl text-lg font-bold leading-8 text-[#667085]">
-                    ابدأ من أي برنامج، وكل برنامج تنهيه سيتم تسجيله في إنجازاتك.
+                  <h2 className="text-3xl font-black text-[#0E9FAA]">
+                    فعّل اشتراكك للوصول إلى برامج Pro 👑
+                  </h2>
+                  <p className="mt-3 max-w-2xl font-bold leading-8 text-[#7A6B22]">
+                    البرامج المجانية متاحة الآن، أما برامج Pro تحتاج تفعيل الاشتراك.
                   </p>
                 </div>
 
-                <div className="flex items-center gap-3 rounded-[30px] bg-[#F9FFFD] px-5 py-4 shadow-sm">
-                  <div className="text-4xl">{childAvatar}</div>
-                  <div>
-                    <div className="text-xl font-black">{childName}</div>
-                    <div className="font-black text-[#f5a800]">
-                      ✅ {completedCount} مكتملة
-                    </div>
-                  </div>
-                </div>
+                <Link
+                  href="/plans"
+                  className="rounded-full bg-[#0E9FAA] px-8 py-4 font-black text-white shadow-lg transition hover:-translate-y-1"
+                >
+                  مشاهدة الخطط والاشتراكات
+                </Link>
               </div>
-            </header>
+            </section>
+          )}
 
-            {!proActive && (
-              <section className="mb-8 rounded-[2.5rem] border border-[#F4E7A2] bg-[#FFF8D9]/95 p-6 shadow-[0_16px_40px_rgba(216,180,60,0.12)]">
-                <div className="flex flex-wrap items-center justify-between gap-5">
-                  <div>
-                    <h2 className="text-3xl font-black text-[#0E9FAA]">
-                      فعّل اشتراكك للوصول إلى برامج Pro 👑
-                    </h2>
-                    <p className="mt-3 max-w-2xl font-bold leading-8 text-[#7A6B22]">
-                      البرامج المجانية متاحة الآن، أما برامج Pro تحتاج تفعيل الاشتراك.
-                    </p>
-                  </div>
+          {loading ? (
+            <div className="rounded-[2.5rem] bg-white p-12 text-center text-2xl font-black text-[#7048e8] shadow-xl">
+              جاري تحميل البرامج...
+            </div>
+          ) : programs.length > 0 ? (
+            <div
+              className={`grid gap-6 ${
+                programs.length === 1
+                  ? "mx-auto max-w-[420px]"
+                  : programs.length === 2
+                  ? "mx-auto max-w-4xl md:grid-cols-2"
+                  : "sm:grid-cols-2 lg:grid-cols-3"
+              }`}
+            >
+              {programs.map((program) => {
+                const completed = isProgramCompleted(program.id);
+                const bestScore = getBestScore(program.id);
+                const locked = program.access_type === "pro" && !proActive;
+                const href = locked ? "/plans" : getProgramLink(program);
+                const hasProgress = Boolean(getProgress(program.id)?.last_content_id);
 
-                  <Link
-                    href="/plans"
-                    className="rounded-full bg-[#0E9FAA] px-8 py-4 font-black text-white shadow-lg transition hover:-translate-y-1"
+                return (
+                  <div
+                    key={program.id}
+                    className="group overflow-hidden rounded-[2rem] border border-white/55 bg-white/92 shadow-xl transition hover:-translate-y-2"
                   >
-                    مشاهدة الخطط والاشتراكات
-                  </Link>
-                </div>
-              </section>
-            )}
-
-            {loading ? (
-              <div className="rounded-[2.5rem] bg-white p-12 text-center text-2xl font-black text-[#7048e8] shadow-xl">
-                جاري تحميل البرامج...
-              </div>
-            ) : programs.length > 0 ? (
-              <div
-                className={`grid gap-6 ${
-                  programs.length === 1
-                    ? "mx-auto max-w-[420px]"
-                    : programs.length === 2
-                    ? "mx-auto max-w-4xl md:grid-cols-2"
-                    : "sm:grid-cols-2 lg:grid-cols-3"
-                }`}
-              >
-                {programs.map((program) => {
-                  const completed = isProgramCompleted(program.id);
-                  const bestScore = getBestScore(program.id);
-                  const locked = program.access_type === "pro" && !proActive;
-
-                  return (
-                    <div
-                      key={program.id}
-                      className="group overflow-hidden rounded-[2rem] border border-white/55 bg-white/92 shadow-xl transition hover:-translate-y-2"
-                    >
-                      <Link href={locked ? "/plans" : `/child/programs/${program.slug}`}>
-                        <div className="relative">
-                          {program.image_url ? (
-                            <img
-                              src={getFileUrl(program.image_url)}
-                              alt={program.title}
-                              className={`h-44 w-full object-cover ${
-                                locked ? "opacity-75" : ""
-                              }`}
-                            />
-                          ) : (
-                            <div className="flex h-44 items-center justify-center bg-gradient-to-br from-[#0E9FAA] to-[#D8F36A] text-7xl">
-                              🧠
-                            </div>
-                          )}
-
-                          {completed && (
-                            <div className="absolute left-4 top-4 rounded-full bg-[#0E9FAA] px-4 py-2 text-sm font-black text-white shadow-lg">
-                              تم الانتهاء ✅
-                            </div>
-                          )}
-
-                          {locked && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-[#0E9FAA]/35 backdrop-blur-[1px]">
-                              <div className="rounded-2xl bg-white px-5 py-3 text-center font-black text-[#0E9FAA] shadow-xl">
-                                فعّل اشتراكك للدخول 🔒
-                              </div>
-                            </div>
-                          )}
-
-                          {bestScore !== null && (
-                            <div className="absolute bottom-4 right-4 rounded-full bg-white/95 px-4 py-2 text-sm font-black text-[#0E9FAA] shadow-lg">
-                              أفضل نتيجة {bestScore}%
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="p-6">
-                          <div className="mb-4 flex flex-wrap gap-2">
-                            {program.categories?.name && (
-                              <span className="rounded-full bg-[#D9F5EE] px-4 py-2 text-sm font-black text-[#0E9FAA]">
-                                {program.categories.name}
-                              </span>
-                            )}
-
-                            {program.age_range && (
-                              <span className="rounded-full bg-[#F3EFFF] px-4 py-2 text-sm font-black text-[#7048e8]">
-                                عمر {program.age_range}
-                              </span>
-                            )}
-
-                            <span
-                              className={`rounded-full px-4 py-2 text-sm font-black ${
-                                program.access_type === "pro"
-                                  ? "bg-yellow-100 text-yellow-700"
-                                  : "bg-green-100 text-green-700"
-                              }`}
-                            >
-                              {program.access_type === "pro" ? "👑 Pro" : "🟢 مجاني"}
-                            </span>
-                          </div>
-
-                          <h3 className="text-2xl font-black text-[#0E9FAA]">
-                            {program.title}
-                          </h3>
-
-                          {program.description && (
-                            <p className="mt-3 line-clamp-2 leading-7 text-[#6E7A99]">
-                              {program.description}
-                            </p>
-                          )}
-                        </div>
-                      </Link>
-
-                      <div className="px-6 pb-6">
-                        {locked ? (
-                          <Link
-                            href="/plans"
-                            className="block rounded-full bg-[#0E9FAA] px-6 py-3 text-center font-black text-white transition hover:-translate-y-1"
-                          >
-                            فعّل اشتراكك
-                          </Link>
+                    <Link href={href}>
+                      <div className="relative">
+                        {program.image_url ? (
+                          <img
+                            src={getFileUrl(program.image_url)}
+                            alt={program.title}
+                            className={`h-44 w-full object-cover ${
+                              locked ? "opacity-75" : ""
+                            }`}
+                          />
                         ) : (
-                          <Link
-                            href={`/child/programs/${program.slug}`}
-                            className="inline-flex rounded-full bg-[#0E9FAA] px-6 py-3 font-black text-white transition group-hover:bg-[#0E9FAA]"
-                          >
-                            {completed ? "إعادة البرنامج" : "ابدأ الآن"}
-                          </Link>
+                          <div className="flex h-44 w-full items-center justify-center bg-gradient-to-br from-[#0E9FAA] to-[#D8F36A] text-7xl">
+                            🧠
+                          </div>
+                        )}
+
+                        {completed && (
+                          <div className="absolute left-4 top-4 rounded-full bg-[#0E9FAA] px-4 py-2 text-sm font-black text-white shadow-lg">
+                            مكتمل ✅
+                          </div>
+                        )}
+
+                        {!completed && hasProgress && (
+                          <div className="absolute left-4 top-4 rounded-full bg-[#7048e8] px-4 py-2 text-sm font-black text-white shadow-lg">
+                            قيد التقدم 🚀
+                          </div>
+                        )}
+
+                        {locked && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-[#0E9FAA]/35 backdrop-blur-[1px]">
+                            <div className="rounded-2xl bg-white px-5 py-3 text-center font-black text-[#0E9FAA] shadow-xl">
+                              فعّل اشتراكك للدخول 🔒
+                            </div>
+                          </div>
+                        )}
+
+                        {bestScore !== null && (
+                          <div className="absolute bottom-4 right-4 rounded-full bg-white/95 px-4 py-2 text-sm font-black text-[#0E9FAA] shadow-lg">
+                            أفضل نتيجة {bestScore}%
+                          </div>
                         )}
                       </div>
+
+                      <div className="p-6">
+                        <div className="mb-4 flex flex-wrap gap-2">
+                          {program.categories?.name && (
+                            <span className="rounded-full bg-[#D9F5EE] px-4 py-2 text-sm font-black text-[#0E9FAA]">
+                              {program.categories.name}
+                            </span>
+                          )}
+
+                          {program.age_range && (
+                            <span className="rounded-full bg-[#F3EFFF] px-4 py-2 text-sm font-black text-[#7048e8]">
+                              عمر {program.age_range}
+                            </span>
+                          )}
+
+                          <span
+                            className={`rounded-full px-4 py-2 text-sm font-black ${
+                              program.access_type === "pro"
+                                ? "bg-yellow-100 text-yellow-700"
+                                : "bg-green-100 text-green-700"
+                            }`}
+                          >
+                            {program.access_type === "pro" ? "👑 Pro" : "🟢 مجاني"}
+                          </span>
+                        </div>
+
+                        <h3 className="text-2xl font-black text-[#0E9FAA]">
+                          {program.title}
+                        </h3>
+
+                        {program.description && (
+                          <p className="mt-3 line-clamp-2 leading-7 text-[#6E7A99]">
+                            {program.description}
+                          </p>
+                        )}
+                      </div>
+                    </Link>
+
+                    <div className="px-6 pb-6">
+                      {locked ? (
+                        <Link
+                          href="/plans"
+                          className="block rounded-full bg-[#0E9FAA] px-6 py-3 text-center font-black text-white transition hover:-translate-y-1"
+                        >
+                          فعّل اشتراكك
+                        </Link>
+                      ) : (
+                        <Link
+                          href={href}
+                          className="inline-flex rounded-full bg-[#0E9FAA] px-6 py-3 font-black text-white transition group-hover:bg-[#0E9FAA]"
+                        >
+                          {completed
+                            ? "إعادة البرنامج"
+                            : hasProgress
+                            ? "متابعة البرنامج"
+                            : "ابدأ الآن"}
+                        </Link>
+                      )}
                     </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="rounded-[2.5rem] border-2 border-dashed border-[#DDEDEA] bg-white/95 p-12 text-center">
-                <h3 className="text-3xl font-black text-[#0E9FAA]">
-                  لا توجد برامج منشورة حاليًا
-                </h3>
-              </div>
-            )}
-          </div>
-        </section>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="rounded-[2.5rem] border-2 border-dashed border-[#DDEDEA] bg-white/95 p-12 text-center">
+              <h3 className="text-3xl font-black text-[#0E9FAA]">
+                لا توجد برامج منشورة حاليًا
+              </h3>
+            </div>
+          )}
+        </div>
+      </section>
     </ChildLayout>
   );
 }

@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -11,7 +10,8 @@ export default function ParentChildrenPage() {
   const router = useRouter();
 
   const [children, setChildren] = useState<any[]>([]);
-  const [attempts, setAttempts] = useState<any[]>([]);
+  const [programProgress, setProgramProgress] = useState<any[]>([]);
+  const [finishAttempts, setFinishAttempts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -58,25 +58,41 @@ export default function ParentChildrenPage() {
 
     const childIds = (childrenData || []).map((child) => child.id);
 
-    let attemptsData: any[] = [];
+    let progressData: any[] = [];
+    let finishAttemptsData: any[] = [];
 
     if (childIds.length) {
       const { data, error } = await supabase
-        .from("game_attempts")
+        .from("child_program_progress")
         .select("*")
         .in("child_profile_id", childIds)
-        .eq("completed", true)
-        .order("created_at", { ascending: false });
+        .order("updated_at", { ascending: false });
 
       if (error) {
-        console.error("attempts query error:", error);
+        console.error("program progress query error:", error);
       }
 
-      attemptsData = data || [];
+      progressData = data || [];
+
+      const { data: attemptsData, error: attemptsError } = await supabase
+        .from("game_attempts")
+        .select("child_profile_id, program_id, content_id, completed, percentage, created_at")
+        .in("child_profile_id", childIds)
+        .eq("completed", true)
+        .is("content_id", null)
+        .gte("percentage", 100)
+        .order("created_at", { ascending: false });
+
+      if (attemptsError) {
+        console.error("finish attempts query error:", attemptsError);
+      }
+
+      finishAttemptsData = attemptsData || [];
     }
 
     setChildren(childrenData || []);
-    setAttempts(attemptsData);
+    setProgramProgress(progressData);
+    setFinishAttempts(finishAttemptsData);
     setLoading(false);
   }
 
@@ -86,31 +102,56 @@ export default function ParentChildrenPage() {
   );
 
   const completedPrograms = useMemo(() => {
-    const ids = new Set(
-      attempts
-        .filter((attempt) => attempt.program_id)
-        .map((attempt) => `${attempt.child_profile_id}-${attempt.program_id}`)
-    );
+    const keys = new Set<string>();
 
-    return ids.size;
-  }, [attempts]);
+    programProgress.forEach((row) => {
+      if (row.completed === true && row.child_profile_id && row.program_id) {
+        keys.add(`${row.child_profile_id}:${row.program_id}`);
+      }
+    });
 
-  function childMinutes(childId: string) {
-    return Math.round(
-      attempts
-        .filter((attempt) => attempt.child_profile_id === childId)
-        .reduce((sum, attempt) => sum + (attempt.duration_seconds || 0), 0) / 60
-    );
+    finishAttempts.forEach((row) => {
+      if (row.child_profile_id && row.program_id) {
+        keys.add(`${row.child_profile_id}:${row.program_id}`);
+      }
+    });
+
+    return keys.size;
+  }, [programProgress, finishAttempts]);
+
+  function formatDuration(seconds: number) {
+    const total = Math.floor(seconds || 0);
+    const h = Math.floor(total / 3600);
+    const m = Math.floor((total % 3600) / 60);
+
+    if (h > 0) return `${h} ساعة ${m} دقيقة`;
+    return `${m} دقيقة`;
+  }
+
+  function childTime(childId: string) {
+    const seconds = programProgress
+      .filter((row) => row.child_profile_id === childId)
+      .reduce((sum, row) => sum + (row.elapsed_seconds || 0), 0);
+
+    return formatDuration(seconds);
   }
 
   function childCompletedPrograms(childId: string) {
-    const ids = new Set(
-      attempts
-        .filter((attempt) => attempt.child_profile_id === childId && attempt.program_id)
-        .map((attempt) => attempt.program_id)
-    );
+    const programIds = new Set<string>();
 
-    return ids.size;
+    programProgress.forEach((row) => {
+      if (row.child_profile_id === childId && row.completed === true && row.program_id) {
+        programIds.add(row.program_id);
+      }
+    });
+
+    finishAttempts.forEach((row) => {
+      if (row.child_profile_id === childId && row.program_id) {
+        programIds.add(row.program_id);
+      }
+    });
+
+    return programIds.size;
   }
 
   return (
@@ -174,7 +215,7 @@ export default function ParentChildrenPage() {
         ) : children.length ? (
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {children.map((child) => {
-              const minutes = childMinutes(child.id);
+              const timeText = childTime(child.id);
               const completed = childCompletedPrograms(child.id);
 
               return (
@@ -200,7 +241,7 @@ export default function ParentChildrenPage() {
                   </div>
 
                   <h3 className="mt-5 text-2xl font-black text-[#0B4D6B]">
-                    {child.nickname || child.full_name}
+                    {child.full_name}
                   </h3>
 
                   <p className="mt-2 font-bold text-[#6E7A99]">
@@ -228,10 +269,10 @@ export default function ParentChildrenPage() {
 
                     <div className="rounded-2xl bg-white p-4 text-center">
                       <div className="font-black text-[#0B4D6B]">
-                        ⏱️ {minutes}
+                        ⏱️ {timeText}
                       </div>
                       <div className="mt-1 text-xs font-bold text-[#6E7A99]">
-                        دقيقة
+                        وقت التعلم
                       </div>
                     </div>
                   </div>

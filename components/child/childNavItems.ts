@@ -5,5 +5,5 @@ export const childNavItems = [
   { label: "التدريبات", icon: "/images/waei-child/icons/training-3d.svg", href: "/dashboard/exercises" },
   { label: "لوحة الصدارة", icon: "/images/waei-child/icons/leaderboard-3d.svg", href: "/dashboard/leaderboard" },
   { label: "الاشتراكات", icon: "/images/waei-child/icons/subscriptions-3d.svg", href: "/plans" },
-  { label: "إنجازاتي", icon: "/images/waei-child/icons/star-3d.svg", href: "/dashboard/achievements" },
+  { label: "شهاداتي", icon: "/images/waei-child/icons/star-3d.svg", href: "/dashboard/certificates" },
 ];

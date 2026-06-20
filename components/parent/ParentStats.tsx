@@ -10,13 +10,22 @@ export default function ParentStats({
   completedPrograms: number;
   totalMinutes: number;
 }) {
-  const hours = Math.round((totalMinutes / 60) * 10) / 10;
+  function formatDurationFromMinutes(minutes: number) {
+    const totalSeconds = Math.floor((minutes || 0) * 60);
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+
+    if (h > 0) return `${h} ساعة ${m} دقيقة`;
+    return `${m} دقيقة`;
+  }
+
+  const learningTime = formatDurationFromMinutes(totalMinutes);
 
   const cards = [
     { icon: "👨‍👩‍👧", value: childrenCount, label: "عدد الأبناء" },
     { icon: "⚡", value: totalXp, label: "إجمالي XP" },
     { icon: "📚", value: completedPrograms, label: "برامج مكتملة" },
-    { icon: "⏱️", value: hours, label: "ساعات التعلم" },
+    { icon: "⏱️", value: learningTime, label: "وقت التعلم" },
   ];
 
   return (

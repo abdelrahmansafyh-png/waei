@@ -101,27 +101,27 @@ async function getCurrentUser() {
 
 const methodology = [
   {
-    icon: "🎮",
-    title: "التعلم باللعب",
-    desc: "نحوّل المهارات والقيم إلى ألعاب قصيرة ممتعة تجعل الطفل يتفاعل بدل أن يكتفي بالمشاهدة.",
+    icon: "🧭",
+    title: "رحلة تعلم موجهة",
+    desc: "يبدأ كل برنامج بهدف واضح ومهارة محددة، ضمن مسار تعليمي متدرج يناسب عمر الطفل واحتياجاته.",
     color: "from-[#19C6D4] to-[#0F9EB2]",
   },
   {
-    icon: "🎭",
-    title: "قصص تفاعلية",
-    desc: "مواقف تربوية يختار فيها الطفل القرار، فيرى أثر قراره ويتعلم بطريقة قريبة من حياته.",
+    icon: "📖",
+    title: "قصص ومواقف تفاعلية",
+    desc: "يخوض الطفل مواقف واقعية وقصصًا تفاعلية، يختار فيها كيف يتصرف ليتعلم من نتائج قراراته.",
     color: "from-[#8B5CF6] to-[#6847F5]",
   },
   {
-    icon: "🌱",
-    title: "نمو متدرج",
-    desc: "المحتوى يتدرج حسب عمر الطفل ومستواه، من الفهم البسيط إلى بناء العادات والسلوك.",
+    icon: "🎮",
+    title: "ألعاب وتحديات تعليمية",
+    desc: "أنشطة وألعاب تفاعلية تساعد الطفل على اكتساب المهارات بطريقة ممتعة ومشوقة.",
     color: "from-[#6ED46E] to-[#3AAE55]",
   },
   {
-    icon: "⭐",
-    title: "تحفيز وتقدم",
-    desc: "نقاط، إنجازات، ومتابعة واضحة تساعد الطفل وولي الأمر على رؤية التطور خطوة بخطوة.",
+    icon: "🚀",
+    title: "تطبيق في الحياة اليومية",
+    desc: "تدريبات عملية تساعد الطفل على تحويل ما تعلمه إلى سلوك يومي دائم.",
     color: "from-[#FFD54A] to-[#F59E0B]",
   },
 ];
@@ -221,7 +221,7 @@ export default async function LandingPage() {
             </h1>
 
             <p className="rashid-hero-desc mt-7 max-w-xl text-xl font-bold leading-10">
-              منصة آمنة وممتعة تقدم برامج تربوية، ألعاب تعليمية، وقصص تفاعلية تساعد الطفل على بناء المهارات والقيم بطريقة شيّقة.
+             منصة تفاعلية تساعد الأطفال على بناء صحة نفسية إيجابية وتنمية القيم والمهارات الحياتية من خلال القصص والألعاب والانشطة والتجارب التفاعلية الممتعة.
             </p>
 
             <div className="mt-9 flex flex-wrap gap-4">
@@ -301,6 +301,38 @@ export default async function LandingPage() {
                 </div>
                 <h3 className="text-2xl font-black text-[#14224A]">{item.title}</h3>
                 <p className="mt-4 text-base font-semibold leading-8 text-[#526079]">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white px-6 py-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto mb-14 max-w-3xl text-center">
+            <div className="mb-5 inline-flex rounded-full bg-[#E8FBFD] px-5 py-2 text-sm font-black text-[#0E9FAA] shadow-lg">
+              لماذا يختار الآباء راشد؟
+            </div>
+
+            <h2 className="text-4xl font-black text-[#14224A] md:text-6xl">
+              تجربة تعليمية مختلفة لطفلك
+            </h2>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              ["🌱", "تعلم بالممارسة", "يطبق الطفل ما يتعلمه عبر أنشطة وتجارب تفاعلية."],
+              ["🛤️", "مسار متدرج", "محتوى مصمم ليناسب عمر الطفل ومستواه في كل مرحلة."],
+              ["🏆", "تحفيز ومكافآت", "نظام نقاط وإنجازات يحفز الطفل على الاستمرار والتقدم."],
+              ["👨‍👩‍👧", "مشاركة الأسرة", "متابعة تقدم الطفل ودعمه في رحلته التعليمية."],
+            ].map(([icon, title, desc]) => (
+              <div
+                key={title}
+                className="rounded-[2rem] border border-[#E7F0F7] bg-[#F8FCFF] p-6 shadow-[0_18px_45px_rgba(18,34,74,.08)]"
+              >
+                <div className="mb-4 text-4xl">{icon}</div>
+                <h3 className="text-2xl font-black text-[#14224A]">{title}</h3>
+                <p className="mt-4 leading-8 text-[#526079]">{desc}</p>
               </div>
             ))}
           </div>

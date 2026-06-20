@@ -187,7 +187,7 @@ export default function ChildProgramPage() {
       );
     };
 
-    const interval = window.setInterval(saveElapsed, 10000);
+    const interval = window.setInterval(saveElapsed, 5000);
 
     const onBeforeUnload = () => {
       void saveElapsed();
@@ -393,6 +393,8 @@ export default function ChildProgramPage() {
     if (!content?.id) return;
 
     try {
+      const now = new Date().toISOString();
+
       await supabase.from("child_content_progress").upsert(
         {
           child_profile_id: profile.id,
@@ -400,9 +402,21 @@ export default function ChildProgramPage() {
           content_id: content.id,
           content_type: getContentKind(content.content_type),
           last_position: currentStepIndex,
-          updated_at: new Date().toISOString(),
+          updated_at: now,
         },
         { onConflict: "child_profile_id,content_id" }
+      );
+
+      await supabase.from("child_program_progress").upsert(
+        {
+          child_profile_id: profile.id,
+          program_id: program.id,
+          elapsed_seconds: elapsedSecondsRef.current,
+          last_tab_id: content.tab_id || activeTab || null,
+          last_content_id: content.id,
+          updated_at: now,
+        },
+        { onConflict: "child_profile_id,program_id" }
       );
     } catch (err) {
       console.error("save position failed", err);
@@ -676,6 +690,21 @@ export default function ChildProgramPage() {
     const duration = elapsedSecondsRef.current;
 
     if (profile?.id && program?.id) {
+      const now = new Date().toISOString();
+
+      await supabase.from("child_program_progress").upsert(
+        {
+          child_profile_id: profile.id,
+          program_id: program.id,
+          elapsed_seconds: duration,
+          last_tab_id: activeTab || null,
+          last_content_id: selectedGame?.id || normalContents[0]?.id || null,
+          completed: true,
+          updated_at: now,
+        },
+        { onConflict: "child_profile_id,program_id" }
+      );
+
       await supabase.from("game_attempts").insert({
         child_profile_id: profile.id,
         parent_profile_id: profile.parent_profile_id || null,
