@@ -1137,12 +1137,14 @@ export default function ChildProgramPage() {
 
                 .game-tab {
                   flex: 0 0 auto;
-                  max-width: 180px;
+                  max-width: 320px;
                   border: 0;
                   cursor: pointer;
-                  white-space: nowrap;
-                  overflow: hidden;
-                  text-overflow: ellipsis;
+                  white-space: normal;
+                  overflow: visible;
+                  text-overflow: clip;
+                  line-height: 1.5;
+                  text-align: center;
                   border-radius: 18px;
                   padding: 14px 20px;
                   background: #eef7ff;

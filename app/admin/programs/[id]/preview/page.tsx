@@ -70,6 +70,7 @@ export default function ProgramPreviewPage({
   const [gameResult, setGameResult] = useState<any>(null);
   const [gameAnswers, setGameAnswers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fullscreenGame, setFullscreenGame] = useState<string | null>(null);
 
   
 
@@ -188,6 +189,10 @@ export default function ProgramPreviewPage({
 
   const selectedGame =
     iframeGames.find((game) => game.id === activeGameId) || iframeGames[0];
+
+  function getGameIframeSrc(game: Content) {
+    return normalizeIframeUrl(game.iframe_url || "");
+  }
 
   const activeIndex = tabs.findIndex((x) => x.id === activeTab);
 
@@ -617,20 +622,38 @@ export default function ProgramPreviewPage({
           display: flex;
           gap: 12px;
           overflow-x: auto;
+          overflow-y: hidden;
           padding: 6px 4px 18px;
           margin-bottom: 16px;
+          max-width: 100%;
+          scrollbar-width: thin;
+        }
+
+        .game-tabs::-webkit-scrollbar {
+          height: 8px;
+        }
+
+        .game-tabs::-webkit-scrollbar-thumb {
+          background: #d8d2ff;
+          border-radius: 999px;
         }
 
         .game-tab {
+          flex: 0 0 auto;
+          max-width: 320px;
           border: 0;
           cursor: pointer;
-          white-space: nowrap;
+          white-space: normal;
+          overflow: visible;
+          text-overflow: clip;
+          line-height: 1.5;
+          text-align: center;
           border-radius: 18px;
           padding: 14px 20px;
           background: #eef7ff;
           color: #20294f;
           font-weight: 900;
-          font-size: 16px;
+          font-size: 15px;
           box-shadow: 0 8px 18px rgba(62,87,120,.08);
         }
 
@@ -639,22 +662,84 @@ export default function ProgramPreviewPage({
           color: white;
         }
 
-        .game-frame-wrap {
+        .game-player-shell {
           width: 100%;
-          max-width: 1100px;
-          margin: 0 auto;
-          overflow: hidden;
-          border-radius: 28px;
         }
 
-
-        .game-frame {
+        .game-player-desktop {
+          display: flex;
+          justify-content: center;
           width: 100%;
-          height: 820px;
+        }
+
+        .game-player-frame {
+          position: relative;
+          width: min(100%, 620px);
+          aspect-ratio: 3 / 4;
+          background: white;
+          border-radius: 32px;
+          padding: 12px;
+          box-shadow: 0 18px 45px rgba(62,87,120,.15);
+          overflow: hidden;
+        }
+
+        .desktop-fullscreen-btn {
+          position: absolute;
+          top: 18px;
+          left: 18px;
+          z-index: 10;
+          width: 48px;
+          height: 48px;
           border: 0;
-          border-radius: 28px;
+          border-radius: 16px;
+          background: rgba(255,255,255,.96);
+          color: #20294f;
+          font-size: 22px;
+          font-weight: 900;
+          cursor: pointer;
+          box-shadow: 0 10px 24px rgba(0,0,0,.16);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .game-player-iframe {
+          width: 100%;
+          height: 100%;
+          border: 0;
+          border-radius: 24px;
           display: block;
           background: white;
+        }
+
+        .game-fullscreen {
+          position: fixed;
+          inset: 0;
+          z-index: 999999;
+          width: 100vw;
+          height: 100dvh;
+          background: #000;
+        }
+
+        .game-fullscreen-frame {
+          width: 100vw;
+          height: 100dvh;
+          border: 0;
+          display: block;
+        }
+
+        .game-fullscreen-close {
+          position: fixed;
+          top: 18px;
+          left: 18px;
+          z-index: 1000000;
+          border: 0;
+          border-radius: 999px;
+          padding: 14px 22px;
+          background: rgba(255,255,255,.92);
+          color: #111827;
+          font-weight: 900;
+          cursor: pointer;
         }
 
 
@@ -1078,13 +1163,29 @@ export default function ProgramPreviewPage({
                       </div>
 
                      {selectedGame?.iframe_url && (
-                        <div className="media-wrap game-frame-wrap">
-                            <iframe
-                              src={normalizeIframeUrl(selectedGame.iframe_url)}
-                              className="game-frame"
-                              allowFullScreen
-                              allow="fullscreen; autoplay; clipboard-write; encrypted-media"
-                            />
+                        <div>
+                          <div className="game-player-shell">
+                            <div className="game-player-desktop">
+                              <div className="game-player-frame">
+                                <button
+                                  type="button"
+                                  className="desktop-fullscreen-btn"
+                                  onClick={() => setFullscreenGame(getGameIframeSrc(selectedGame))}
+                                  aria-label="فتح اللعبة على كامل الشاشة"
+                                  title="كامل الشاشة"
+                                >
+                                  ⛶
+                                </button>
+
+                                <iframe
+                                  src={getGameIframeSrc(selectedGame)}
+                                  className="game-player-iframe"
+                                  allowFullScreen
+                                  allow="fullscreen; autoplay; clipboard-write; encrypted-media"
+                                />
+                              </div>
+                            </div>
+
 
                             {gameResult && (
                               <div
@@ -1242,6 +1343,24 @@ export default function ProgramPreviewPage({
             </button>
         </footer>
       </div>
+
+      {fullscreenGame && (
+        <div className="game-fullscreen" dir="rtl">
+          <button
+            type="button"
+            className="game-fullscreen-close"
+            onClick={() => setFullscreenGame(null)}
+          >
+            إغلاق ✕
+          </button>
+          <iframe
+            src={fullscreenGame}
+            className="game-fullscreen-frame"
+            allowFullScreen
+            allow="fullscreen; autoplay; clipboard-write; encrypted-media"
+          />
+        </div>
+      )}
     </main>
   );
 }
