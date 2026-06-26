@@ -28,6 +28,7 @@ type Content = {
   file_url: string | null;
   youtube_url: string | null;
   iframe_url: string | null;
+  game_folder?: string | null;
   sort_order: number;
 };
 
@@ -47,7 +48,7 @@ function normalizeIframeUrl(value: string) {
 
 function icon(type: string) {
   if (type === "interactive_stories" || type === "interactive_story") return "🎭";
-  if (type === "games" || type === "iframe") return "🎮";
+  if (type === "games" || type === "iframe" || type === "zip_game") return "🎮";
   if (type === "youtube") return "▶️";
   if (type === "video") return "🎬";
   if (type === "image" || type === "images") return "🖼️";
@@ -183,7 +184,7 @@ export default function ProgramPreviewPage({
   );
 
   const normalContents = useMemo(
-    () => activeContents.filter((item) => item.content_type !== "iframe" && item.content_type !== "interactive_story"),
+    () => activeContents.filter((item) => item.content_type !== "iframe" && item.content_type !== "interactive_story" && item.content_type !== "zip_game"),
     [activeContents]
   );
 
@@ -191,7 +192,25 @@ export default function ProgramPreviewPage({
     iframeGames.find((game) => game.id === activeGameId) || iframeGames[0];
 
   function getGameIframeSrc(game: Content) {
-    return normalizeIframeUrl(game.iframe_url || "");
+    if (!game?.iframe_url) return "";
+
+    const baseUrl = normalizeIframeUrl(game.iframe_url);
+
+    // External iframe activities مثل Wordwall لا نضيف عليها game_data
+    if (game.content_type === "iframe" && !game.game_folder) {
+      return baseUrl;
+    }
+
+    // ألعاب راشد المرفوعة عندنا يكون معها game_folder
+    if (game.game_folder) {
+      const separator = baseUrl.includes("?") ? "&" : "?";
+      const folder = game.game_folder.replace(/\/$/, "");
+      const gameDataPath = `${folder}/game.json`;
+
+      return `${baseUrl}${separator}game_data=${encodeURIComponent(gameDataPath)}`;
+    }
+
+    return baseUrl;
   }
 
   const activeIndex = tabs.findIndex((x) => x.id === activeTab);
@@ -1089,9 +1108,10 @@ export default function ProgramPreviewPage({
                 <div className="content-list">
                   {normalContents.map((item) => (
                     <article key={item.id} className="content-card">
-                      {item.title && (
-                        <h2 className="content-title">{item.title}</h2>
-                      )}
+                      {item.title &&
+                        !["iframe", "game", "story", "zip_game", "interactive_story", "interactive_stories"].includes(item.content_type) && (
+                          <h2 className="content-title">{item.title}</h2>
+                        )}
 
                      {item.content_type === "text" && (
                         <div className="text-content center-text-only">
@@ -1315,7 +1335,8 @@ export default function ProgramPreviewPage({
                             )}
 
                         </div>
-                        )}
+                      </div>
+                    )}
                     </article>
                   )}
                 </div>
