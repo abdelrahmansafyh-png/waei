@@ -115,11 +115,12 @@ export default function TabContentPage({
     {
       q: "",
       image: "",
+      audio: "",
       answers: [
-        { text: "", image: "", correct: true },
-        { text: "", image: "", correct: false },
-        { text: "", image: "", correct: false },
-        { text: "", image: "", correct: false },
+        { text: "", image: "", correct: true, audio: "" },
+        { text: "", image: "", correct: false, audio: "" },
+        { text: "", image: "", correct: false, audio: "" },
+        { text: "", image: "", correct: false, audio: "" },
       ],
     },
   ]);
@@ -203,28 +204,31 @@ export default function TabContentPage({
           ? game.map((q: any) => ({
               q: q.q || q.question || q.text || "",
               image: q.image || "",
+              audio: q.audio || q.questionAudio || "",
               answers: Array.isArray(q.answers)
                 ? q.answers.map((a: any) => ({
                     text: a.text || a.label || "",
                     image: a.image || "",
                     correct: Boolean(a.correct),
+                    audio: a.audio || "",
                   }))
                 : [
-                    { text: "", image: "", correct: true },
-                    { text: "", image: "", correct: false },
-                    { text: "", image: "", correct: false },
-                    { text: "", image: "", correct: false },
+                    { text: "", image: "", correct: true, audio: "" },
+                    { text: "", image: "", correct: false, audio: "" },
+                    { text: "", image: "", correct: false, audio: "" },
+                    { text: "", image: "", correct: false, audio: "" },
                   ],
             }))
           : [
               {
                 q: "",
                 image: "",
+                audio: "",
                 answers: [
-                  { text: "", image: "", correct: true },
-                  { text: "", image: "", correct: false },
-                  { text: "", image: "", correct: false },
-                  { text: "", image: "", correct: false },
+                  { text: "", image: "", correct: true, audio: "" },
+                  { text: "", image: "", correct: false, audio: "" },
+                  { text: "", image: "", correct: false, audio: "" },
+                  { text: "", image: "", correct: false, audio: "" },
                 ],
               },
             ],
@@ -251,28 +255,31 @@ export default function TabContentPage({
           ? game.questions.map((q: any) => ({
               q: q.q || q.question || q.text || "",
               image: q.image || "",
+              audio: q.audio || q.questionAudio || "",
               answers: Array.isArray(q.answers)
                 ? q.answers.map((a: any) => ({
                     text: a.text || a.label || "",
                     image: a.image || "",
                     correct: Boolean(a.correct),
+                    audio: a.audio || "",
                   }))
                 : [
-                    { text: "", image: "", correct: true },
-                    { text: "", image: "", correct: false },
-                    { text: "", image: "", correct: false },
-                    { text: "", image: "", correct: false },
+                    { text: "", image: "", correct: true, audio: "" },
+                    { text: "", image: "", correct: false, audio: "" },
+                    { text: "", image: "", correct: false, audio: "" },
+                    { text: "", image: "", correct: false, audio: "" },
                   ],
             }))
           : [
               {
                 q: "",
                 image: "",
+                audio: "",
                 answers: [
-                  { text: "", image: "", correct: true },
-                  { text: "", image: "", correct: false },
-                  { text: "", image: "", correct: false },
-                  { text: "", image: "", correct: false },
+                  { text: "", image: "", correct: true, audio: "" },
+                  { text: "", image: "", correct: false, audio: "" },
+                  { text: "", image: "", correct: false, audio: "" },
+                  { text: "", image: "", correct: false, audio: "" },
                 ],
               },
             ],
@@ -1569,10 +1576,10 @@ export default function TabContentPage({
                                   q: "",
                                   image: "",
                                   answers: [
-                                    { text: "", image: "", correct: true },
-                                    { text: "", image: "", correct: false },
-                                    { text: "", image: "", correct: false },
-                                    { text: "", image: "", correct: false },
+                                    { text: "", image: "", correct: true, audio: "" },
+                                    { text: "", image: "", correct: false, audio: "" },
+                                    { text: "", image: "", correct: false, audio: "" },
+                                    { text: "", image: "", correct: false, audio: "" },
                                   ],
                                 },
                               ]);
@@ -1827,6 +1834,73 @@ export default function TabContentPage({
                                       className="mb-3 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
                                     />
 
+                                    <div className="mb-3 rounded-2xl bg-[#F4FAF8] p-3">
+                                      <label className="mb-2 block text-sm font-black text-[#0B4D6B]">
+                                        صوت السؤال
+                                      </label>
+
+                                      <div className="grid gap-2 md:grid-cols-[1fr_auto]">
+                                        <input
+                                          type="file"
+                                          accept="audio/*"
+                                          onChange={async (e) => {
+                                            const file = e.target.files?.[0];
+                                            if (!file) return;
+
+                                            try {
+                                              setUploading(true);
+                                              const path = await uploadTemplateAudio(file);
+                                              const next = [...templateQuestions];
+                                              next[qIndex].audio = path;
+                                              setTemplateQuestions(next);
+                                            } catch (err: any) {
+                                              alert(err?.message || "فشل رفع صوت السؤال");
+                                            }
+
+                                            setUploading(false);
+                                          }}
+                                          className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-white p-4 text-sm font-bold text-[#0B4D6B]"
+                                        />
+
+                                        <button
+                                          type="button"
+                                          disabled={uploading || !String(question.q || "").trim()}
+                                          onClick={async () => {
+                                            try {
+                                              setUploading(true);
+                                              const path = await generateTemplateAudio(
+                                                question.q,
+                                                `maze_question_${qIndex}`,
+                                              );
+                                              const next = [...templateQuestions];
+                                              next[qIndex].audio = path;
+                                              setTemplateQuestions(next);
+                                            } catch (err: any) {
+                                              alert(err?.message || "فشل توليد صوت السؤال");
+                                            }
+
+                                            setUploading(false);
+                                          }}
+                                          className="rounded-[1.2rem] bg-[#42BFA8] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                        >
+                                          توليد الصوت
+                                        </button>
+                                      </div>
+
+                                      {question.audio && (
+                                        <div className="mt-2 rounded-xl bg-white p-2">
+                                          <audio
+                                            controls
+                                            src={getFileUrl(question.audio)}
+                                            className="w-full"
+                                          />
+                                          <p className="mt-2 break-all text-xs font-bold text-[#6E7A99]">
+                                            {question.audio}
+                                          </p>
+                                        </div>
+                                      )}
+                                    </div>
+
                                     <div className="space-y-2">
                                       {question.answers.map(
                                         (answer: any, aIndex: number) => (
@@ -1871,6 +1945,73 @@ export default function TabContentPage({
                                               />
                                               صح
                                             </label>
+
+                                            <div className="md:col-span-2 rounded-2xl bg-white p-3">
+                                              <label className="mb-2 block text-sm font-black text-[#0B4D6B]">
+                                                صوت الإجابة
+                                              </label>
+
+                                              <div className="grid gap-2 md:grid-cols-[1fr_auto]">
+                                                <input
+                                                  type="file"
+                                                  accept="audio/*"
+                                                  onChange={async (e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (!file) return;
+
+                                                    try {
+                                                      setUploading(true);
+                                                      const path = await uploadTemplateAudio(file);
+                                                      const next = [...templateQuestions];
+                                                      next[qIndex].answers[aIndex].audio = path;
+                                                      setTemplateQuestions(next);
+                                                    } catch (err: any) {
+                                                      alert(err?.message || "فشل رفع صوت الإجابة");
+                                                    }
+
+                                                    setUploading(false);
+                                                  }}
+                                                  className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-[#F4FAF8] p-4 text-sm font-bold text-[#0B4D6B]"
+                                                />
+
+                                                <button
+                                                  type="button"
+                                                  disabled={uploading || !String(answer.text || "").trim()}
+                                                  onClick={async () => {
+                                                    try {
+                                                      setUploading(true);
+                                                      const path = await generateTemplateAudio(
+                                                        answer.text,
+                                                        `maze_question_${qIndex}_answer_${aIndex}`,
+                                                      );
+                                                      const next = [...templateQuestions];
+                                                      next[qIndex].answers[aIndex].audio = path;
+                                                      setTemplateQuestions(next);
+                                                    } catch (err: any) {
+                                                      alert(err?.message || "فشل توليد صوت الإجابة");
+                                                    }
+
+                                                    setUploading(false);
+                                                  }}
+                                                  className="rounded-[1.2rem] bg-[#42BFA8] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                                >
+                                                  توليد الصوت
+                                                </button>
+                                              </div>
+
+                                              {answer.audio && (
+                                                <div className="mt-2 rounded-xl bg-[#F4FAF8] p-2">
+                                                  <audio
+                                                    controls
+                                                    src={getFileUrl(answer.audio)}
+                                                    className="w-full"
+                                                  />
+                                                  <p className="mt-2 break-all text-xs font-bold text-[#6E7A99]">
+                                                    {answer.audio}
+                                                  </p>
+                                                </div>
+                                              )}
+                                            </div>
                                           </div>
                                         ),
                                       )}
@@ -1903,11 +2044,12 @@ export default function TabContentPage({
                                     {
                                       q: "",
                                       image: "",
+                                      audio: "",
                                       answers: [
-                                        { text: "", image: "", correct: true },
-                                        { text: "", image: "", correct: false },
-                                        { text: "", image: "", correct: false },
-                                        { text: "", image: "", correct: false },
+                                        { text: "", image: "", correct: true, audio: "" },
+                                        { text: "", image: "", correct: false, audio: "" },
+                                        { text: "", image: "", correct: false, audio: "" },
+                                        { text: "", image: "", correct: false, audio: "" },
                                       ],
                                     },
                                   ])

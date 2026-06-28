@@ -9,6 +9,7 @@ const navItems = [
   { href: "/admin/programs", label: "البرامج", icon: "📚" },
   { href: "/admin/plans", label: "الاشتراكات", icon: "💳" },
   { href: "/admin/banners", label: "البانرات", icon: "📢" },
+  { href: "/admin/landing", label: "اعدادات الصفحة الرئيسية", icon: "🏡" },
 ];
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {

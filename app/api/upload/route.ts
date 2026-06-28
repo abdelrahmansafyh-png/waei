@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
       "games",
       "game-images",
       "game-audio",
+      "landing",
     ];
     const safeFolder = allowedFolders.includes(folder) ? folder : "files";
 

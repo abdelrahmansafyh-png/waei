@@ -21,6 +21,12 @@ const cards = [
     href: "/admin/banners",
     icon: "📢",
   },
+  {
+    title: "اعدادات الصفحة الرئيسية",
+    desc: "إدارة نصوص وأيقونات وأزرار اللاندنغ بيج.",
+    href: "/admin/landing",
+    icon: "🏡",
+  },
 ];
 
 export default function AdminDashboardPage() {
@@ -31,7 +37,7 @@ export default function AdminDashboardPage() {
         <p className="mt-3 text-white/80">اختر القسم الذي تريد إدارته.</p>
       </div>
 
-      <div className="grid gap-5 md:grid-cols-3">
+      <div className="grid gap-5 md:grid-cols-4">
         {cards.map((card) => (
           <Link
             href={card.href}
