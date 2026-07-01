@@ -346,7 +346,14 @@ export default async function LandingPage() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {landingItems(landing, "methodology").map((item) => (
               <div key={item.item_key} className="group rounded-[2rem] border border-white bg-white p-6 shadow-[0_18px_45px_rgba(18,34,74,.08)] transition hover:-translate-y-2">
-                <div className={`mb-5 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br ${item.color_class || "from-[#19C6D4] to-[#0F9EB2]"} text-3xl text-white shadow-lg`}><LandingIcon item={item} className="text-3xl" imageClassName="h-full w-full object-cover" /></div>
+                <div className="mx-auto mb-6 flex h-32 w-32 items-center justify-center overflow-hidden rounded-[2rem] bg-white shadow">
+                  <LandingIcon
+                    item={item}
+                    className="text-6xl"
+                    imageClassName="h-full w-full object-cover"
+                  />
+                </div>  
+
                 <h3 className="text-2xl font-black text-[#14224A]">{item.title}</h3>
                 <p className="mt-4 text-base font-semibold leading-8 text-[#526079]">{item.description}</p>
               </div>
@@ -365,7 +372,13 @@ export default async function LandingPage() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {landingItems(landing, "parent_feature").map((item) => (
               <div key={item.item_key} className="rounded-[2rem] border border-[#E7F0F7] bg-[#F8FCFF] p-6 shadow-[0_18px_45px_rgba(18,34,74,.08)]">
-                <div className="mb-4 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-white text-4xl shadow"><LandingIcon item={item} className="text-4xl" imageClassName="h-full w-full object-cover" /></div>
+               <div className="mx-auto mb-6 flex h-32 w-32 items-center justify-center overflow-hidden rounded-[2rem] bg-white shadow">
+                  <LandingIcon
+                    item={item}
+                    className="text-6xl"
+                    imageClassName="h-full w-full object-cover"
+                  />
+                </div>
                 <h3 className="text-2xl font-black text-[#14224A]">{item.title}</h3>
                 <p className="mt-4 leading-8 text-[#526079]">{item.description}</p>
               </div>
@@ -388,7 +401,7 @@ export default async function LandingPage() {
             <div className={`grid gap-6 ${programs.length === 1 ? "mx-auto max-w-[420px]" : programs.length === 2 ? "mx-auto max-w-4xl md:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3"}`}>
               {programs.slice(0, 6).map((program) => (
                 <Link key={program.id} href={`/child/programs/${program.slug}`} className="overflow-hidden rounded-[2rem] border border-[#E7F0F7] bg-white shadow-[0_18px_45px_rgba(18,34,74,.08)] transition hover:-translate-y-2">
-                  {program.image_url ? <img src={getFileUrl(program.image_url)} alt={program.title} className="h-44 w-full object-cover" /> : <div className="h-44 bg-gradient-to-br from-[#19C6D4] via-[#8B5CF6] to-[#FFD54A]" />}
+                  {program.image_url ? <img src={getFileUrl(program.image_url)} alt={program.title} className="h- w-full object-cover" /> : <div className="h-44 bg-gradient-to-br from-[#19C6D4] via-[#8B5CF6] to-[#FFD54A]" />}
                   <div className="p-6">
                     <div className="mb-4 flex flex-wrap gap-2">{program.categories?.name && <span className="rounded-full bg-[#E8FBFD] px-4 py-2 text-sm font-black text-[#0E9FAA]">{program.categories.name}</span>}<span className={`rounded-full px-4 py-2 text-sm font-black ${program.access_type === "pro" ? "bg-yellow-100 text-yellow-700" : "bg-green-100 text-green-700"}`}>{program.access_type === "pro" ? "👑 Pro" : "🟢 مجاني"}</span></div>
                     <h3 className="text-2xl font-black text-[#14224A]">{program.title}</h3>
