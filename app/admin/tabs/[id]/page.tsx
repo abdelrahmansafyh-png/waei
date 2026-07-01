@@ -51,6 +51,7 @@ const emptyForm = {
   file_url: "",
   youtube_url: "",
   iframe_url: "",
+  cover_image_url: "",
   sort_order: 0,
 };
 
@@ -499,6 +500,12 @@ export default function TabContentPage({
   async function startEdit(item: Content) {
     setEditingId(item.id);
 
+    let coverImageUrl = "";
+    try {
+      const saved = item.body ? JSON.parse(item.body) : null;
+      coverImageUrl = saved?.cover_image_url || saved?.coverImageUrl || saved?.thumbnail_url || "";
+    } catch {}
+
     setForm({
       content_type: item.content_type || "text",
       title: item.title || "",
@@ -506,6 +513,7 @@ export default function TabContentPage({
       file_url: item.file_url || "",
       youtube_url: item.youtube_url || "",
       iframe_url: item.iframe_url || "",
+      cover_image_url: coverImageUrl,
       sort_order: item.sort_order || 0,
     });
 
@@ -553,6 +561,38 @@ export default function TabContentPage({
       }));
     } catch {
       alert("حدث خطأ أثناء رفع الملف");
+    }
+
+    setUploading(false);
+  }
+
+  async function uploadActivityCover(file: File) {
+    setUploading(true);
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("folder", "activity-covers");
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await res.json();
+
+      if (!res.ok || !result.success) {
+        alert(result.message || "فشل رفع صورة النشاط");
+        setUploading(false);
+        return;
+      }
+
+      setForm((prev) => ({
+        ...prev,
+        cover_image_url: result.path,
+      }));
+    } catch {
+      alert("حدث خطأ أثناء رفع صورة النشاط");
     }
 
     setUploading(false);
@@ -781,6 +821,7 @@ export default function TabContentPage({
         file_url: result.path,
         body: JSON.stringify({
           template_id: "interactive_story_static",
+          display_mode: "native_story",
           data_path: result.path,
           data_url: result.url,
           template_url: iframeUrl,
@@ -1009,11 +1050,33 @@ export default function TabContentPage({
       return;
     }
 
+    let bodyToSave: string | null = form.body || null;
+
+    if (["iframe", "zip_game", "interactive_story"].includes(form.content_type)) {
+      let parsedBody: any = {};
+
+      if (form.body) {
+        try {
+          parsedBody = JSON.parse(form.body);
+        } catch {
+          parsedBody = { description: form.body };
+        }
+      }
+
+      if (form.cover_image_url) {
+        parsedBody.cover_image_url = form.cover_image_url;
+      } else {
+        delete parsedBody.cover_image_url;
+      }
+
+      bodyToSave = Object.keys(parsedBody).length ? JSON.stringify(parsedBody) : null;
+    }
+
     const payload = {
       tab_id: tabId,
       content_type: form.content_type,
       title: form.title || null,
-      body: form.body || null,
+      body: bodyToSave,
       file_url: form.file_url || null,
       youtube_url: form.youtube_url || null,
       iframe_url: form.iframe_url || null,
@@ -1169,6 +1232,44 @@ export default function TabContentPage({
                       }
                       className="w-full rounded-[1.4rem] border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] shadow-sm outline-none transition focus:border-[#42BFA8] focus:ring-4 focus:ring-[#42BFA8]/10"
                     />
+
+                    {["iframe", "zip_game", "interactive_story"].includes(form.content_type) && (
+                      <div className="rounded-2xl border border-dashed border-[#8b5cf6]/40 bg-[#F7F3FF] p-5">
+                        <label className="mb-3 block font-black text-[#0B4D6B]">
+                          صورة النشاط / اللعبة
+                        </label>
+                        <p className="mb-4 text-sm font-bold leading-7 text-[#6E7A99]">
+                          هذه الصورة تظهر في كروت "العب وتعلّم" بدل صورة iframe.
+                        </p>
+
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) uploadActivityCover(file);
+                          }}
+                          className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#8b5cf6]/50 bg-white p-4 text-sm font-bold text-[#0B4D6B]"
+                        />
+
+                        {form.cover_image_url && (
+                          <div className="mt-4">
+                            <img
+                              src={getFileUrl(form.cover_image_url)}
+                              alt="صورة النشاط"
+                              className="h-44 w-full rounded-2xl object-cover shadow-sm"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setForm({ ...form, cover_image_url: "" })}
+                              className="mt-3 rounded-full bg-red-50 px-5 py-2 text-sm font-black text-red-600"
+                            >
+                              إزالة صورة النشاط
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                     {form.content_type === "text" && (
                       <textarea
@@ -1510,7 +1611,7 @@ export default function TabContentPage({
                           onClick={generateInteractiveStory}
                           className="w-full rounded-full bg-[#0B4D6B] py-3 font-black text-white disabled:opacity-50"
                         >
-                          حفظ بيانات القصة وتجهيز الرابط
+                          حفظ بيانات القصة وتجهيز العرض الداخلي
                         </button>
 
                         {uploading && (
@@ -1522,10 +1623,10 @@ export default function TabContentPage({
                         {form.iframe_url && (
                           <div className="rounded-2xl bg-white p-4">
                             <div className="mb-3 text-sm font-black text-[#0B4D6B]">
-                              تم تجهيز رابط القصة بنجاح 🎉
+                              تم حفظ بيانات القصة بنجاح 🎉
                             </div>
                             <p className="break-all text-xs text-[#6E7A99]">
-                              {form.iframe_url}
+                              سيتم عرض القصة داخل الموقع. الرابط القديم بقي محفوظًا كخيار احتياطي: {form.iframe_url}
                             </p>
                           </div>
                         )}

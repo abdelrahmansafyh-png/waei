@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
@@ -68,13 +68,22 @@ function calculateXp(score: number, maxScore: number, percentage: number) {
   return 0;
 }
 
+function hasNativeStoryData(item: Content | null | undefined) {
+  if (!item || item.content_type !== "interactive_story") return false;
+
+  const meta = readContentMeta(item);
+  const editorScenes = Array.isArray(meta.editor_scenes) ? meta.editor_scenes : [];
+  const storyScenes = Array.isArray(meta.story?.scenes) ? meta.story.scenes : [];
+
+  return editorScenes.length > 0 || storyScenes.some((scene: any) => Array.isArray(scene?.answers));
+}
+
 function isPlayableContent(item: Content) {
-  return (
-    (item.content_type === "iframe" ||
-      item.content_type === "zip_game" ||
-      item.content_type === "interactive_story") &&
-    Boolean(item.iframe_url)
-  );
+  if (item.content_type === "interactive_story") {
+    return Boolean(item.iframe_url) || hasNativeStoryData(item);
+  }
+
+  return (item.content_type === "iframe" || item.content_type === "zip_game") && Boolean(item.iframe_url);
 }
 
 function isTimedExternalPlayableContent(item: Content | null | undefined) {
@@ -92,6 +101,201 @@ function getContentKind(contentType: string) {
   if (contentType === "interactive_story" || contentType === "interactive_stories") return "story";
   if (contentType === "iframe" || contentType === "zip_game") return "game";
   return "content";
+}
+
+function readContentMeta(item: Content | null | undefined) {
+  if (!item?.body) return {} as any;
+
+  try {
+    return JSON.parse(item.body) || {};
+  } catch {
+    return {} as any;
+  }
+}
+
+function getActivityCover(item: Content | null | undefined, index = 0) {
+  const meta = readContentMeta(item);
+  const cover = meta.cover_image_url || meta.coverImageUrl || meta.thumbnail_url || meta.image_url;
+
+  if (cover) return `url("${getFileUrl(cover)}")`;
+
+  const fallback = [
+    "linear-gradient(135deg, #dff7ff, #f6e7ff)",
+    "linear-gradient(135deg, #fff2cc, #e3fff1)",
+    "linear-gradient(135deg, #e9ddff, #f5fbff)",
+    "linear-gradient(135deg, #d9f99d, #e0f2fe)",
+    "linear-gradient(135deg, #ffe4e6, #ede9fe)",
+    "linear-gradient(135deg, #ccfbf1, #fef3c7)",
+  ];
+
+  return fallback[index % fallback.length];
+}
+
+function getActivityIcon(item: Content | null | undefined, index = 0) {
+  const meta = readContentMeta(item);
+  if (meta.activity_icon) return meta.activity_icon;
+
+  const icons = ["🧩", "🔎", "🎧", "🎨", "🌱", "🃏", "🚀", "📚"];
+  return icons[index % icons.length];
+}
+
+function normalizeArabicForMatch(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ى/g, "ي")
+    .replace(/ة/g, "ه")
+    .replace(/[\u064B-\u0652]/g, "");
+}
+
+function hasAnyWord(value: string, words: string[]) {
+  const normalized = normalizeArabicForMatch(value);
+  return words.some((word) => normalized.includes(normalizeArabicForMatch(word)));
+}
+
+function getSequentialExperienceCopy(tab: Tab | null | undefined) {
+  const title = (tab?.title || "").trim();
+  const titlePart = title ? `قسم "${title}"` : "هذا القسم";
+
+  if (tab?.type === "interactive_stories") {
+    return {
+      kind: "story",
+      icon: "🎭",
+      guideIcon: "🎭",
+      itemName: "القصة",
+      itemPrevious: "القصة السابقة",
+      itemNext: "القصة التالية",
+      itemLabel: "قصة",
+      fallbackTitle: "القصة",
+      guideTitle: "تابع القصص بالترتيب",
+      guideDescription: `داخل ${titlePart}: ابدأ القصة الحالية، وبعد إكمالها تفتح القصة التالية تلقائيًا.`,
+      lockedAlert: "أكمل القصة السابقة أولًا 🎭",
+      currentAlert: "أكمل القصة الحالية أولًا 🎭",
+      doneStatus: "مكتملة",
+      activeStatus: "الحالية",
+      openStatus: "مفتوحة",
+      lockedStatus: "تفتح لاحقًا",
+    };
+  }
+
+  const isLearningTitle = hasAnyWord(title, [
+    "العب",
+    "لعب",
+    "تعلم",
+    "تعليم",
+    "نشاط",
+    "انشطة",
+    "أنشطة",
+    "محطات",
+  ]);
+
+  const isChallenge =
+    hasAnyWord(title, [
+      "تحدي",
+      "تحديات",
+      "اكسب",
+      "اختبر",
+      "اختبار",
+      "مهمة",
+      "مهام",
+      "مسابقة",
+      "جائزة",
+      "جوائز",
+      "كأس",
+      "كاس",
+      "بطل",
+      "بطولة",
+      "مسار",
+    ]) ||
+    (tab?.type === "games" && !isLearningTitle);
+
+  if (isChallenge) {
+    return {
+      kind: "challenge",
+      icon: "🏆",
+      guideIcon: "🏆",
+      itemName: "التحدي",
+      itemPrevious: "التحدي السابق",
+      itemNext: "التحدي التالي",
+      itemLabel: "تحدي",
+      fallbackTitle: "التحدي",
+      guideTitle: "امشِ على التحديات بالترتيب",
+      guideDescription: `داخل ${titlePart}: اضغط على التحدي الحالي، وبعد إكماله يفتح التحدي التالي تلقائيًا.`,
+      lockedAlert: "أكمل التحدي السابق أولًا 🏆",
+      currentAlert: "أكمل التحدي الحالي أولًا 🏆",
+      doneStatus: "مكتمل",
+      activeStatus: "الحالي",
+      openStatus: "مفتوح",
+      lockedStatus: "يفتح لاحقًا",
+    };
+  }
+
+  return {
+    kind: "activity",
+    icon: "🌱",
+    guideIcon: "🌱",
+    itemName: "النشاط",
+    itemPrevious: "النشاط السابق",
+    itemNext: "النشاط التالي",
+    itemLabel: "نشاط",
+    fallbackTitle: "النشاط",
+    guideTitle: "امشِ على الأنشطة بالترتيب",
+    guideDescription: `داخل ${titlePart}: اضغط على النشاط الحالي، وبعد إكماله يفتح النشاط التالي تلقائيًا.`,
+    lockedAlert: "أكمل النشاط السابق أولًا 🌱",
+    currentAlert: "أكمل النشاط الحالي أولًا 🌱",
+    doneStatus: "مكتمل",
+    activeStatus: "الحالي",
+    openStatus: "مفتوح",
+    lockedStatus: "يفتح لاحقًا",
+  };
+}
+
+function getSequentialCardIcon(item: Content | null | undefined, index: number, copy: ReturnType<typeof getSequentialExperienceCopy>) {
+  const metaIcon = readContentMeta(item).activity_icon;
+  if (metaIcon) return metaIcon;
+  if (copy.kind === "challenge") return ["🏆", "⚡", "🎯", "🎁", "⭐", "👑", "🚀", "💎"][index % 8];
+  return getActivityIcon(item, index);
+}
+
+function normalizeStoryScene(scene: any, index: number) {
+  return {
+    ...scene,
+    title: scene?.title || `المشهد ${index + 1}`,
+    story: scene?.story || scene?.description || scene?.text || "",
+    videoUrl: scene?.videoUrl || scene?.video_url || scene?.file_url || scene?.mediaUrl || "",
+    imageUrl: scene?.imageUrl || scene?.image_url || scene?.image || "",
+    question: scene?.question || scene?.prompt || "",
+    answers: Array.isArray(scene?.answers) ? scene.answers : [],
+  };
+}
+
+function getNativeStoryInfo(item: Content | null | undefined) {
+  const meta = readContentMeta(item);
+  const story = meta.story || {};
+  const editorScenes = Array.isArray(meta.editor_scenes) ? meta.editor_scenes : [];
+  const templateScenes = Array.isArray(story.scenes)
+    ? story.scenes.filter((scene: any) => Array.isArray(scene?.answers) || scene?.question || scene?.story)
+    : [];
+  const rawScenes = editorScenes.length ? editorScenes : templateScenes;
+
+  return {
+    title: story.title || item?.title || "قصة تفاعلية",
+    description:
+      story.description ||
+      meta.description ||
+      "شاهد القصة مشهدًا وراء مشهد، واختر التصرف المناسب داخل نفس الشاشة.",
+    coverImageUrl: meta.cover_image_url || meta.coverImageUrl || meta.thumbnail_url || meta.image_url || "",
+    scenes: rawScenes.map(normalizeStoryScene),
+  };
+}
+
+function getNativeStoryAnswerLabel(answer: any, index: number) {
+  return answer?.text || answer?.title || answer?.label || `الخيار ${index + 1}`;
+}
+
+function getStoryMediaUrl(value?: string | null) {
+  if (!value) return "";
+  return getFileUrl(value);
 }
 
 export default function ChildProgramPage() {
@@ -116,6 +320,10 @@ export default function ChildProgramPage() {
   const [finished, setFinished] = useState(false);
   const [fullscreenGame, setFullscreenGame] = useState<string | null>(null);
   const [completedContentIds, setCompletedContentIds] = useState<string[]>([]);
+  const [storyStarted, setStoryStarted] = useState(false);
+  const [storySceneIndex, setStorySceneIndex] = useState(0);
+  const [storyFeedback, setStoryFeedback] = useState<any>(null);
+  const [storyAnswers, setStoryAnswers] = useState<any[]>([]);
 
   const startTimeRef = useRef<number>(Date.now());
   const elapsedSecondsRef = useRef(0);
@@ -381,6 +589,10 @@ export default function ChildProgramPage() {
       if (typeof json.total_xp === "number") {
         setProfile((prev: any) => (prev ? { ...prev, xp: json.total_xp } : prev));
       }
+
+      if (content.content_type === "interactive_story") {
+        advanceToNextSequentialContent(content);
+      }
     } catch (err) {
       console.error("save attempt/progress failed", err);
     }
@@ -423,7 +635,11 @@ export default function ChildProgramPage() {
     }
   }
 
-  async function markContentCompleted(content: Content | null | undefined) {
+  async function markContentCompleted(
+    content: Content | null | undefined,
+    resultOverride?: any,
+    answersOverride?: any[]
+  ) {
     if (!profile?.id || !program?.id || !content?.id) return;
 
     try {
@@ -450,15 +666,16 @@ export default function ChildProgramPage() {
           content_type: content.content_type,
           last_position: currentStepIndex,
           duration_seconds: Math.floor((Date.now() - startTimeRef.current) / 1000),
-          result: {
-            type: "RASHID_PASSIVE_COMPLETION",
-            source: getContentKind(content.content_type),
-            completed: true,
-            score: 0,
-            maxScore: 0,
-            percentage: 0,
-          },
-          answers: [],
+          result:
+            resultOverride || {
+              type: "RASHID_PASSIVE_COMPLETION",
+              source: getContentKind(content.content_type),
+              completed: true,
+              score: 0,
+              maxScore: 0,
+              percentage: 0,
+            },
+          answers: answersOverride || [],
         }),
       });
 
@@ -542,10 +759,26 @@ export default function ChildProgramPage() {
     [activeContents]
   );
 
+  const activeTabInfo = tabs.find((t) => t.id === activeTab);
+  const activeTabTitle = activeTabInfo?.title;
+  const activeTabIcon = activeTabInfo ? icon(activeTabInfo.type) : "🎮";
+  const isLearningGamesTab = activeTabInfo?.type === "games";
+  const isInteractiveStoriesTab = activeTabInfo?.type === "interactive_stories";
+  const isSequentialCardsTab = isLearningGamesTab || isInteractiveStoriesTab;
+  const sequentialCopy = getSequentialExperienceCopy(activeTabInfo);
+
   const selectedGame =
-    iframeGames.find((game) => game.id === activeGameId) || iframeGames[0];
+    iframeGames.find((game) => game.id === activeGameId) ||
+    (isSequentialCardsTab ? getCurrentLearningActivity(iframeGames) : iframeGames[0]);
 
   selectedGameRef.current = selectedGame || null;
+
+  useEffect(() => {
+    setStoryStarted(false);
+    setStorySceneIndex(0);
+    setStoryFeedback(null);
+    setStoryAnswers([]);
+  }, [activeGameId, activeTab]);
 
   useEffect(() => {
     if (!activeTab) return;
@@ -576,8 +809,6 @@ export default function ChildProgramPage() {
   const selectedGameIndex = iframeGames.findIndex(
     (game) => game.id === selectedGame?.id
   );
-
-  const activeTabTitle = tabs.find((t) => t.id === activeTab)?.title;
 
   const hasGames = iframeGames.length > 0;
   const isLastGame = !hasGames || selectedGameIndex === iframeGames.length - 1;
@@ -619,11 +850,33 @@ export default function ChildProgramPage() {
       const resumeGame = resumeContentId
         ? games.find((game) => game.id === resumeContentId)
         : null;
-      setActiveGameId(resumeGame?.id || games[0].id);
+      const currentLearningActivity = getCurrentLearningActivity(games);
+      const preferredGame =
+        isSequentialCardsTab && resumeGame && completedContentIds.includes(resumeGame.id)
+          ? currentLearningActivity
+          : resumeGame || (isSequentialCardsTab ? currentLearningActivity : games[0]);
+
+      setActiveGameId((previousId) => {
+        const previousGame = games.find((game) => game.id === previousId);
+
+        if (isSequentialCardsTab) {
+          if (
+            previousGame &&
+            !completedContentIds.includes(previousGame.id) &&
+            isActivityUnlockedInList(games, games.findIndex((game) => game.id === previousGame.id))
+          ) {
+            return previousGame.id;
+          }
+
+          return preferredGame?.id || games[0].id;
+        }
+
+        return preferredGame?.id || previousGame?.id || games[0].id;
+      });
     } else {
       setActiveGameId("");
     }
-  }, [activeTab, contents]);
+  }, [activeTab, contents, completedContentIds.join("|"), isSequentialCardsTab, resumeContentId]);
 
   function formatTime(totalSeconds: number) {
     const minutes = Math.floor(totalSeconds / 60);
@@ -734,9 +987,17 @@ export default function ChildProgramPage() {
     if (!tabs.length) return;
 
     if (hasGames && !isLastGame) {
+      if (isSequentialCardsTab && selectedGame && !completedContentIds.includes(selectedGame.id)) {
+        alert(sequentialCopy.currentAlert);
+        return;
+      }
+
       const nextGame = iframeGames[selectedGameIndex + 1];
       saveCurrentPosition(nextGame);
       setActiveGameId(nextGame.id);
+      if (isInteractiveStoriesTab) {
+        resetNativeStoryState();
+      }
       return;
     }
 
@@ -765,6 +1026,400 @@ export default function ChildProgramPage() {
     markTabAutoContentsCompleted(activeTab);
     saveCurrentPosition();
     setActiveTab(tabs[prev].id);
+  }
+
+  function isActivityUnlockedInList(games: Content[], index: number) {
+    if (index <= 0) return true;
+
+    const previous = games[index - 1];
+    const current = games[index];
+
+    return (
+      completedContentIds.includes(previous?.id || "") ||
+      completedContentIds.includes(current?.id || "")
+    );
+  }
+
+  function getCurrentLearningActivity(games: Content[]) {
+    if (!games.length) return undefined;
+
+    const nextIncomplete = games.find((game, index) => {
+      return !completedContentIds.includes(game.id) && isActivityUnlockedInList(games, index);
+    });
+
+    return nextIncomplete || games[games.length - 1];
+  }
+
+  function isActivityUnlocked(index: number) {
+    return isActivityUnlockedInList(iframeGames, index);
+  }
+
+  function openLearningActivity(game: Content | null | undefined, index: number) {
+    if (!game) return;
+
+    if (!isActivityUnlocked(index)) {
+      alert(sequentialCopy.lockedAlert);
+      return;
+    }
+
+    saveCurrentPosition(game);
+    setActiveGameId(game.id);
+    setFullscreenGame(getGameIframeSrc(game));
+  }
+
+  function startSelectedLearningActivity() {
+    if (!selectedGame) return;
+
+    const index = iframeGames.findIndex((game) => game.id === selectedGame.id);
+
+    if (!isActivityUnlocked(index)) {
+      alert(sequentialCopy.lockedAlert);
+      return;
+    }
+
+    setFullscreenGame(getGameIframeSrc(selectedGame));
+  }
+
+  function resetNativeStoryState() {
+    setStoryStarted(false);
+    setStorySceneIndex(0);
+    setStoryFeedback(null);
+    setStoryAnswers([]);
+    setGameAnswers([]);
+    setGameResult(null);
+  }
+
+  function advanceToNextSequentialContent(content: Content | null | undefined) {
+    if (!content?.id) return false;
+
+    const tabItems = contents
+      .filter((item) => item.tab_id === content.tab_id && isPlayableContent(item))
+      .sort((a, b) => a.sort_order - b.sort_order);
+
+    const currentIndex = tabItems.findIndex((item) => item.id === content.id);
+    const nextItem = currentIndex >= 0 ? tabItems[currentIndex + 1] : null;
+
+    if (!nextItem) return false;
+
+    saveCurrentPosition(nextItem);
+    setActiveGameId(nextItem.id);
+    resetNativeStoryState();
+    return true;
+  }
+
+  function openStoryActivity(game: Content | null | undefined, index: number) {
+    if (!game) return;
+
+    if (!isActivityUnlocked(index)) {
+      alert(sequentialCopy.lockedAlert);
+      return;
+    }
+
+    saveCurrentPosition(game);
+    setActiveGameId(game.id);
+    resetNativeStoryState();
+  }
+
+  function startNativeStory() {
+    if (!selectedGame) return;
+
+    setStoryStarted(true);
+    setStorySceneIndex(0);
+    setStoryFeedback(null);
+    setStoryAnswers([]);
+    setGameAnswers([]);
+    setGameResult(null);
+    saveCurrentPosition(selectedGame);
+  }
+
+  function answerNativeStory(answer: any, answerIndex: number) {
+    const info = getNativeStoryInfo(selectedGame);
+    const currentScene = info.scenes[storySceneIndex];
+
+    const record = {
+      questionNumber: storySceneIndex + 1,
+      sceneTitle: currentScene?.title || `المشهد ${storySceneIndex + 1}`,
+      questionText: currentScene?.question || currentScene?.story || "",
+      selectedAnswers: [{ text: getNativeStoryAnswerLabel(answer, answerIndex) }],
+      isCorrect: Boolean(answer?.isCorrect ?? answer?.correct),
+    };
+
+    setStoryAnswers((prev) => [...prev, record]);
+    setGameAnswers((prev) => [...prev, record]);
+
+    setStoryFeedback({
+      ...answer,
+      answerIndex,
+      text: getNativeStoryAnswerLabel(answer, answerIndex),
+      feedbackVideoUrl: answer?.feedbackVideoUrl || answer?.feedback_video_url || answer?.videoUrl || answer?.video_url || "",
+      feedbackText:
+        answer?.feedbackText ||
+        answer?.feedback ||
+        (answer?.isCorrect || answer?.correct
+          ? "اختيار جميل! تابع القصة."
+          : "حاول أن تفكر بالتصرف الأفضل في الموقف القادم."),
+      isCorrect: Boolean(answer?.isCorrect ?? answer?.correct),
+    });
+  }
+
+  async function completeNativeStory() {
+    if (!selectedGame) return;
+
+    const result = {
+      type: "RASHID_NATIVE_STORY_RESULT",
+      source: "story",
+      completed: true,
+      score: storyAnswers.filter((answer) => answer.isCorrect).length,
+      maxScore: storyAnswers.length,
+      percentage: storyAnswers.length
+        ? Math.round((storyAnswers.filter((answer) => answer.isCorrect).length / storyAnswers.length) * 100)
+        : 100,
+      answers: storyAnswers,
+    };
+
+    await markContentCompleted(selectedGame, result, storyAnswers);
+
+    const movedToNextStory = advanceToNextSequentialContent(selectedGame);
+
+    if (!movedToNextStory) {
+      setGameResult(result);
+    }
+  }
+
+  function continueNativeStory() {
+    const info = getNativeStoryInfo(selectedGame);
+    const hasNextScene = storySceneIndex < info.scenes.length - 1;
+
+    setStoryFeedback(null);
+
+    if (hasNextScene) {
+      setStorySceneIndex((prev) => prev + 1);
+      return;
+    }
+
+    completeNativeStory();
+  }
+
+  function renderLegacyStoryIframe(showTitle = true) {
+    const legacyTitleNode = showTitle ? (
+      <h2 className="content-title">{activeTabTitle || "قصة تفاعلية"} {activeTabIcon}</h2>
+    ) : null;
+
+    if (!selectedGame?.iframe_url) {
+      return <div className="empty">لا توجد قصة داخل هذا القسم 🎭</div>;
+    }
+
+    return (
+      <>
+        {legacyTitleNode}
+        <div className="story-legacy-card">
+          <div className="story-legacy-head">
+            <span>🎭</span>
+            <div>
+              <strong>{selectedGame.title || "قصة تفاعلية"}</strong>
+              <p>هذه القصة محفوظة بالطريقة السابقة، وستعمل كما هي بدون حذف أو تغيير بياناتها.</p>
+            </div>
+          </div>
+
+          <div className="story-legacy-frame">
+            <button
+              type="button"
+              className="desktop-fullscreen-btn"
+              onClick={() => setFullscreenGame(getGameIframeSrc(selectedGame))}
+              aria-label="فتح القصة على كامل الشاشة"
+              title="كامل الشاشة"
+            >
+              ⛶
+            </button>
+            <iframe
+              src={getGameIframeSrc(selectedGame)}
+              className="game-player-iframe"
+              allowFullScreen
+              allow="fullscreen; autoplay; clipboard-write; encrypted-media"
+            />
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  function renderNativeStoryExperience(showTitle = true) {
+    const info = getNativeStoryInfo(selectedGame);
+    const scenes = info.scenes;
+
+    if (!selectedGame || !scenes.length) {
+      return renderLegacyStoryIframe(showTitle);
+    }
+
+    const completed = completedContentIds.includes(selectedGame.id);
+    const currentScene = scenes[Math.min(storySceneIndex, scenes.length - 1)];
+    const sceneAnswers = Array.isArray(currentScene?.answers) ? currentScene.answers : [];
+    const storyCover = info.coverImageUrl ? `url("${getFileUrl(info.coverImageUrl)}")` : getActivityCover(selectedGame, selectedGameIndex);
+    const currentMedia = storyFeedback?.feedbackVideoUrl || currentScene?.videoUrl || "";
+    const currentImage = !currentMedia ? currentScene?.imageUrl || "" : "";
+    const storyTitleNode = showTitle ? (
+      <h2 className="content-title">{activeTabTitle || "قصة تفاعلية"} {activeTabIcon}</h2>
+    ) : null;
+
+    if (completed && !storyStarted) {
+      return (
+        <>
+          {storyTitleNode}
+          <div className="story-start-card">
+            <div
+              className={`story-start-art ${storyCover.startsWith("linear-gradient") ? "" : "has-image"}`}
+              style={{ background: storyCover }}
+            >
+              <span className="story-start-badge">✅ مكتملة</span>
+            </div>
+            <div className="story-start-body">
+              <div className="story-kicker">قصة تفاعلية</div>
+              <h3>{info.title}</h3>
+              <p>{info.description}</p>
+              <button type="button" className="story-main-btn" onClick={startNativeStory}>
+                إعادة مشاهدة القصة <span>↻</span>
+              </button>
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    if (!storyStarted) {
+      return (
+        <>
+          {storyTitleNode}
+          <div className="story-start-card">
+            <div
+              className={`story-start-art ${storyCover.startsWith("linear-gradient") ? "" : "has-image"}`}
+              style={{ background: storyCover }}
+            >
+              <div className="story-floating-character">🎭</div>
+              <span className="story-start-badge">{scenes.length} مشاهد</span>
+            </div>
+            <div className="story-start-body">
+              <div className="story-kicker">رحلة قصة</div>
+              <h3>{info.title}</h3>
+              <p>{info.description}</p>
+              {/* <div className="story-start-note">
+                الطفل لا يختار المشهد. المشاهد تظهر بالتدريج في نفس المكان.
+              </div> */}
+              <button type="button" className="story-main-btn" onClick={startNativeStory}>
+                ابدأ القصة <span>▶</span>
+              </button>
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    return (
+      <>
+        {storyTitleNode}
+
+        <div className="native-story-shell">
+          <div className="native-story-top">
+            <div>
+              <span className="story-kicker">المشهد {storySceneIndex + 1} من {scenes.length}</span>
+              <h3>{storyFeedback ? "نتيجة اختيارك" : currentScene.title}</h3>
+            </div>
+            <span className={`story-status-pill ${completed ? "done" : ""}`}>
+              {completed ? "مكتملة ✓" : "بالترتيب"}
+            </span>
+          </div>
+
+          <div className="story-progress-line" aria-hidden="true">
+            {scenes.map((scene: any, index: number) => (
+              <span
+                key={`${scene?.title || "scene"}-${index}`}
+                className={index < storySceneIndex ? "done" : index === storySceneIndex ? "active" : ""}
+              />
+            ))}
+          </div>
+
+          <div className="story-scene-stage">
+            <div className="story-media-panel">
+              {currentMedia ? (
+                <video
+                  key={`${storySceneIndex}-${storyFeedback ? "feedback" : "scene"}-${currentMedia}`}
+                  src={getStoryMediaUrl(currentMedia)}
+                  controls
+                  playsInline
+                  className="story-native-video"
+                />
+              ) : currentImage ? (
+                <img
+                  src={getStoryMediaUrl(currentImage)}
+                  alt={currentScene.title}
+                  className="story-native-image"
+                />
+              ) : (
+                <div className="story-media-placeholder">
+                  <span>🎬</span>
+                  <strong>{storyFeedback ? "نتيجة الاختيار" : currentScene.title}</strong>
+                </div>
+              )}
+            </div>
+
+            <div className="story-content-panel">
+              {storyFeedback ? (
+                <>
+                  <div className={`story-feedback-badge ${storyFeedback.isCorrect ? "good" : "try"}`}>
+                    {storyFeedback.isCorrect ? "اختيار جميل 👏" : "نتعلم من التجربة 🌱"}
+                  </div>
+                  <h3>{storyFeedback.text}</h3>
+                  <p>{storyFeedback.feedbackText}</p>
+                  <button type="button" className="story-main-btn" onClick={continueNativeStory}>
+                    {storySceneIndex < scenes.length - 1 ? "المشهد التالي" : "إنهاء القصة"} <span>←</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  {currentScene.story ? <p className="story-scene-text">{currentScene.story}</p> : null}
+
+                  {currentScene.question ? (
+                    <div className="story-question-box">
+                      <span>سؤال المشهد</span>
+                      <strong>{currentScene.question}</strong>
+                    </div>
+                  ) : null}
+
+                  {sceneAnswers.length > 0 ? (
+                    <div className="story-answer-grid">
+                      {sceneAnswers.map((answer: any, answerIndex: number) => (
+                        <button
+                          key={`${getNativeStoryAnswerLabel(answer, answerIndex)}-${answerIndex}`}
+                          type="button"
+                          className="story-answer-btn"
+                          onClick={() => answerNativeStory(answer, answerIndex)}
+                        >
+                          <span>{answerIndex + 1}</span>
+                          {getNativeStoryAnswerLabel(answer, answerIndex)}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <button type="button" className="story-main-btn" onClick={continueNativeStory}>
+                      {storySceneIndex < scenes.length - 1 ? "المشهد التالي" : "إنهاء القصة"} <span>←</span>
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {gameResult?.type === "RASHID_NATIVE_STORY_RESULT" && (
+          <div className="story-done-card">
+            <span>🎉</span>
+            <div>
+              <strong>أحسنت! تم حفظ تقدم القصة.</strong>
+              <p>صار بإمكانك الانتقال للجزء التالي من البرنامج.</p>
+            </div>
+          </div>
+        )}
+      </>
+    );
   }
 
   if (loading || !program) {
@@ -1113,6 +1768,725 @@ export default function ChildProgramPage() {
                 border: 0;
                 border-radius: 22px;
                 display: block;
+              }
+
+              .learn-showcase {
+                display: grid;
+                grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr);
+                gap: 26px;
+                align-items: stretch;
+              }
+
+              .learn-hero-card {
+                position: relative;
+                min-height: 310px;
+                border-radius: 32px;
+                overflow: hidden;
+                padding: 34px;
+                display: flex;
+                align-items: flex-end;
+                box-shadow: 0 18px 40px rgba(62,87,120,.16);
+                background: linear-gradient(135deg, #dff7ff, #f6e7ff);
+              }
+
+              .learn-hero-card.has-image {
+                background-size: cover !important;
+                background-position: center !important;
+              }
+
+              .learn-hero-card::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(90deg, rgba(17,24,39,.55), rgba(17,24,39,.14), rgba(255,255,255,.05));
+                pointer-events: none;
+              }
+
+              .learn-hero-content {
+                position: relative;
+                z-index: 1;
+                max-width: 460px;
+                color: white;
+              }
+
+              .learn-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 7px;
+                margin-bottom: 14px;
+                border-radius: 999px;
+                padding: 9px 14px;
+                background: rgba(139,92,246,.95);
+                font-size: 13px;
+                font-weight: 900;
+                box-shadow: 0 10px 22px rgba(76,52,201,.22);
+              }
+
+              .learn-hero-title {
+                margin: 0;
+                font-size: 42px;
+                line-height: 1.25;
+                font-weight: 1000;
+                text-shadow: 0 3px 16px rgba(0,0,0,.24);
+              }
+
+              .learn-hero-desc {
+                margin: 12px 0 22px;
+                font-size: 18px;
+                line-height: 1.9;
+                font-weight: 800;
+                color: rgba(255,255,255,.92);
+              }
+
+              .learn-start-btn {
+                border: 0;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                border-radius: 999px;
+                padding: 15px 30px;
+                background: linear-gradient(135deg, #8b5cf6, #6847f5);
+                color: white;
+                font-size: 18px;
+                font-weight: 1000;
+                box-shadow: 0 10px 0 #4c34c9, 0 18px 34px rgba(76,52,201,.28);
+              }
+
+              .learn-side-card {
+                border-radius: 32px;
+                border: 1px solid #e9e4ff;
+                background: linear-gradient(180deg, #ffffff, #faf8ff);
+                padding: 26px;
+                box-shadow: 0 14px 32px rgba(62,87,120,.10);
+              }
+
+              .learn-side-label {
+                display: inline-flex;
+                border-radius: 999px;
+                padding: 9px 16px;
+                background: #f0e9ff;
+                color: #7048e8;
+                font-weight: 1000;
+                margin-bottom: 14px;
+              }
+
+              .learn-side-title {
+                color: #20294f;
+                font-size: 28px;
+                line-height: 1.4;
+                font-weight: 1000;
+                margin: 0 0 12px;
+              }
+
+              .learn-side-desc {
+                color: #667085;
+                font-size: 16px;
+                line-height: 1.9;
+                font-weight: 800;
+              }
+
+              .learn-next-note {
+                margin-top: 22px;
+                border-radius: 20px;
+                background: #f4f0ff;
+                color: #7048e8;
+                padding: 14px 16px;
+                font-weight: 900;
+                line-height: 1.8;
+              }
+
+              .activity-guide {
+                margin: 0 auto 22px;
+                max-width: 820px;
+                border-radius: 24px;
+                border: 1px solid #ece7ff;
+                background: linear-gradient(135deg, #fbfaff, #ffffff);
+                padding: 16px 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 14px;
+                text-align: right;
+                color: #20294f;
+                box-shadow: 0 10px 24px rgba(62,87,120,.07);
+              }
+
+              .activity-guide > span {
+                flex: 0 0 auto;
+                width: 44px;
+                height: 44px;
+                border-radius: 999px;
+                background: #eefbf1;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+              }
+
+              .activity-guide strong {
+                display: block;
+                font-size: 18px;
+                font-weight: 1000;
+                color: #7048e8;
+              }
+
+              .activity-guide p {
+                margin: 4px 0 0;
+                color: #667085;
+                font-size: 14px;
+                line-height: 1.7;
+                font-weight: 800;
+              }
+
+              .activity-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 18px;
+                margin-top: 24px;
+              }
+
+              .activity-card {
+                position: relative;
+                border: 1px solid #edf0fb;
+                border-radius: 26px;
+                background: white;
+                overflow: hidden;
+                box-shadow: 0 12px 26px rgba(62,87,120,.09);
+                cursor: pointer;
+                text-align: right;
+                transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+              }
+
+              .activity-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 18px 34px rgba(62,87,120,.14);
+              }
+
+              .activity-card.active {
+                border-color: #8b5cf6;
+                box-shadow: 0 0 0 4px rgba(139,92,246,.13), 0 18px 34px rgba(62,87,120,.13);
+              }
+
+              .activity-card.locked {
+                opacity: .72;
+                filter: grayscale(.25);
+                cursor: not-allowed;
+              }
+
+              .activity-cover {
+                height: 132px;
+                background-size: cover !important;
+                background-position: center !important;
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                padding: 12px;
+              }
+
+              .activity-status {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 38px;
+                height: 34px;
+                padding: 0 10px;
+                border-radius: 999px;
+                background: rgba(255,255,255,.94);
+                color: #7048e8;
+                font-weight: 1000;
+                box-shadow: 0 8px 18px rgba(62,87,120,.14);
+              }
+
+              .activity-status.done {
+                color: #16a34a;
+              }
+
+              .activity-status.lock {
+                color: #64748b;
+              }
+
+              .activity-body {
+                padding: 16px 16px 18px;
+              }
+
+              .activity-title {
+                min-height: 52px;
+                color: #20294f;
+                font-size: 17px;
+                font-weight: 1000;
+                line-height: 1.55;
+              }
+
+              .activity-meta {
+                margin-top: 12px;
+                display: flex;
+                justify-content: space-between;
+                gap: 10px;
+                color: #6e7a99;
+                font-size: 13px;
+                font-weight: 900;
+              }
+
+              .story-player-section {
+                margin-top: 26px;
+              }
+
+              .story-activity-grid {
+                margin-bottom: 6px;
+              }
+
+              .challenge-guide > span {
+                background: #fff7ed;
+                color: #f59e0b;
+              }
+
+              .challenge-activity-card.active {
+                border-color: #f59e0b;
+                box-shadow: 0 0 0 4px rgba(245,158,11,.16), 0 18px 34px rgba(62,87,120,.13);
+              }
+
+              .challenge-activity-card .activity-status {
+                color: #b45309;
+              }
+
+              .challenge-activity-card .activity-status.done {
+                color: #16a34a;
+              }
+
+              .journey-strip {
+                margin-top: 24px;
+                border-radius: 28px;
+                background: linear-gradient(135deg, #f7f3ff, #ffffff);
+                border: 1px solid #ece7ff;
+                padding: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 16px;
+              }
+
+              .journey-dots {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex: 1;
+              }
+
+              .journey-dot {
+                width: 36px;
+                height: 36px;
+                border-radius: 999px;
+                background: #e5e7eb;
+                color: #64748b;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 1000;
+                box-shadow: inset 0 -3px 0 rgba(0,0,0,.06);
+              }
+
+              .journey-dot.done { background: #22c55e; color: white; }
+              .journey-dot.active { background: #7048e8; color: white; transform: scale(1.12); }
+
+              .journey-line {
+                height: 3px;
+                flex: 1;
+                min-width: 18px;
+                border-radius: 999px;
+                background: repeating-linear-gradient(90deg, #c4b5fd 0 8px, transparent 8px 16px);
+              }
+
+              .story-start-card {
+                display: grid;
+                grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+                gap: 24px;
+                align-items: stretch;
+                border-radius: 34px;
+                padding: 18px;
+                background: linear-gradient(135deg, #fff, #f7f3ff);
+                border: 1px solid #ece7ff;
+                box-shadow: 0 16px 36px rgba(62,87,120,.10);
+              }
+
+              .story-start-art {
+                position: relative;
+                min-height: 360px;
+                border-radius: 28px;
+                overflow: hidden;
+                background-size: cover !important;
+                background-position: center !important;
+                display: flex;
+                align-items: flex-end;
+                justify-content: flex-start;
+                padding: 22px;
+              }
+
+              .story-start-art::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background:
+                  radial-gradient(circle at 20% 18%, rgba(255,255,255,.55), transparent 14%),
+                  linear-gradient(180deg, rgba(32,41,79,.05), rgba(32,41,79,.50));
+                pointer-events: none;
+              }
+
+              .story-floating-character {
+                position: absolute;
+                right: 24px;
+                top: 24px;
+                z-index: 1;
+                width: 78px;
+                height: 78px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 28px;
+                background: rgba(255,255,255,.92);
+                font-size: 42px;
+                box-shadow: 0 14px 28px rgba(62,87,120,.16);
+                animation: storyFloat 2.6s ease-in-out infinite;
+              }
+
+              @keyframes storyFloat {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-8px); }
+              }
+
+              .story-start-badge {
+                position: relative;
+                z-index: 1;
+                display: inline-flex;
+                align-items: center;
+                border-radius: 999px;
+                padding: 12px 18px;
+                background: rgba(255,255,255,.94);
+                color: #7048e8;
+                font-weight: 1000;
+                box-shadow: 0 10px 22px rgba(62,87,120,.16);
+              }
+
+              .story-start-body {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 20px 8px;
+              }
+
+              .story-kicker {
+                display: inline-flex;
+                align-self: flex-start;
+                border-radius: 999px;
+                padding: 9px 16px;
+                background: #f0e9ff;
+                color: #7048e8;
+                font-size: 14px;
+                font-weight: 1000;
+                margin-bottom: 14px;
+              }
+
+              .story-start-body h3,
+              .native-story-top h3,
+              .story-content-panel h3 {
+                margin: 0;
+                color: #20294f;
+                font-size: 36px;
+                line-height: 1.35;
+                font-weight: 1000;
+              }
+
+              .story-start-body p,
+              .story-content-panel p {
+                color: #667085;
+                font-size: 18px;
+                line-height: 2;
+                font-weight: 800;
+                margin: 16px 0 0;
+              }
+
+              .story-start-note {
+                margin: 22px 0;
+                border-radius: 22px;
+                padding: 16px 18px;
+                background: #fff8db;
+                color: #7a5b00;
+                font-weight: 900;
+                line-height: 1.9;
+              }
+
+              .story-main-btn {
+                border: 0;
+                cursor: pointer;
+                align-self: flex-start;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                border-radius: 999px;
+                padding: 16px 30px;
+                background: linear-gradient(135deg, #8b5cf6, #6847f5);
+                color: white;
+                font-size: 18px;
+                font-weight: 1000;
+                box-shadow: 0 10px 0 #4c34c9, 0 18px 34px rgba(76,52,201,.26);
+              }
+
+              .native-story-shell {
+                border-radius: 34px;
+                padding: 22px;
+                background: linear-gradient(180deg, #ffffff, #fbfaff);
+                border: 1px solid #ece7ff;
+                box-shadow: 0 16px 36px rgba(62,87,120,.10);
+              }
+
+              .native-story-top {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 16px;
+                margin-bottom: 18px;
+              }
+
+              .story-status-pill {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 44px;
+                border-radius: 999px;
+                padding: 0 16px;
+                background: #eef7ff;
+                color: #3361cc;
+                font-weight: 1000;
+                flex: 0 0 auto;
+              }
+
+              .story-status-pill.done {
+                background: #dcfce7;
+                color: #15803d;
+              }
+
+              .story-progress-line {
+                display: flex;
+                gap: 8px;
+                margin-bottom: 22px;
+              }
+
+              .story-progress-line span {
+                flex: 1;
+                height: 12px;
+                border-radius: 999px;
+                background: #e5e7eb;
+                overflow: hidden;
+              }
+
+              .story-progress-line span.done { background: #22c55e; }
+              .story-progress-line span.active { background: #8b5cf6; box-shadow: 0 0 0 5px rgba(139,92,246,.12); }
+
+              .story-scene-stage {
+                display: grid;
+                grid-template-columns: minmax(0, .92fr) minmax(320px, .78fr);
+                gap: 22px;
+                align-items: stretch;
+              }
+
+              .story-media-panel {
+                min-height: 440px;
+                border-radius: 30px;
+                padding: 12px;
+                background: #ffffff;
+                box-shadow: inset 0 0 0 1px #edf2ff, 0 12px 28px rgba(62,87,120,.09);
+                overflow: hidden;
+              }
+
+              .story-native-video,
+              .story-native-image {
+                width: 100%;
+                height: 100%;
+                min-height: 416px;
+                border-radius: 22px;
+                object-fit: cover;
+                display: block;
+                background: #111827;
+              }
+
+              .story-media-placeholder {
+                min-height: 416px;
+                height: 100%;
+                border-radius: 22px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 14px;
+                background:
+                  radial-gradient(circle at 25% 20%, rgba(255,255,255,.8), transparent 15%),
+                  linear-gradient(135deg, #dff7ff, #f6e7ff);
+                color: #20294f;
+                text-align: center;
+                padding: 24px;
+              }
+
+              .story-media-placeholder span { font-size: 56px; }
+              .story-media-placeholder strong { font-size: 26px; font-weight: 1000; }
+
+              .story-content-panel {
+                border-radius: 30px;
+                background: #f8fbff;
+                border: 1px solid #edf2ff;
+                padding: 26px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+              }
+
+              .story-scene-text {
+                margin-top: 0 !important;
+              }
+
+              .story-question-box {
+                margin-top: 18px;
+                border-radius: 24px;
+                padding: 18px;
+                background: white;
+                border: 1px solid #e9e4ff;
+                box-shadow: 0 10px 22px rgba(62,87,120,.07);
+              }
+
+              .story-question-box span {
+                display: block;
+                color: #7048e8;
+                font-size: 13px;
+                font-weight: 1000;
+                margin-bottom: 8px;
+              }
+
+              .story-question-box strong {
+                display: block;
+                color: #20294f;
+                font-size: 22px;
+                line-height: 1.7;
+                font-weight: 1000;
+              }
+
+              .story-answer-grid {
+                display: grid;
+                gap: 12px;
+                margin-top: 20px;
+              }
+
+              .story-answer-btn {
+                border: 2px solid #e9e4ff;
+                border-radius: 22px;
+                background: white;
+                color: #20294f;
+                padding: 16px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                font-size: 17px;
+                line-height: 1.6;
+                font-weight: 1000;
+                text-align: right;
+                cursor: pointer;
+                box-shadow: 0 10px 22px rgba(62,87,120,.07);
+                transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+              }
+
+              .story-answer-btn:hover {
+                transform: translateY(-3px);
+                border-color: #8b5cf6;
+                box-shadow: 0 16px 30px rgba(62,87,120,.12);
+              }
+
+              .story-answer-btn span {
+                flex: 0 0 auto;
+                width: 38px;
+                height: 38px;
+                border-radius: 14px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                background: #f0e9ff;
+                color: #7048e8;
+              }
+
+              .story-feedback-badge {
+                align-self: flex-start;
+                border-radius: 999px;
+                padding: 10px 16px;
+                font-size: 14px;
+                font-weight: 1000;
+                margin-bottom: 16px;
+              }
+
+              .story-feedback-badge.good {
+                background: #dcfce7;
+                color: #15803d;
+              }
+
+              .story-feedback-badge.try {
+                background: #fff7ed;
+                color: #9a3412;
+              }
+
+              .story-done-card {
+                margin-top: 20px;
+                border-radius: 28px;
+                padding: 20px;
+                background: #ecfdf5;
+                border: 1px solid #bbf7d0;
+                color: #166534;
+                display: flex;
+                gap: 14px;
+                align-items: center;
+                font-weight: 900;
+              }
+
+              .story-done-card > span { font-size: 32px; }
+              .story-done-card strong { display: block; font-size: 18px; }
+              .story-done-card p { margin: 4px 0 0; color: #15803d; }
+
+              .story-legacy-card {
+                border-radius: 34px;
+                padding: 22px;
+                background: linear-gradient(180deg, #ffffff, #fbfaff);
+                border: 1px solid #ece7ff;
+                box-shadow: 0 16px 36px rgba(62,87,120,.10);
+              }
+
+              .story-legacy-head {
+                display: flex;
+                gap: 14px;
+                align-items: center;
+                margin-bottom: 18px;
+                color: #20294f;
+              }
+
+              .story-legacy-head > span {
+                width: 56px;
+                height: 56px;
+                border-radius: 20px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                background: #f0e9ff;
+                font-size: 28px;
+              }
+
+              .story-legacy-head strong { display: block; font-size: 22px; font-weight: 1000; }
+              .story-legacy-head p { margin: 4px 0 0; color: #667085; font-weight: 800; }
+
+              .story-legacy-frame {
+                position: relative;
+                width: min(100%, 620px);
+                aspect-ratio: 3 / 4;
+                margin: 0 auto;
+                border-radius: 32px;
+                padding: 12px;
+                background: white;
+                box-shadow: 0 18px 45px rgba(62,87,120,.15);
+                overflow: hidden;
               }
 
               .game-tabs {
@@ -1698,7 +3072,354 @@ export default function ChildProgramPage() {
                   border-radius: 18px;
                 }
 
-                .game-tabs {
+                .learn-showcase {
+                display: grid;
+                grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr);
+                gap: 26px;
+                align-items: stretch;
+              }
+
+              .learn-hero-card {
+                position: relative;
+                min-height: 310px;
+                border-radius: 32px;
+                overflow: hidden;
+                padding: 34px;
+                display: flex;
+                align-items: flex-end;
+                box-shadow: 0 18px 40px rgba(62,87,120,.16);
+                background: linear-gradient(135deg, #dff7ff, #f6e7ff);
+              }
+
+              .learn-hero-card.has-image {
+                background-size: cover !important;
+                background-position: center !important;
+              }
+
+              .learn-hero-card::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(90deg, rgba(17,24,39,.55), rgba(17,24,39,.14), rgba(255,255,255,.05));
+                pointer-events: none;
+              }
+
+              .learn-hero-content {
+                position: relative;
+                z-index: 1;
+                max-width: 460px;
+                color: white;
+              }
+
+              .learn-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 7px;
+                margin-bottom: 14px;
+                border-radius: 999px;
+                padding: 9px 14px;
+                background: rgba(139,92,246,.95);
+                font-size: 13px;
+                font-weight: 900;
+                box-shadow: 0 10px 22px rgba(76,52,201,.22);
+              }
+
+              .learn-hero-title {
+                margin: 0;
+                font-size: 42px;
+                line-height: 1.25;
+                font-weight: 1000;
+                text-shadow: 0 3px 16px rgba(0,0,0,.24);
+              }
+
+              .learn-hero-desc {
+                margin: 12px 0 22px;
+                font-size: 18px;
+                line-height: 1.9;
+                font-weight: 800;
+                color: rgba(255,255,255,.92);
+              }
+
+              .learn-start-btn {
+                border: 0;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                border-radius: 999px;
+                padding: 15px 30px;
+                background: linear-gradient(135deg, #8b5cf6, #6847f5);
+                color: white;
+                font-size: 18px;
+                font-weight: 1000;
+                box-shadow: 0 10px 0 #4c34c9, 0 18px 34px rgba(76,52,201,.28);
+              }
+
+              .learn-side-card {
+                border-radius: 32px;
+                border: 1px solid #e9e4ff;
+                background: linear-gradient(180deg, #ffffff, #faf8ff);
+                padding: 26px;
+                box-shadow: 0 14px 32px rgba(62,87,120,.10);
+              }
+
+              .learn-side-label {
+                display: inline-flex;
+                border-radius: 999px;
+                padding: 9px 16px;
+                background: #f0e9ff;
+                color: #7048e8;
+                font-weight: 1000;
+                margin-bottom: 14px;
+              }
+
+              .learn-side-title {
+                color: #20294f;
+                font-size: 28px;
+                line-height: 1.4;
+                font-weight: 1000;
+                margin: 0 0 12px;
+              }
+
+              .learn-side-desc {
+                color: #667085;
+                font-size: 16px;
+                line-height: 1.9;
+                font-weight: 800;
+              }
+
+              .learn-next-note {
+                margin-top: 22px;
+                border-radius: 20px;
+                background: #f4f0ff;
+                color: #7048e8;
+                padding: 14px 16px;
+                font-weight: 900;
+                line-height: 1.8;
+              }
+
+              .activity-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 18px;
+                margin-top: 24px;
+              }
+
+              .activity-card {
+                position: relative;
+                border: 1px solid #edf0fb;
+                border-radius: 26px;
+                background: white;
+                overflow: hidden;
+                box-shadow: 0 12px 26px rgba(62,87,120,.09);
+                cursor: pointer;
+                text-align: right;
+                transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+              }
+
+              .activity-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 18px 34px rgba(62,87,120,.14);
+              }
+
+              .activity-card.active {
+                border-color: #8b5cf6;
+                box-shadow: 0 0 0 4px rgba(139,92,246,.13), 0 18px 34px rgba(62,87,120,.13);
+              }
+
+              .activity-card.locked {
+                opacity: .72;
+                filter: grayscale(.25);
+                cursor: not-allowed;
+              }
+
+              .activity-cover {
+                height: 132px;
+                background-size: cover !important;
+                background-position: center !important;
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                padding: 12px;
+              }
+
+              .activity-status {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 38px;
+                height: 34px;
+                padding: 0 10px;
+                border-radius: 999px;
+                background: rgba(255,255,255,.94);
+                color: #7048e8;
+                font-weight: 1000;
+                box-shadow: 0 8px 18px rgba(62,87,120,.14);
+              }
+
+              .activity-status.done {
+                color: #16a34a;
+              }
+
+              .activity-status.lock {
+                color: #64748b;
+              }
+
+              .activity-body {
+                padding: 16px 16px 18px;
+              }
+
+              .activity-title {
+                min-height: 52px;
+                color: #20294f;
+                font-size: 17px;
+                font-weight: 1000;
+                line-height: 1.55;
+              }
+
+              .activity-meta {
+                margin-top: 12px;
+                display: flex;
+                justify-content: space-between;
+                gap: 10px;
+                color: #6e7a99;
+                font-size: 13px;
+                font-weight: 900;
+              }
+
+              .journey-strip {
+                margin-top: 24px;
+                border-radius: 28px;
+                background: linear-gradient(135deg, #f7f3ff, #ffffff);
+                border: 1px solid #ece7ff;
+                padding: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 16px;
+              }
+
+              .journey-dots {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex: 1;
+              }
+
+              .journey-dot {
+                width: 36px;
+                height: 36px;
+                border-radius: 999px;
+                background: #e5e7eb;
+                color: #64748b;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 1000;
+                box-shadow: inset 0 -3px 0 rgba(0,0,0,.06);
+              }
+
+              .journey-dot.done { background: #22c55e; color: white; }
+              .journey-dot.active { background: #7048e8; color: white; transform: scale(1.12); }
+
+              .journey-line {
+                height: 3px;
+                flex: 1;
+                min-width: 18px;
+                border-radius: 999px;
+                background: repeating-linear-gradient(90deg, #c4b5fd 0 8px, transparent 8px 16px);
+              }
+
+              .story-start-card,
+              .story-scene-stage {
+                grid-template-columns: 1fr;
+              }
+
+              .story-start-card,
+              .native-story-shell,
+              .story-legacy-card {
+                border-radius: 26px;
+                padding: 14px;
+              }
+
+              .story-start-art {
+                min-height: 230px;
+                border-radius: 22px;
+              }
+
+              .story-floating-character {
+                width: 58px;
+                height: 58px;
+                border-radius: 20px;
+                font-size: 32px;
+              }
+
+              .story-start-body {
+                padding: 10px 2px;
+                text-align: center;
+                align-items: center;
+              }
+
+              .story-kicker,
+              .story-main-btn,
+              .story-feedback-badge {
+                align-self: center;
+              }
+
+              .story-start-body h3,
+              .native-story-top h3,
+              .story-content-panel h3 {
+                font-size: 24px;
+                text-align: center;
+              }
+
+              .story-start-body p,
+              .story-content-panel p,
+              .story-scene-text {
+                font-size: 16px;
+                line-height: 1.9;
+                text-align: center;
+              }
+
+              .native-story-top {
+                flex-direction: column;
+                text-align: center;
+              }
+
+              .story-media-panel {
+                min-height: 250px;
+                border-radius: 24px;
+              }
+
+              .story-native-video,
+              .story-native-image,
+              .story-media-placeholder {
+                min-height: 245px;
+                border-radius: 18px;
+              }
+
+              .story-content-panel {
+                border-radius: 24px;
+                padding: 18px;
+              }
+
+              .story-question-box strong {
+                font-size: 18px;
+                text-align: center;
+              }
+
+              .story-answer-btn {
+                font-size: 15px;
+                border-radius: 18px;
+                padding: 13px;
+              }
+
+              .story-legacy-frame {
+                width: 100%;
+                border-radius: 24px;
+              }
+
+              .game-tabs {
                   gap: 9px;
                   padding-bottom: 12px;
                   margin-bottom: 12px;
@@ -1777,7 +3498,105 @@ export default function ChildProgramPage() {
                   font-size: 15px;
                   line-height: 1.8;
                 }
+
+                .activity-guide {
+                  margin: 0 0 12px;
+                  padding: 12px;
+                  border-radius: 20px;
+                  justify-content: flex-start;
+                  text-align: right;
+                }
+
+                .activity-guide > span {
+                  width: 38px;
+                  height: 38px;
+                  font-size: 21px;
+                }
+
+                .activity-guide strong {
+                  font-size: 15px;
+                }
+
+                .activity-guide p {
+                  font-size: 12px;
+                  line-height: 1.6;
+                }
+
+                .learn-showcase,
+                .learn-side-card,
+                .learn-hero-card {
+                  display: none !important;
+                }
+
+                .activity-grid {
+                  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                  gap: 12px;
+                  margin-top: 12px;
+                }
+
+                .activity-card {
+                  display: grid;
+                  grid-template-columns: 112px minmax(0, 1fr);
+                  min-height: 118px;
+                  border-radius: 22px;
+                }
+
+                .activity-card:hover {
+                  transform: none;
+                }
+
+                .activity-cover {
+                  height: 100%;
+                  min-height: 118px;
+                  padding: 9px;
+                }
+
+                .activity-status {
+                  min-width: 30px;
+                  height: 28px;
+                  padding: 0 8px;
+                  font-size: 12px;
+                }
+
+                .activity-body {
+                  padding: 12px 14px;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: center;
+                }
+
+                .activity-title {
+                  min-height: 0;
+                  font-size: 15px;
+                  line-height: 1.55;
+                }
+
+                .activity-meta {
+                  margin-top: 10px;
+                  font-size: 12px;
+                }
+
+                .journey-strip {
+                  display: none;
+                }
               }
+
+              @media (max-width: 1100px) and (min-width: 901px) {
+                .activity-grid {
+                  grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+              }
+
+              @media (max-width: 640px) {
+                .activity-grid {
+                  grid-template-columns: 1fr !important;
+                }
+
+                .activity-card {
+                  grid-template-columns: 112px minmax(0, 1fr);
+                }
+              }
+
 
 
                 .nav-btn.next.disabled {
@@ -2016,88 +3835,199 @@ export default function ChildProgramPage() {
                             {iframeGames.length > 0 && (
                               <article className="content-card" style={{ overflow: "hidden" }}>
                                
-                                <h2 className="content-title">
+                                {isLearningGamesTab ? (
+                                  <>
+                                    <h2 className="content-title">{activeTabTitle || "العب وتعلّم"} {activeTabIcon}</h2>
 
-                                  {activeTabTitle === "الأنشطة"
-                                    ? "أنشطة البرنامج ✨"
-                                    : activeTabTitle === "التعلم بالقصص"
-                                    ? "قصص البرنامج 🎭"
-                                    : "ألعاب البرنامج 🎮"}
-                                                                      
-                                </h2>
+                                    <div className={`activity-guide ${sequentialCopy.kind === "challenge" ? "challenge-guide" : ""}`}>
+                                      <span>{sequentialCopy.guideIcon}</span>
+                                      <div>
+                                        <strong>{sequentialCopy.guideTitle}</strong>
+                                        <p>{sequentialCopy.guideDescription}</p>
+                                      </div>
+                                    </div>
 
-                                <div
-                                  className="game-tabs"
-                                  style={{
-                                    overflowX: "auto",
-                                    flexWrap: "nowrap",
-                                  }}
-                                >
-                                  {iframeGames.map((game, index) => (
-                                    <button
-                                      key={game.id}
-                                      onClick={() => { saveCurrentPosition(game); setActiveGameId(game.id); }}
-                                      className={`game-tab ${
-                                        selectedGame?.id === game.id
-                                          ? "active"
-                                          : ""
-                                      }`}
-                                    >
-                                      {game.content_type === "interactive_story" ? "🎭" : "🎮"} {game.title || `لعبة ${index + 1}`}
-                                      {completedContentIds.includes(game.id) ? (
-                                        <span className="game-done-check">✓</span>
-                                      ) : null}
-                                    </button>
-                                  ))}
-                                </div>
+                                    <div className="activity-grid">
+                                      {iframeGames.map((game, index) => {
+                                        const done = completedContentIds.includes(game.id);
+                                        const active = selectedGame?.id === game.id;
+                                        const unlocked = isActivityUnlocked(index);
+                                        const cover = getActivityCover(game, index);
 
-                                {selectedGame?.iframe_url && (
-                                  <div>
-                                    <div className="game-player-shell">
-                                      <div className="game-player-desktop">
-                                        <div className="game-player-frame">
+                                        return (
                                           <button
+                                            key={game.id}
                                             type="button"
-                                            className="desktop-fullscreen-btn"
+                                            onClick={() => openLearningActivity(game, index)}
+                                            className={`activity-card ${sequentialCopy.kind === "challenge" ? "challenge-activity-card" : ""} ${active ? "active" : ""} ${!unlocked ? "locked" : ""}`}
+                                          >
+                                            <div
+                                              className="activity-cover"
+                                              style={{ background: cover }}
+                                            >
+                                              <span className={`activity-status ${done ? "done" : !unlocked ? "lock" : ""}`}>
+                                                {done ? "✓" : !unlocked ? "🔒" : index + 1}
+                                              </span>
+                                              <span className="activity-status">{getSequentialCardIcon(game, index, sequentialCopy)}</span>
+                                            </div>
+                                            <div className="activity-body">
+                                              <div className="activity-title">
+                                                {game.title || `${sequentialCopy.itemLabel} ${index + 1}`}
+                                              </div>
+                                              <div className="activity-meta">
+                                                <span>{done ? sequentialCopy.doneStatus : active ? sequentialCopy.activeStatus : unlocked ? sequentialCopy.openStatus : sequentialCopy.lockedStatus}</span>
+                                                <span>{sequentialCopy.itemLabel} {index + 1}</span>
+                                              </div>
+                                            </div>
+                                          </button>
+                                        );
+                                      })}
+                                    </div>
+
+                                    <div className="journey-strip">
+                                      <div className="journey-dots">
+                                        {iframeGames.map((game, index) => (
+                                          <Fragment key={game.id}>
+                                            <span className={`journey-dot ${completedContentIds.includes(game.id) ? "done" : selectedGame?.id === game.id ? "active" : ""}`}>
+                                              {completedContentIds.includes(game.id) ? "✓" : index + 1}
+                                            </span>
+                                            {index < iframeGames.length - 1 ? <span className="journey-line" /> : null}
+                                          </Fragment>
+                                        ))}
+                                      </div>
+                                      <strong>رحلة {sequentialCopy.kind === "challenge" ? "التحديات" : "الأنشطة"}</strong>
+                                    </div>
+                                  </>
+                                ) : isInteractiveStoriesTab ? (
+                                  <>
+                                    <h2 className="content-title">{activeTabTitle || "قصة تفاعلية"} {activeTabIcon}</h2>
+
+                                    <div className="activity-guide story-guide">
+                                      <span>{sequentialCopy.guideIcon}</span>
+                                      <div>
+                                        <strong>{sequentialCopy.guideTitle}</strong>
+                                        <p>{sequentialCopy.guideDescription}</p>
+                                      </div>
+                                    </div>
+
+                                    <div className="activity-grid story-activity-grid">
+                                      {iframeGames.map((game, index) => {
+                                        const done = completedContentIds.includes(game.id);
+                                        const active = selectedGame?.id === game.id;
+                                        const unlocked = isActivityUnlocked(index);
+                                        const cover = getActivityCover(game, index);
+
+                                        return (
+                                          <button
+                                            key={game.id}
+                                            type="button"
+                                            onClick={() => openStoryActivity(game, index)}
+                                            className={`activity-card story-activity-card ${active ? "active" : ""} ${!unlocked ? "locked" : ""}`}
+                                          >
+                                            <div
+                                              className="activity-cover"
+                                              style={{ background: cover }}
+                                            >
+                                              <span className={`activity-status ${done ? "done" : !unlocked ? "lock" : ""}`}>
+                                                {done ? "✓" : !unlocked ? "🔒" : index + 1}
+                                              </span>
+                                              <span className="activity-status">🎭</span>
+                                            </div>
+                                            <div className="activity-body">
+                                              <div className="activity-title">
+                                                {game.title || `${sequentialCopy.itemLabel} ${index + 1}`}
+                                              </div>
+                                              <div className="activity-meta">
+                                                <span>{done ? sequentialCopy.doneStatus : active ? sequentialCopy.activeStatus : unlocked ? sequentialCopy.openStatus : sequentialCopy.lockedStatus}</span>
+                                                <span>{sequentialCopy.itemLabel} {index + 1}</span>
+                                              </div>
+                                            </div>
+                                          </button>
+                                        );
+                                      })}
+                                    </div>
+
+                                    <div className="story-player-section">
+                                      {renderNativeStoryExperience(false)}
+                                    </div>
+                                  </>
+                                ) : (
+                                  <>
+                                    <h2 className="content-title">
+                                      {activeTabTitle ? `${activeTabTitle} ${activeTabIcon}` : "ألعاب البرنامج 🎮"}
+                                    </h2>
+
+                                    <div
+                                      className="game-tabs"
+                                      style={{
+                                        overflowX: "auto",
+                                        flexWrap: "nowrap",
+                                      }}
+                                    >
+                                      {iframeGames.map((game, index) => (
+                                        <button
+                                          key={game.id}
+                                          onClick={() => { saveCurrentPosition(game); setActiveGameId(game.id); }}
+                                          className={`game-tab ${
+                                            selectedGame?.id === game.id
+                                              ? "active"
+                                              : ""
+                                          }`}
+                                        >
+                                          {game.content_type === "interactive_story" ? "🎭" : "🎮"} {game.title || `لعبة ${index + 1}`}
+                                          {completedContentIds.includes(game.id) ? (
+                                            <span className="game-done-check">✓</span>
+                                          ) : null}
+                                        </button>
+                                      ))}
+                                    </div>
+
+                                    {selectedGame?.iframe_url && (
+                                      <div>
+                                        <div className="game-player-shell">
+                                          <div className="game-player-desktop">
+                                            <div className="game-player-frame">
+                                              <button
+                                                type="button"
+                                                className="desktop-fullscreen-btn"
+                                                onClick={() =>
+                                                  setFullscreenGame(getGameIframeSrc(selectedGame))
+                                                }
+                                                aria-label="فتح اللعبة على كامل الشاشة"
+                                                title="كامل الشاشة"
+                                              >
+                                                ⛶
+                                              </button>
+
+                                              <iframe
+                                                src={getGameIframeSrc(selectedGame)}
+                                                className="game-player-iframe"
+                                                allowFullScreen
+                                                allow="fullscreen; autoplay; clipboard-write; encrypted-media"
+                                              />
+                                            </div>
+                                          </div>
+
+                                          <div
+                                            className="game-player-mobile-preview"
                                             onClick={() =>
                                               setFullscreenGame(getGameIframeSrc(selectedGame))
                                             }
-                                            aria-label="فتح اللعبة على كامل الشاشة"
-                                            title="كامل الشاشة"
+                                            role="button"
+                                            tabIndex={0}
                                           >
-                                            ⛶
-                                          </button>
+                                            <iframe
+                                              src={getGameIframeSrc(selectedGame)}
+                                              className="game-player-mobile-preview-frame"
+                                              allowFullScreen
+                                              allow="fullscreen; autoplay; clipboard-write; encrypted-media"
+                                            />
 
-                                          <iframe
-                                            src={getGameIframeSrc(selectedGame)}
-                                            
-                                            className="game-player-iframe"
-                                            allowFullScreen
-                                            allow="fullscreen; autoplay; clipboard-write; encrypted-media"
-                                          />
+                                            <div className="game-player-mobile-overlay">
+                                              <span>▶ العب الآن</span>
+                                            </div>
+                                          </div>
                                         </div>
-                                      </div>
-
-                                      <div
-                                        className="game-player-mobile-preview"
-                                        onClick={() =>
-                                          setFullscreenGame(getGameIframeSrc(selectedGame))
-                                        }
-                                        role="button"
-                                        tabIndex={0}
-                                      >
-                                        <iframe
-                                          src={getGameIframeSrc(selectedGame)}
-                                          className="game-player-mobile-preview-frame"
-                                          allowFullScreen
-                                          allow="fullscreen; autoplay; clipboard-write; encrypted-media"
-                                        />
-
-                                        <div className="game-player-mobile-overlay">
-                                          <span>▶ العب الآن</span>
-                                        </div>
-                                      </div>
-                                    </div>
 
                                     {gameResult && (
                                       <div
@@ -2252,6 +4182,8 @@ export default function ChildProgramPage() {
                                     )}
                                   </div>
                                 )}
+                                  </>
+                                )}
                               </article>
                             )}
                           </div>
@@ -2296,7 +4228,9 @@ export default function ChildProgramPage() {
                           ? "إنهاء البرنامج 🎉"
                           : `أكمل الباقي (${completedProgramContents}/${totalProgramContents})`
                         : hasGames && !isLastGame
-                        ? "اللعبة التالية 🎮"
+                        ? isInteractiveStoriesTab
+                          ? "القصة التالية 🎭"
+                          : "اللعبة التالية 🎮"
                         : "التالي →"}
                     </button>
                   </footer>
