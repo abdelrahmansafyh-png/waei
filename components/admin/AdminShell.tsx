@@ -31,12 +31,12 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   }
 
   return (
-    <div dir="rtl" className="min-h-screen bg-[#F5FAF8] text-[#0B4D6B]">
-      <aside className="fixed right-0 top-0 z-50 hidden h-screen w-72 flex-col border-l border-[#E4EFEA] bg-white p-5 shadow-xl lg:flex">
-        <div className="mb-8 rounded-3xl bg-[#F5FAF8] p-4">
+    <div dir="rtl" className="min-h-screen bg-[var(--rashid-color-f5faf8)] text-[var(--rashid-color-0b4d6b)]">
+      <aside className="fixed right-0 top-0 z-50 hidden h-screen w-72 flex-col border-l border-[var(--rashid-color-e4efea)] bg-white p-5 shadow-xl lg:flex">
+        <div className="mb-8 rounded-3xl bg-[var(--rashid-color-f5faf8)] p-4">
           <img src="/images/logo.png" alt="راشد" className="mb-3 h-14 w-auto" />
           <div className="text-xl font-black">لوحة راشد</div>
-          <div className="mt-1 text-xs font-bold text-[#6E7A99]">إدارة المنصة</div>
+          <div className="mt-1 text-xs font-bold text-[var(--rashid-color-6e7a99)]">إدارة المنصة</div>
         </div>
 
         <nav className="flex-1 space-y-2">
@@ -53,8 +53,8 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
                 className={[
                   "flex items-center gap-3 rounded-2xl px-4 py-3.5 text-sm font-black transition",
                   active
-                    ? "bg-[#0B4D6B] text-white"
-                    : "text-[#0B4D6B] hover:bg-[#F5FAF8]",
+                    ? "bg-[var(--rashid-color-0b4d6b)] text-white"
+                    : "text-[var(--rashid-color-0b4d6b)] hover:bg-[var(--rashid-color-f5faf8)]",
                 ].join(" ")}
               >
                 <span className="text-xl">{item.icon}</span>
@@ -67,7 +67,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         <div className="space-y-2">
           <Link
             href="/"
-            className="block rounded-2xl bg-[#F5FAF8] px-4 py-3 text-center text-sm font-black text-[#0B4D6B]"
+            className="block rounded-2xl bg-[var(--rashid-color-f5faf8)] px-4 py-3 text-center text-sm font-black text-[var(--rashid-color-0b4d6b)]"
           >
             عرض الموقع
           </Link>
@@ -80,11 +80,11 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         </div>
       </aside>
 
-      <header className="sticky top-0 z-40 border-b border-[#E4EFEA] bg-white/95 px-4 py-4 shadow-sm backdrop-blur lg:mr-72 lg:px-8">
+      <header className="sticky top-0 z-40 border-b border-[var(--rashid-color-e4efea)] bg-white/95 px-4 py-4 shadow-sm backdrop-blur lg:mr-72 lg:px-8">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <div className="text-xs font-black text-[#42BFA8]">لوحة الإدارة</div>
-            <h1 className="mt-1 text-2xl font-black text-[#0B4D6B]">
+            <div className="text-xs font-black text-[var(--rashid-color-42bfa8)]">لوحة الإدارة</div>
+            <h1 className="mt-1 text-2xl font-black text-[var(--rashid-color-0b4d6b)]">
               {navItems.find((item) =>
                 item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href)
               )?.label || "الأدمن"}
@@ -104,7 +104,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-2xl bg-[#F5FAF8] px-3 py-2 text-center text-xs font-black text-[#0B4D6B]"
+              className="rounded-2xl bg-[var(--rashid-color-f5faf8)] px-3 py-2 text-center text-xs font-black text-[var(--rashid-color-0b4d6b)]"
             >
               {item.icon} {item.label}
             </Link>

@@ -20,11 +20,11 @@ type LandingItem = {
 };
 
 const numberColors = [
-  "bg-[#8B5CF6]",
-  "bg-[#19B889]",
-  "bg-[#8B5CF6]",
-  "bg-[#F8B23A]",
-  "bg-[#7048E8]",
+  "bg-[var(--rashid-color-8b5cf6)]",
+  "bg-[var(--rashid-color-19b889)]",
+  "bg-[var(--rashid-color-8b5cf6)]",
+  "bg-[var(--rashid-color-f8b23a)]",
+  "bg-[var(--rashid-color-7048e8)]",
 ];
 
 function mediaSrc(path: string | null | undefined) {
@@ -46,7 +46,7 @@ function SliderMedia({ item }: { item: LandingItem }) {
   }
 
   return (
-    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#F3EEFF] via-[#E8FBFD] to-[#FFF5DD]">
+    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[var(--rashid-color-f3eeff)] via-[var(--rashid-color-e8fbfd)] to-[var(--rashid-color-fff5dd)]">
       <span className="text-8xl leading-none drop-shadow-sm">{item.icon || "⭐"}</span>
     </div>
   );
@@ -76,7 +76,7 @@ export default function LandingSimpleCardsSlider({ items }: { items: LandingItem
         onClick={() => goTo(activeIndex - 1)}
         disabled={activeIndex === 0}
         aria-label="السابق"
-        className="absolute right-1 top-[42%] z-20 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-3xl font-black text-[#14224A] shadow-[0_12px_30px_rgba(18,34,74,.18)] transition hover:bg-[#E8FBFD] disabled:cursor-not-allowed disabled:opacity-30 md:flex"
+        className="absolute right-1 top-[42%] z-20 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-3xl font-black text-[var(--rashid-color-14224a)] shadow-[0_12px_30px_rgba(18,34,74,.18)] transition hover:bg-[var(--rashid-color-e8fbfd)] disabled:cursor-not-allowed disabled:opacity-30 md:flex"
       >
         ‹
       </button>
@@ -94,7 +94,7 @@ export default function LandingSimpleCardsSlider({ items }: { items: LandingItem
               className="min-w-[275px] snap-center sm:min-w-[305px] lg:min-w-[320px]"
             >
               <article className="relative overflow-visible rounded-[2rem] transition duration-200 hover:-translate-y-1">
-                <div className="h-[310px] overflow-hidden rounded-[2rem] bg-[#F4F7FF] shadow-[0_18px_45px_rgba(18,34,74,.12)] sm:h-[335px] lg:h-[355px]">
+                <div className="h-[310px] overflow-hidden rounded-[2rem] bg-[var(--rashid-color-f4f7ff)] shadow-[0_18px_45px_rgba(18,34,74,.12)] sm:h-[335px] lg:h-[355px]">
                   <SliderMedia item={item} />
                 </div>
 
@@ -103,12 +103,12 @@ export default function LandingSimpleCardsSlider({ items }: { items: LandingItem
                     {/* <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${color} text-base font-black text-white shadow-[0_8px_18px_rgba(18,34,74,.18)]`}>
                       {index + 1}
                     </span> */}
-                    <h3 className="m-0 text-xl font-black leading-[1.35] text-[#14224A] sm:text-[22px]">
+                    <h3 className="m-0 text-xl font-black leading-[1.35] text-[var(--rashid-color-14224a)] sm:text-[22px]">
                       {item.title}
                     </h3>
                   </div>
 
-                  <p className="mx-auto m-0 max-w-[245px] text-sm font-bold leading-7 text-[#526079] sm:text-[15px]">
+                  <p className="mx-auto m-0 max-w-[245px] text-sm font-bold leading-7 text-[var(--rashid-color-526079)] sm:text-[15px]">
                     {item.description}
                   </p>
                 </div>
@@ -123,7 +123,7 @@ export default function LandingSimpleCardsSlider({ items }: { items: LandingItem
         onClick={() => goTo(activeIndex + 1)}
         disabled={activeIndex >= items.length - 1}
         aria-label="التالي"
-        className="absolute left-1 top-[42%] z-20 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-3xl font-black text-[#14224A] shadow-[0_12px_30px_rgba(18,34,74,.18)] transition hover:bg-[#E8FBFD] disabled:cursor-not-allowed disabled:opacity-30 md:flex"
+        className="absolute left-1 top-[42%] z-20 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-3xl font-black text-[var(--rashid-color-14224a)] shadow-[0_12px_30px_rgba(18,34,74,.18)] transition hover:bg-[var(--rashid-color-e8fbfd)] disabled:cursor-not-allowed disabled:opacity-30 md:flex"
       >
       ›
       </button>

@@ -227,8 +227,8 @@ export default function ProgramPreviewPage({
         //   min-height: 100vh;
         //   background:
         //     radial-gradient(circle at 10% 10%, rgba(255,255,255,.9), transparent 24%),
-        //     linear-gradient(180deg, #dff4ff 0%, #f7fbff 45%, #eaffdd 100%);
-        //   color: #20294f;
+        //     linear-gradient(180deg, var(--rashid-color-dff4ff) 0%, var(--rashid-color-f7fbff) 45%, var(--rashid-color-eaffdd) 100%);
+        //   color: var(--rashid-color-20294f);
         //   padding: 24px;
         //   overflow-x: hidden;
         //   font-family: Arial, sans-serif;
@@ -243,7 +243,7 @@ export default function ProgramPreviewPage({
             background-position: center top;
             background-repeat: no-repeat;
             background-attachment: fixed;
-            color: #20294f;
+            color: var(--rashid-color-20294f);
             padding: 24px;
             overflow-x: hidden;
             font-family: Arial, sans-serif;
@@ -270,8 +270,8 @@ export default function ProgramPreviewPage({
         .preview-badge {
           border: 0;
           text-decoration: none;
-          background: #fff;
-          color: #20294f;
+          background: var(--rashid-color-ffffff);
+          color: var(--rashid-color-20294f);
           padding: 16px 22px;
           border-radius: 24px;
           font-weight: 900;
@@ -279,7 +279,7 @@ export default function ProgramPreviewPage({
         }
 
         .preview-badge {
-          background: linear-gradient(135deg, #8b5cf6, #5b7cfa);
+          background: linear-gradient(135deg, var(--rashid-color-8b5cf6), var(--rashid-color-5b7cfa));
           color: white;
         }
 
@@ -298,25 +298,25 @@ export default function ProgramPreviewPage({
           height: 70px;
           border-radius: 50%;
           object-fit: cover;
-          background: #dff4ff;
+          background: var(--rashid-color-dff4ff);
         }
 
         .child-name {
-          font-size: 23px;
+          font-size: var(--font-size-23px);
           font-weight: 900;
         }
 
         .xp {
-          color: #f5a800;
+          color: var(--rashid-color-f5a800);
           font-weight: 900;
-          font-size: 18px;
+          font-size: var(--font-size-18px);
         }
 
         .xp-bar {
           margin-top: 8px;
           width: 150px;
           height: 10px;
-          background: #dce4f5;
+          background: var(--rashid-color-dce4f5);
           border-radius: 999px;
           overflow: hidden;
         }
@@ -324,7 +324,7 @@ export default function ProgramPreviewPage({
         .xp-fill {
           height: 100%;
           width: 65%;
-          background: #5ec267;
+          background: var(--rashid-color-5ec267);
           border-radius: 999px;
         }
 
@@ -360,8 +360,8 @@ export default function ProgramPreviewPage({
 
         .age-pill {
           display: inline-block;
-          background: #f0e9ff;
-          color: #7048e8;
+          background: var(--rashid-color-f0e9ff);
+          color: var(--rashid-color-7048e8);
           padding: 12px 20px;
           border-radius: 999px;
           font-weight: 900;
@@ -370,17 +370,17 @@ export default function ProgramPreviewPage({
         }
 
         .hero-title {
-          font-size: 54px;
+          font-size: var(--font-size-54px);
           line-height: 1.2;
           font-weight: 900;
           margin: 0;
-          color: #20294f;
+          color: var(--rashid-color-20294f);
         }
 
         .hero-desc {
-          font-size: 21px;
+          font-size: var(--font-size-21px);
           line-height: 2;
-          color: #667085;
+          color: var(--rashid-color-667085);
           max-width: 650px;
           margin-top: 18px;
         }
@@ -394,7 +394,7 @@ export default function ProgramPreviewPage({
 
         .stat {
           background: rgba(255,255,255,.85);
-          border: 1px solid #edf0f8;
+          border: 1px solid var(--rashid-color-edf0f8);
           border-radius: 24px;
           padding: 18px;
           text-align: center;
@@ -402,19 +402,19 @@ export default function ProgramPreviewPage({
         }
 
         .stat-icon {
-          font-size: 30px;
+          font-size: var(--font-size-30px);
         }
 
         .stat-label {
-          color: #9aa3b2;
-          font-size: 13px;
+          color: var(--rashid-color-9aa3b2);
+          font-size: var(--font-size-13px);
           font-weight: 800;
           margin-top: 8px;
         }
 
         .stat-value {
-          color: #20294f;
-          font-size: 16px;
+          color: var(--rashid-color-20294f);
+          font-size: var(--font-size-16px);
           font-weight: 900;
           margin-top: 3px;
         }
@@ -457,15 +457,15 @@ export default function ProgramPreviewPage({
           border-radius: 22px;
           padding: 17px 24px;
           background: white;
-          color: #20294f;
-          font-size: 18px;
+          color: var(--rashid-color-20294f);
+          font-size: var(--font-size-18px);
           font-weight: 900;
           box-shadow: 0 8px 22px rgba(62, 87, 120, .12);
           cursor: pointer;
         }
 
         .tab-btn.active {
-          background: linear-gradient(135deg, #8b5cf6, #6847f5);
+          background: linear-gradient(135deg, var(--rashid-color-8b5cf6), var(--rashid-color-6847f5));
           color: white;
         }
 
@@ -476,20 +476,20 @@ export default function ProgramPreviewPage({
           left: 50%;
           width: 18px;
           height: 18px;
-          background: #6847f5;
+          background: var(--rashid-color-6847f5);
           transform: translateX(-50%) rotate(45deg);
           border-radius: 3px;
         }
 
         .empty {
-          background: #f8fbff;
-          border: 2px dashed #dbe7ff;
+          background: var(--rashid-color-f8fbff);
+          border: 2px dashed var(--rashid-color-dbe7ff);
           border-radius: 30px;
           padding: 60px 20px;
           text-align: center;
-          font-size: 24px;
+          font-size: var(--font-size-24px);
           font-weight: 900;
-          color: #20294f;
+          color: var(--rashid-color-20294f);
         }
 
         .content-list {
@@ -498,8 +498,8 @@ export default function ProgramPreviewPage({
         }
 
         .content-card {
-          background: #fbfdff;
-          border: 1px solid #e8eefc;
+          background: var(--rashid-color-fbfdff);
+          border: 1px solid var(--rashid-color-e8eefc);
           border-radius: 34px;
           padding: 28px;
           box-shadow: 0 10px 24px rgba(62,87,120,.06);
@@ -507,8 +507,8 @@ export default function ProgramPreviewPage({
 
         .content-title {
           text-align: center;
-          color: #7048e8;
-          font-size: 30px;
+          color: var(--rashid-color-7048e8);
+          font-size: var(--font-size-30px);
           font-weight: 900;
           margin: 0 0 22px;
         }
@@ -521,9 +521,9 @@ export default function ProgramPreviewPage({
         }
 
         .text-body {
-          font-size: 21px;
+          font-size: var(--font-size-21px);
           line-height: 2.1;
-          color: #667085;
+          color: var(--rashid-color-667085);
           text-align: center;
           font-weight: 700;
 
@@ -593,15 +593,15 @@ export default function ProgramPreviewPage({
           white-space: nowrap;
           border-radius: 18px;
           padding: 14px 20px;
-          background: #eef7ff;
-          color: #20294f;
+          background: var(--rashid-color-eef7ff);
+          color: var(--rashid-color-20294f);
           font-weight: 900;
-          font-size: 16px;
+          font-size: var(--font-size-16px);
           box-shadow: 0 8px 18px rgba(62,87,120,.08);
         }
 
         .game-tab.active {
-          background: linear-gradient(135deg, #8b5cf6, #6847f5);
+          background: linear-gradient(135deg, var(--rashid-color-8b5cf6), var(--rashid-color-6847f5));
           color: white;
         }
 
@@ -625,7 +625,7 @@ export default function ProgramPreviewPage({
 
         .file-link {
           display: inline-flex;
-          background: #22c55e;
+          background: var(--rashid-color-22c55e);
           color: white;
           text-decoration: none;
           padding: 16px 28px;
@@ -651,19 +651,19 @@ export default function ProgramPreviewPage({
           border: 0;
           border-radius: 999px;
           padding: 17px 34px;
-          font-size: 19px;
+          font-size: var(--font-size-19px);
           font-weight: 900;
           cursor: pointer;
         }
 
         .prev {
           background: white;
-          color: #7048e8;
+          color: var(--rashid-color-7048e8);
           box-shadow: 0 8px 20px rgba(62,87,120,.12);
         }
 
         .next {
-          background: linear-gradient(135deg, #8b5cf6, #6847f5);
+          background: linear-gradient(135deg, var(--rashid-color-8b5cf6), var(--rashid-color-6847f5));
           color: white;
           box-shadow: 0 8px 20px rgba(112,72,232,.22);
         }
@@ -677,12 +677,12 @@ export default function ProgramPreviewPage({
           width: 11px;
           height: 11px;
           border-radius: 999px;
-          background: #d7dce8;
+          background: var(--rashid-color-d7dce8);
         }
 
         .dot.active {
           width: 38px;
-          background: #7048e8;
+          background: var(--rashid-color-7048e8);
         }
 
         .loading-card {
@@ -692,9 +692,9 @@ export default function ProgramPreviewPage({
           padding: 40px;
           border-radius: 32px;
           text-align: center;
-          font-size: 24px;
+          font-size: var(--font-size-24px);
           font-weight: 900;
-          color: #7048e8;
+          color: var(--rashid-color-7048e8);
         }
 
         @media (max-width: 900px) {
@@ -716,13 +716,13 @@ export default function ProgramPreviewPage({
           }
 
           .hero-title {
-            font-size: 38px;
+            font-size: var(--font-size-38px);
             text-align: center;
           }
 
           .hero-desc {
             text-align: center;
-            font-size: 18px;
+            font-size: var(--font-size-18px);
           }
 
           .stats {
@@ -953,12 +953,12 @@ export default function ProgramPreviewPage({
                               <div
                                 style={{
                                   marginTop: 20,
-                                  background: "#E9FFF7",
-                                  border: "2px solid #42BFA8",
+                                  background: "var(--rashid-color-e9fff7)",
+                                  border: "2px solid var(--rashid-color-42bfa8)",
                                   borderRadius: 24,
                                   padding: 20,
                                   fontWeight: 900,
-                                  color: "#064E3B",
+                                  color: "var(--rashid-color-064e3b)",
                                 }}
                               >
                                 <div>✅ وصلت نتيجة اللعبة بنجاح</div>
@@ -972,22 +972,22 @@ export default function ProgramPreviewPage({
                                   }}
                                 >
                                   <div style={{ background: "white", borderRadius: 18, padding: 16, textAlign: "center" }}>
-                                    <div style={{ fontSize: 26, color: "#0B4D6B" }}>{gameResult.score ?? 0}</div>
+                                    <div style={{ fontSize: 26, color: "var(--rashid-color-0b4d6b)" }}>{gameResult.score ?? 0}</div>
                                     <div style={{ fontSize: 13 }}>Score</div>
                                   </div>
 
                                   <div style={{ background: "white", borderRadius: 18, padding: 16, textAlign: "center" }}>
-                                    <div style={{ fontSize: 26, color: "#0B4D6B" }}>{gameResult.maxScore ?? "-"}</div>
+                                    <div style={{ fontSize: 26, color: "var(--rashid-color-0b4d6b)" }}>{gameResult.maxScore ?? "-"}</div>
                                     <div style={{ fontSize: 13 }}>Max</div>
                                   </div>
 
                                   <div style={{ background: "white", borderRadius: 18, padding: 16, textAlign: "center" }}>
-                                    <div style={{ fontSize: 26, color: "#0B4D6B" }}>{gameResult.percentage ?? 0}%</div>
+                                    <div style={{ fontSize: 26, color: "var(--rashid-color-0b4d6b)" }}>{gameResult.percentage ?? 0}%</div>
                                     <div style={{ fontSize: 13 }}>Percentage</div>
                                   </div>
 
                                   {/* <div style={{ background: "white", borderRadius: 18, padding: 16, textAlign: "center" }}>
-                                    <div style={{ fontSize: 20, color: "#0B4D6B" }}>{gameResult.confidence || "tracked"}</div>
+                                    <div style={{ fontSize: 20, color: "var(--rashid-color-0b4d6b)" }}>{gameResult.confidence || "tracked"}</div>
                                     <div style={{ fontSize: 13 }}>Confidence</div>
                                   </div> */}
                                 </div>

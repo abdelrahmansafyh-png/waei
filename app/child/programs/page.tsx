@@ -157,24 +157,24 @@ export default function ChildProgramsPage() {
           <header className="mb-8 rounded-[2.8rem] border border-white/40 bg-white/90 p-7 shadow-[0_22px_70px_rgba(62,87,120,.18)] backdrop-blur-xl">
             <div className="flex flex-wrap items-center justify-between gap-5">
               <div>
-                <div className="mb-3 inline-flex rounded-full bg-[#E8F8F3] px-5 py-2 font-black text-[#0E9FAA]">
+                <div className="mb-3 inline-flex rounded-full bg-[var(--rashid-color-e8f8f3)] px-5 py-2 font-black text-[var(--rashid-color-0e9faa)]">
                   برامج راشد 🗺️
                 </div>
 
-                <h1 className="text-5xl font-black leading-[1.2] text-[#20294f]">
+                <h1 className="text-5xl font-black leading-[1.2] text-[var(--rashid-color-20294f)]">
                   اختر برنامجك التفاعلي 🌱
                 </h1>
 
-                <p className="mt-4 max-w-2xl text-lg font-bold leading-8 text-[#667085]">
+                <p className="mt-4 max-w-2xl text-lg font-bold leading-8 text-[var(--rashid-color-667085)]">
                   ابدأ من أي برنامج، وسيتم حفظ تقدمك أثناء التعلم.
                 </p>
               </div>
 
-              <div className="flex items-center gap-3 rounded-[30px] bg-[#F9FFFD] px-5 py-4 shadow-sm">
+              <div className="flex items-center gap-3 rounded-[30px] bg-[var(--rashid-color-f9fffd)] px-5 py-4 shadow-sm">
                 <div className="text-4xl">{childAvatar}</div>
                 <div>
                   <div className="text-xl font-black">{childName}</div>
-                  <div className="font-black text-[#f5a800]">
+                  <div className="font-black text-[var(--rashid-color-f5a800)]">
                     ✅ {completedCount} مكتملة
                   </div>
                 </div>
@@ -183,20 +183,20 @@ export default function ChildProgramsPage() {
           </header>
 
           {!proActive && (
-            <section className="mb-8 rounded-[2.5rem] border border-[#F4E7A2] bg-[#FFF8D9]/95 p-6 shadow-[0_16px_40px_rgba(216,180,60,0.12)]">
+            <section className="mb-8 rounded-[2.5rem] border border-[var(--rashid-color-f4e7a2)] bg-[var(--rashid-color-fff8d9)]/95 p-6 shadow-[0_16px_40px_rgba(216,180,60,0.12)]">
               <div className="flex flex-wrap items-center justify-between gap-5">
                 <div>
-                  <h2 className="text-3xl font-black text-[#0E9FAA]">
+                  <h2 className="text-3xl font-black text-[var(--rashid-color-0e9faa)]">
                     فعّل اشتراكك للوصول إلى برامج Pro 👑
                   </h2>
-                  <p className="mt-3 max-w-2xl font-bold leading-8 text-[#7A6B22]">
+                  <p className="mt-3 max-w-2xl font-bold leading-8 text-[var(--rashid-color-7a6b22)]">
                     البرامج المجانية متاحة الآن، أما برامج Pro تحتاج تفعيل الاشتراك.
                   </p>
                 </div>
 
                 <Link
                   href="/plans"
-                  className="rounded-full bg-[#0E9FAA] px-8 py-4 font-black text-white shadow-lg transition hover:-translate-y-1"
+                  className="rounded-full bg-[var(--rashid-color-0e9faa)] px-8 py-4 font-black text-white shadow-lg transition hover:-translate-y-1"
                 >
                   مشاهدة الخطط والاشتراكات
                 </Link>
@@ -205,7 +205,7 @@ export default function ChildProgramsPage() {
           )}
 
           {loading ? (
-            <div className="rounded-[2.5rem] bg-white p-12 text-center text-2xl font-black text-[#7048e8] shadow-xl">
+            <div className="rounded-[2.5rem] bg-white p-12 text-center text-2xl font-black text-[var(--rashid-color-7048e8)] shadow-xl">
               جاري تحميل البرامج...
             </div>
           ) : programs.length > 0 ? (
@@ -241,33 +241,33 @@ export default function ChildProgramsPage() {
                             }`}
                           />
                         ) : (
-                          <div className="flex h-44 w-full items-center justify-center bg-gradient-to-br from-[#0E9FAA] to-[#D8F36A] text-7xl">
+                          <div className="flex h-44 w-full items-center justify-center bg-gradient-to-br from-[var(--rashid-color-0e9faa)] to-[var(--rashid-color-d8f36a)] text-7xl">
                             🧠
                           </div>
                         )}
 
                         {completed && (
-                          <div className="absolute left-4 top-4 rounded-full bg-[#0E9FAA] px-4 py-2 text-sm font-black text-white shadow-lg">
+                          <div className="absolute left-4 top-4 rounded-full bg-[var(--rashid-color-0e9faa)] px-4 py-2 text-sm font-black text-white shadow-lg">
                             مكتمل ✅
                           </div>
                         )}
 
                         {!completed && hasProgress && (
-                          <div className="absolute left-4 top-4 rounded-full bg-[#7048e8] px-4 py-2 text-sm font-black text-white shadow-lg">
+                          <div className="absolute left-4 top-4 rounded-full bg-[var(--rashid-color-7048e8)] px-4 py-2 text-sm font-black text-white shadow-lg">
                             قيد التقدم 🚀
                           </div>
                         )}
 
                         {locked && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-[#0E9FAA]/35 backdrop-blur-[1px]">
-                            <div className="rounded-2xl bg-white px-5 py-3 text-center font-black text-[#0E9FAA] shadow-xl">
+                          <div className="absolute inset-0 flex items-center justify-center bg-[var(--rashid-color-0e9faa)]/35 backdrop-blur-[1px]">
+                            <div className="rounded-2xl bg-white px-5 py-3 text-center font-black text-[var(--rashid-color-0e9faa)] shadow-xl">
                               فعّل اشتراكك للدخول 🔒
                             </div>
                           </div>
                         )}
 
                         {bestScore !== null && (
-                          <div className="absolute bottom-4 right-4 rounded-full bg-white/95 px-4 py-2 text-sm font-black text-[#0E9FAA] shadow-lg">
+                          <div className="absolute bottom-4 right-4 rounded-full bg-white/95 px-4 py-2 text-sm font-black text-[var(--rashid-color-0e9faa)] shadow-lg">
                             أفضل نتيجة {bestScore}%
                           </div>
                         )}
@@ -276,13 +276,13 @@ export default function ChildProgramsPage() {
                       <div className="p-6">
                         <div className="mb-4 flex flex-wrap gap-2">
                           {program.categories?.name && (
-                            <span className="rounded-full bg-[#D9F5EE] px-4 py-2 text-sm font-black text-[#0E9FAA]">
+                            <span className="rounded-full bg-[var(--rashid-color-d9f5ee)] px-4 py-2 text-sm font-black text-[var(--rashid-color-0e9faa)]">
                               {program.categories.name}
                             </span>
                           )}
 
                           {program.age_range && (
-                            <span className="rounded-full bg-[#F3EFFF] px-4 py-2 text-sm font-black text-[#7048e8]">
+                            <span className="rounded-full bg-[var(--rashid-color-f3efff)] px-4 py-2 text-sm font-black text-[var(--rashid-color-7048e8)]">
                               عمر {program.age_range}
                             </span>
                           )}
@@ -298,12 +298,12 @@ export default function ChildProgramsPage() {
                           </span>
                         </div>
 
-                        <h3 className="text-2xl font-black text-[#0E9FAA]">
+                        <h3 className="text-2xl font-black text-[var(--rashid-color-0e9faa)]">
                           {program.title}
                         </h3>
 
                         {program.description && (
-                          <p className="mt-3 line-clamp-2 leading-7 text-[#6E7A99]">
+                          <p className="mt-3 line-clamp-2 leading-7 text-[var(--rashid-color-6e7a99)]">
                             {program.description}
                           </p>
                         )}
@@ -314,14 +314,14 @@ export default function ChildProgramsPage() {
                       {locked ? (
                         <Link
                           href="/plans"
-                          className="block rounded-full bg-[#0E9FAA] px-6 py-3 text-center font-black text-white transition hover:-translate-y-1"
+                          className="block rounded-full bg-[var(--rashid-color-0e9faa)] px-6 py-3 text-center font-black text-white transition hover:-translate-y-1"
                         >
                           فعّل اشتراكك
                         </Link>
                       ) : (
                         <Link
                           href={href}
-                          className="inline-flex rounded-full bg-[#0E9FAA] px-6 py-3 font-black text-white transition group-hover:bg-[#0E9FAA]"
+                          className="inline-flex rounded-full bg-[var(--rashid-color-0e9faa)] px-6 py-3 font-black text-white transition group-hover:bg-[var(--rashid-color-0e9faa)]"
                         >
                           {completed
                             ? "إعادة البرنامج"
@@ -336,8 +336,8 @@ export default function ChildProgramsPage() {
               })}
             </div>
           ) : (
-            <div className="rounded-[2.5rem] border-2 border-dashed border-[#DDEDEA] bg-white/95 p-12 text-center">
-              <h3 className="text-3xl font-black text-[#0E9FAA]">
+            <div className="rounded-[2.5rem] border-2 border-dashed border-[var(--rashid-color-ddedea)] bg-white/95 p-12 text-center">
+              <h3 className="text-3xl font-black text-[var(--rashid-color-0e9faa)]">
                 لا توجد برامج منشورة حاليًا
               </h3>
             </div>

@@ -151,21 +151,21 @@ export default function PlansPage() {
   }
 
   return (
-    <main dir="rtl" className="min-h-screen bg-[#F4FAF8] p-6">
+    <main dir="rtl" className="min-h-screen bg-[var(--rashid-color-f4faf8)] p-6">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>
-            <h1 className="text-4xl font-black text-[#0B4D6B]">
+            <h1 className="text-4xl font-black text-[var(--rashid-color-0b4d6b)]">
               إدارة الاشتراكات
             </h1>
-            <p className="mt-3 text-[#6E7A99]">
+            <p className="mt-3 text-[var(--rashid-color-6e7a99)]">
               إضافة وتعديل الخطط، مدة الاشتراك، وعدد الأطفال المسموح.
             </p>
           </div>
 
           <button
             onClick={resetForm}
-            className="rounded-full bg-[#0B4D6B] px-6 py-3 font-black text-white"
+            className="rounded-full bg-[var(--rashid-color-0b4d6b)] px-6 py-3 font-black text-white"
           >
             إضافة خطة جديدة
           </button>
@@ -173,7 +173,7 @@ export default function PlansPage() {
 
         <div className="grid gap-8 lg:grid-cols-[430px_1fr]">
           <div className="rounded-[2rem] bg-white p-8 shadow-xl">
-            <h2 className="mb-6 text-2xl font-black text-[#0B4D6B]">
+            <h2 className="mb-6 text-2xl font-black text-[var(--rashid-color-0b4d6b)]">
               {editingId ? "تعديل الخطة" : "إضافة خطة"}
             </h2>
 
@@ -183,7 +183,7 @@ export default function PlansPage() {
                 placeholder="اسم الخطة"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none"
+                className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none"
               />
 
               <textarea
@@ -192,7 +192,7 @@ export default function PlansPage() {
                 onChange={(e) =>
                   setForm({ ...form, description: e.target.value })
                 }
-                className="h-28 w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none"
+                className="h-28 w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none"
               />
 
               <div className="grid grid-cols-2 gap-3">
@@ -201,7 +201,7 @@ export default function PlansPage() {
                   placeholder="السعر"
                   value={form.price}
                   onChange={(e) => setForm({ ...form, price: e.target.value })}
-                  className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none"
+                  className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none"
                 />
 
                 <input
@@ -210,7 +210,7 @@ export default function PlansPage() {
                   onChange={(e) =>
                     setForm({ ...form, currency: e.target.value })
                   }
-                  className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none"
+                  className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none"
                 />
               </div>
 
@@ -236,7 +236,7 @@ export default function PlansPage() {
                           : form.duration_days,
                     });
                   }}
-                  className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none"
+                  className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none"
                 >
                   <option value="monthly">شهري</option>
                   <option value="yearly">سنوي</option>
@@ -254,7 +254,7 @@ export default function PlansPage() {
                       duration_days: Number(e.target.value),
                     })
                   }
-                  className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none"
+                  className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none"
                 />
               </div>
 
@@ -266,7 +266,7 @@ export default function PlansPage() {
                 onChange={(e) =>
                   setForm({ ...form, max_children: Number(e.target.value) })
                 }
-                className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none"
+                className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none"
               />
 
               <textarea
@@ -275,11 +275,11 @@ export default function PlansPage() {
                 onChange={(e) =>
                   setForm({ ...form, features: e.target.value })
                 }
-                className="h-36 w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none"
+                className="h-36 w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none"
               />
 
               <div className="grid grid-cols-2 gap-3">
-                <label className="flex items-center gap-3 rounded-2xl bg-[#F4FAF8] p-4 font-bold">
+                <label className="flex items-center gap-3 rounded-2xl bg-[var(--rashid-color-f4faf8)] p-4 font-bold">
                   <input
                     type="checkbox"
                     checked={form.is_featured}
@@ -290,7 +290,7 @@ export default function PlansPage() {
                   الأكثر اختيارًا
                 </label>
 
-                <label className="flex items-center gap-3 rounded-2xl bg-[#F4FAF8] p-4 font-bold">
+                <label className="flex items-center gap-3 rounded-2xl bg-[var(--rashid-color-f4faf8)] p-4 font-bold">
                   <input
                     type="checkbox"
                     checked={form.is_active}
@@ -304,7 +304,7 @@ export default function PlansPage() {
 
               <button
                 type="submit"
-                className="w-full rounded-full bg-[#42BFA8] py-4 font-black text-white"
+                className="w-full rounded-full bg-[var(--rashid-color-42bfa8)] py-4 font-black text-white"
               >
                 {editingId ? "حفظ التعديل" : "حفظ الخطة"}
               </button>
@@ -313,7 +313,7 @@ export default function PlansPage() {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="w-full rounded-full bg-gray-100 py-4 font-black text-[#0B4D6B]"
+                  className="w-full rounded-full bg-gray-100 py-4 font-black text-[var(--rashid-color-0b4d6b)]"
                 >
                   إلغاء التعديل
                 </button>
@@ -337,13 +337,13 @@ export default function PlansPage() {
                     key={plan.id}
                     className={`rounded-[2rem] p-8 shadow-xl ${
                       plan.is_featured
-                        ? "bg-[#0B4D6B] text-white"
-                        : "bg-white text-[#0B4D6B]"
+                        ? "bg-[var(--rashid-color-0b4d6b)] text-white"
+                        : "bg-white text-[var(--rashid-color-0b4d6b)]"
                     }`}
                   >
                     <div className="mb-5 flex items-center justify-between gap-3">
                       {plan.is_featured ? (
-                        <div className="inline-flex rounded-full bg-[#D8F36A] px-4 py-2 text-sm font-black text-[#0B4D6B]">
+                        <div className="inline-flex rounded-full bg-[var(--rashid-color-d8f36a)] px-4 py-2 text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                           الأكثر اختيارًا
                         </div>
                       ) : (
@@ -365,7 +365,7 @@ export default function PlansPage() {
 
                     <p
                       className={`mt-3 leading-8 ${
-                        plan.is_featured ? "text-white/70" : "text-[#6E7A99]"
+                        plan.is_featured ? "text-white/70" : "text-[var(--rashid-color-6e7a99)]"
                       }`}
                     >
                       {plan.description}
@@ -375,7 +375,7 @@ export default function PlansPage() {
                       <span className="text-5xl font-black">{plan.price}</span>
                       <span
                         className={
-                          plan.is_featured ? "text-white/60" : "text-[#6E7A99]"
+                          plan.is_featured ? "text-white/60" : "text-[var(--rashid-color-6e7a99)]"
                         }
                       >
                         {plan.currency} / {plan.period}
@@ -384,7 +384,7 @@ export default function PlansPage() {
 
                     <div
                       className={`mt-5 grid grid-cols-2 gap-3 text-sm font-black ${
-                        plan.is_featured ? "text-white" : "text-[#0B4D6B]"
+                        plan.is_featured ? "text-white" : "text-[var(--rashid-color-0b4d6b)]"
                       }`}
                     >
                       <div className="rounded-2xl bg-black/5 p-3">
@@ -410,14 +410,14 @@ export default function PlansPage() {
                     <div className="mt-8 grid grid-cols-3 gap-3">
                       <button
                         onClick={() => startEdit(plan)}
-                        className="rounded-full bg-[#42BFA8] py-3 font-black text-white"
+                        className="rounded-full bg-[var(--rashid-color-42bfa8)] py-3 font-black text-white"
                       >
                         تعديل
                       </button>
 
                       <button
                         onClick={() => toggleActive(plan)}
-                        className="rounded-full bg-yellow-100 py-3 font-black text-[#0B4D6B]"
+                        className="rounded-full bg-yellow-100 py-3 font-black text-[var(--rashid-color-0b4d6b)]"
                       >
                         {plan.is_active ? "إخفاء" : "تفعيل"}
                       </button>

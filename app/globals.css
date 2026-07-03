@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "../styles/tokens.css";
+
 
 html,
 body {
@@ -48,5 +48,5 @@ a {
     radial-gradient(circle at bottom right,
       rgba(255,255,255,0.06),
       transparent 25%),
-    linear-gradient(135deg, #083b52 0%, #0d5b78 100%);
+    linear-gradient(135deg, var(--rashid-color-083b52) 0%, var(--rashid-color-0d5b78) 100%);
 }

@@ -16,7 +16,7 @@ export default function ChildLayout({
   children,
 }: ChildLayoutProps) {
   return (
-    <main dir="rtl" className="relative h-[100dvh] overflow-hidden text-[#14224A]">
+    <main dir="rtl" className="relative h-[100dvh] overflow-hidden text-[var(--rashid-color-14224a)]">
       {/* خلفية راشد الجديدة لكل شاشات الطفل */}
       <div
         className="pointer-events-none fixed inset-0 bg-cover bg-center bg-no-repeat"
@@ -28,8 +28,8 @@ export default function ChildLayout({
 
       {/* طبقات تفتيح ناعمة حتى تبقى القراءة واضحة */}
       <div className="pointer-events-none fixed inset-0 bg-white/56" />
-      <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-white/50 via-[#E9FBFC]/26 to-[#19C6D4]/14" />
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#F5FBFF]/95 to-transparent" />
+      <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-white/50 via-[var(--rashid-color-e9fbfc)]/26 to-[var(--rashid-color-19c6d4)]/14" />
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[var(--rashid-color-f5fbff)]/95 to-transparent" />
 
       <div className="relative z-10 flex h-[100dvh] overflow-hidden">
         <ChildSidebar profile={profile} activeHref={activeHref} />

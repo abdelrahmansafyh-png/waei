@@ -498,7 +498,7 @@ export default function ChildDetailsPage() {
   if (loading) {
     return (
       <ParentLayout>
-        <div className="rounded-[2.5rem] bg-white p-12 text-center text-2xl font-black text-[#7048e8] shadow-xl">
+        <div className="rounded-[2.5rem] bg-white p-12 text-center text-2xl font-black text-[var(--rashid-color-7048e8)] shadow-xl">
           جاري تحميل تفاصيل الطفل...
         </div>
       </ParentLayout>
@@ -511,15 +511,15 @@ export default function ChildDetailsPage() {
     <ParentLayout>
       <div className="mx-auto max-w-6xl space-y-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <Link href="/dashboard/children" className="rounded-full bg-white px-6 py-4 font-black text-[#0B4D6B] shadow-sm">
+          <Link href="/dashboard/children" className="rounded-full bg-white px-6 py-4 font-black text-[var(--rashid-color-0b4d6b)] shadow-sm">
             ← رجوع للأبناء
           </Link>
-          <Link href={`/dashboard/children/${child.id}/edit`} className="rounded-full bg-[#42BFA8] px-7 py-4 font-black text-white shadow-lg transition hover:-translate-y-1">
+          <Link href={`/dashboard/children/${child.id}/edit`} className="rounded-full bg-[var(--rashid-color-42bfa8)] px-7 py-4 font-black text-white shadow-lg transition hover:-translate-y-1">
             تعديل بيانات الطفل
           </Link>
         </div>
 
-        <header className="overflow-hidden rounded-[3rem] bg-gradient-to-br from-[#0B4D6B] via-[#167A8F] to-[#42BFA8] p-8 text-white shadow-[0_24px_70px_rgba(11,77,107,.22)]">
+        <header className="overflow-hidden rounded-[3rem] bg-gradient-to-br from-[var(--rashid-color-0b4d6b)] via-[var(--rashid-color-167a8f)] to-[var(--rashid-color-42bfa8)] p-8 text-white shadow-[0_24px_70px_rgba(11,77,107,.22)]">
           <div className="flex flex-wrap items-center justify-between gap-6">
             <div className="flex items-center gap-5">
               <div className="flex h-24 w-24 items-center justify-center rounded-[2rem] bg-white/18 text-6xl backdrop-blur">
@@ -548,8 +548,8 @@ export default function ChildDetailsPage() {
           ].map(([icon, title, value]) => (
             <div key={String(title)} className="rounded-[2rem] bg-white p-6 shadow-[0_18px_45px_rgba(18,34,74,.08)]">
               <div className="text-4xl">{icon}</div>
-              <div className="mt-4 text-3xl font-black text-[#0B4D6B]">{String(value)}</div>
-              <div className="mt-2 font-black text-[#667085]">{title}</div>
+              <div className="mt-4 text-3xl font-black text-[var(--rashid-color-0b4d6b)]">{String(value)}</div>
+              <div className="mt-2 font-black text-[var(--rashid-color-667085)]">{title}</div>
             </div>
           ))}
         </section>
@@ -557,60 +557,60 @@ export default function ChildDetailsPage() {
         <section className="rounded-[2.5rem] bg-white p-6 shadow-[0_18px_45px_rgba(18,34,74,.08)]">
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <div className="mb-3 inline-flex rounded-full bg-[#E8F8F3] px-5 py-2 text-sm font-black text-[#42BFA8]">
+              <div className="mb-3 inline-flex rounded-full bg-[var(--rashid-color-e8f8f3)] px-5 py-2 text-sm font-black text-[var(--rashid-color-42bfa8)]">
                 تقرير الطفل
               </div>
-              <h2 className="text-3xl font-black text-[#0B4D6B]">ملخص رحلة {child.full_name}</h2>
+              <h2 className="text-3xl font-black text-[var(--rashid-color-0b4d6b)]">ملخص رحلة {child.full_name}</h2>
             </div>
-            <div className="rounded-full bg-[#F3EFFF] px-5 py-2 text-sm font-black text-[#7048e8]">
+            <div className="rounded-full bg-[var(--rashid-color-f3efff)] px-5 py-2 text-sm font-black text-[var(--rashid-color-7048e8)]">
               ملخص التقرير
             </div>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            <div className="rounded-[1.7rem] bg-[#F9FFFD] p-5">
+            <div className="rounded-[1.7rem] bg-[var(--rashid-color-f9fffd)] p-5">
               <div className="text-3xl">📘</div>
-              <div className="mt-3 text-sm font-black text-[#42BFA8]">أكثر برنامج اشتغل عليه</div>
-              <div className="mt-1 text-xl font-black text-[#0B4D6B]">
+              <div className="mt-3 text-sm font-black text-[var(--rashid-color-42bfa8)]">أكثر برنامج اشتغل عليه</div>
+              <div className="mt-1 text-xl font-black text-[var(--rashid-color-0b4d6b)]">
                 {mostWorkedProgram?.title || "لا توجد بيانات بعد"}
               </div>
-              <div className="mt-2 text-sm font-bold text-[#667085]">
+              <div className="mt-2 text-sm font-bold text-[var(--rashid-color-667085)]">
                 {mostWorkedProgram ? formatDuration(mostWorkedProgram.elapsed_seconds) : "ابدأ برنامجًا لعرض الوقت"}
               </div>
             </div>
 
-            <div className="rounded-[1.7rem] bg-[#F5FBFF] p-5">
+            <div className="rounded-[1.7rem] bg-[var(--rashid-color-f5fbff)] p-5">
               <div className="text-3xl">🎯</div>
-              <div className="mt-3 text-sm font-black text-[#42BFA8]">نتائج الأنشطة</div>
-              <div className="mt-1 text-xl font-black text-[#0B4D6B]">{accuracyStats.pointsText}</div>
-              <div className="mt-2 text-sm font-bold text-[#667085]">{accuracyStats.rawText}</div>
+              <div className="mt-3 text-sm font-black text-[var(--rashid-color-42bfa8)]">نتائج الأنشطة</div>
+              <div className="mt-1 text-xl font-black text-[var(--rashid-color-0b4d6b)]">{accuracyStats.pointsText}</div>
+              <div className="mt-2 text-sm font-bold text-[var(--rashid-color-667085)]">{accuracyStats.rawText}</div>
             </div>
 
-            <div className="rounded-[1.7rem] bg-[#FFF9E8] p-5">
+            <div className="rounded-[1.7rem] bg-[var(--rashid-color-fff9e8)] p-5">
               <div className="text-3xl">⏱️</div>
-              <div className="mt-3 text-sm font-black text-[#B75A00]">مجموع وقت التعلم</div>
-              <div className="mt-1 text-xl font-black text-[#0B4D6B]">
+              <div className="mt-3 text-sm font-black text-[var(--rashid-color-b75a00)]">مجموع وقت التعلم</div>
+              <div className="mt-1 text-xl font-black text-[var(--rashid-color-0b4d6b)]">
                 {formatDuration(programStats.reduce((sum, program) => sum + (program.elapsed_seconds || 0), 0))}
               </div>
-              <div className="mt-2 text-sm font-bold text-[#667085]">من كل البرامج</div>
+              <div className="mt-2 text-sm font-bold text-[var(--rashid-color-667085)]">من كل البرامج</div>
             </div>
 
-            <div className="rounded-[1.7rem] bg-[#F3EFFF] p-5">
+            <div className="rounded-[1.7rem] bg-[var(--rashid-color-f3efff)] p-5">
               <div className="text-3xl">💪</div>
-              <div className="mt-3 text-sm font-black text-[#7048e8]">ملخص الأداء</div>
-              <div className="mt-1 text-xl font-black text-[#0B4D6B]">{strengthText}</div>
-              <div className="mt-2 text-sm font-bold text-[#667085]">
+              <div className="mt-3 text-sm font-black text-[var(--rashid-color-7048e8)]">ملخص الأداء</div>
+              <div className="mt-1 text-xl font-black text-[var(--rashid-color-0b4d6b)]">{strengthText}</div>
+              <div className="mt-2 text-sm font-bold text-[var(--rashid-color-667085)]">
                 {averageScore !== null ? `متوسط النتائج: ${averageScore}%` : "لا توجد نتائج كافية"}
               </div>
             </div>
 
-            <div className="rounded-[1.7rem] bg-[#ECFBF7] p-5 md:col-span-2">
+            <div className="rounded-[1.7rem] bg-[var(--rashid-color-ecfbf7)] p-5 md:col-span-2">
               <div className="text-3xl">📍</div>
-              <div className="mt-3 text-sm font-black text-[#42BFA8]">آخر نشاط</div>
-              <div className="mt-1 text-xl font-black text-[#0B4D6B]">
+              <div className="mt-3 text-sm font-black text-[var(--rashid-color-42bfa8)]">آخر نشاط</div>
+              <div className="mt-1 text-xl font-black text-[var(--rashid-color-0b4d6b)]">
                 {lastTrackedAttempt ? `${getAttemptTypeLabel(lastTrackedAttempt)}: ${getAttemptTitle(lastTrackedAttempt)}` : "لا توجد نشاطات بعد"}
               </div>
-              <div className="mt-2 text-sm font-bold text-[#667085]">
+              <div className="mt-2 text-sm font-bold text-[var(--rashid-color-667085)]">
                 {lastTrackedAttempt ? `داخل: ${getProgramTitle(lastTrackedAttempt.program_id)}` : "سيظهر آخر نشاط بعد بدء اللعب"}
               </div>
             </div>
@@ -620,48 +620,48 @@ export default function ChildDetailsPage() {
         <section className="grid gap-6 lg:grid-cols-[.9fr_1.1fr]">
           <div className="space-y-6">
             <div className="rounded-[2.5rem] bg-white p-6 shadow-[0_18px_45px_rgba(18,34,74,.08)]">
-              <h2 className="text-3xl font-black text-[#0B4D6B]">بيانات الدخول</h2>
-              <p className="mt-3 font-bold leading-7 text-[#667085]">أعط هذه البيانات للطفل ليدخل من تبويب الطفل في صفحة الدخول.</p>
+              <h2 className="text-3xl font-black text-[var(--rashid-color-0b4d6b)]">بيانات الدخول</h2>
+              <p className="mt-3 font-bold leading-7 text-[var(--rashid-color-667085)]">أعط هذه البيانات للطفل ليدخل من تبويب الطفل في صفحة الدخول.</p>
 
               <div className="mt-6 grid gap-4">
-                <div className="rounded-[1.7rem] bg-[#F5FBFF] p-5">
-                  <div className="text-sm font-black text-[#667085]">اسم المستخدم</div>
-                  <div className="mt-2 select-all text-2xl font-black text-[#0B4D6B]">{child.username || "غير محدد"}</div>
+                <div className="rounded-[1.7rem] bg-[var(--rashid-color-f5fbff)] p-5">
+                  <div className="text-sm font-black text-[var(--rashid-color-667085)]">اسم المستخدم</div>
+                  <div className="mt-2 select-all text-2xl font-black text-[var(--rashid-color-0b4d6b)]">{child.username || "غير محدد"}</div>
                 </div>
-                <div className="rounded-[1.7rem] bg-[#F3EFFF] p-5">
-                  <div className="text-sm font-black text-[#667085]">كود الدخول</div>
-                  <div className="mt-2 select-all text-3xl font-black tracking-[.18em] text-[#7048e8]">{child.access_code || "-"}</div>
+                <div className="rounded-[1.7rem] bg-[var(--rashid-color-f3efff)] p-5">
+                  <div className="text-sm font-black text-[var(--rashid-color-667085)]">كود الدخول</div>
+                  <div className="mt-2 select-all text-3xl font-black tracking-[.18em] text-[var(--rashid-color-7048e8)]">{child.access_code || "-"}</div>
                 </div>
               </div>
             </div>
 
             <div className="rounded-[2.5rem] bg-white p-6 shadow-[0_18px_45px_rgba(18,34,74,.08)]">
-              <h2 className="text-3xl font-black text-[#0B4D6B]">تقدم الطفل داخل البرامج</h2>
-              <p className="mt-3 font-bold leading-7 text-[#667085]">
+              <h2 className="text-3xl font-black text-[var(--rashid-color-0b4d6b)]">تقدم الطفل داخل البرامج</h2>
+              <p className="mt-3 font-bold leading-7 text-[var(--rashid-color-667085)]">
                 هنا يظهر كل برنامج دخله الطفل، نسبة تقدمه الحالية، والوقت الذي قضاه داخله.
               </p>
 
               {programStats.length ? (
                 <div className="mt-5 space-y-4">
                   {programStats.map((program) => (
-                    <div key={program.program_id} className="rounded-[1.7rem] bg-[#F9FFFD] p-5">
+                    <div key={program.program_id} className="rounded-[1.7rem] bg-[var(--rashid-color-f9fffd)] p-5">
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
-                          <div className="text-sm font-black text-[#42BFA8]">دخل برنامج</div>
-                          <div className="mt-1 text-xl font-black text-[#0B4D6B]">{program.title}</div>
-                          <div className="mt-2 text-sm font-bold text-[#667085]">
+                          <div className="text-sm font-black text-[var(--rashid-color-42bfa8)]">دخل برنامج</div>
+                          <div className="mt-1 text-xl font-black text-[var(--rashid-color-0b4d6b)]">{program.title}</div>
+                          <div className="mt-2 text-sm font-bold text-[var(--rashid-color-667085)]">
                             مكتمل {program.completed ? program.total_contents : program.completed_contents} من {program.total_contents}{program.elapsed_seconds > 0 ? ` · الوقت: ${formatDuration(program.elapsed_seconds)}` : ""}
                           </div>
                         </div>
 
-                        <div className={`rounded-full px-4 py-2 text-sm font-black ${program.completed ? "bg-green-100 text-green-700" : "bg-[#E8F8F3] text-[#42BFA8]"}`}>
+                        <div className={`rounded-full px-4 py-2 text-sm font-black ${program.completed ? "bg-green-100 text-green-700" : "bg-[var(--rashid-color-e8f8f3)] text-[var(--rashid-color-42bfa8)]"}`}>
                           {program.completed ? "✅ مكتمل" : `${program.progress_percentage}%`}
                         </div>
                       </div>
 
-                      <div className="mt-4 h-3 overflow-hidden rounded-full bg-[#E6EEF3]">
+                      <div className="mt-4 h-3 overflow-hidden rounded-full bg-[var(--rashid-color-e6eef3)]">
                         <div
-                          className="h-full rounded-full bg-gradient-to-l from-[#42BFA8] to-[#19C6D4]"
+                          className="h-full rounded-full bg-gradient-to-l from-[var(--rashid-color-42bfa8)] to-[var(--rashid-color-19c6d4)]"
                           style={{ width: `${program.progress_percentage}%` }}
                         />
                       </div>
@@ -669,28 +669,28 @@ export default function ChildDetailsPage() {
                   ))}
                 </div>
               ) : (
-                <div className="mt-5 rounded-[2rem] border-2 border-dashed border-[#DDEDEA] p-8 text-center font-black text-[#667085]">
+                <div className="mt-5 rounded-[2rem] border-2 border-dashed border-[var(--rashid-color-ddedea)] p-8 text-center font-black text-[var(--rashid-color-667085)]">
                   لم يدخل الطفل أي برنامج بعد
                 </div>
               )}
             </div>
 
             <div className="rounded-[2.5rem] bg-white p-6 shadow-[0_18px_45px_rgba(18,34,74,.08)]">
-              <h2 className="text-3xl font-black text-[#0B4D6B]">البرامج التي أنجزها</h2>
+              <h2 className="text-3xl font-black text-[var(--rashid-color-0b4d6b)]">البرامج التي أنجزها</h2>
 
               {completedProgramRows.length ? (
                 <div className="mt-5 space-y-3">
                   {completedProgramRows.map((row) => (
-                    <div key={`${row.program_id}-${row.updated_at}`} className="rounded-2xl bg-[#F9FFFD] p-4">
+                    <div key={`${row.program_id}-${row.updated_at}`} className="rounded-2xl bg-[var(--rashid-color-f9fffd)] p-4">
                       <div className="flex flex-wrap items-center justify-between gap-3">
-                        <div className="font-black text-[#0B4D6B]">{getProgramTitle(row.program_id)}</div>
+                        <div className="font-black text-[var(--rashid-color-0b4d6b)]">{getProgramTitle(row.program_id)}</div>
                         <div className="rounded-full bg-green-100 px-4 py-2 text-sm font-black text-green-700">✅ مكتمل</div>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="mt-5 rounded-[2rem] border-2 border-dashed border-[#DDEDEA] p-8 text-center font-black text-[#667085]">
+                <div className="mt-5 rounded-[2rem] border-2 border-dashed border-[var(--rashid-color-ddedea)] p-8 text-center font-black text-[var(--rashid-color-667085)]">
                   لم ينهِ أي برنامج بعد
                 </div>
               )}
@@ -698,33 +698,33 @@ export default function ChildDetailsPage() {
           </div>
 
           <div className="rounded-[2.5rem] bg-white p-6 shadow-[0_18px_45px_rgba(18,34,74,.08)]">
-            <h2 className="text-3xl font-black text-[#0B4D6B]">آخر النشاطات</h2>
+            <h2 className="text-3xl font-black text-[var(--rashid-color-0b4d6b)]">آخر النشاطات</h2>
             {trackedAttempts.length ? (
               <div className="mt-5 space-y-3">
                 {trackedAttempts.map((attempt) => (
-                  <div key={attempt.id} className="rounded-2xl bg-[#F9FFFD] p-4">
+                  <div key={attempt.id} className="rounded-2xl bg-[var(--rashid-color-f9fffd)] p-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div>
-                        <div className="font-black text-[#0B4D6B]">{getAttemptTypeLabel(attempt)}</div>
-                        <div className="mt-1 text-sm font-bold text-[#667085]">
+                        <div className="font-black text-[var(--rashid-color-0b4d6b)]">{getAttemptTypeLabel(attempt)}</div>
+                        <div className="mt-1 text-sm font-bold text-[var(--rashid-color-667085)]">
                           {getAttemptTitle(attempt)}
                         </div>
-                        <div className="mt-1 text-xs font-bold text-[#8A94AA]">
+                        <div className="mt-1 text-xs font-bold text-[var(--rashid-color-8a94aa)]">
                           داخل: {getProgramTitle(attempt.program_id)}
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-2">
                         {(attempt.max_score || 0) > 0 ? (
-                          <div className="font-bold text-[#667085]">{attempt.score || 0} / {attempt.max_score || 0}</div>
+                          <div className="font-bold text-[var(--rashid-color-667085)]">{attempt.score || 0} / {attempt.max_score || 0}</div>
                         ) : null}
-                        <div className="rounded-full bg-[#E8F8F3] px-4 py-2 text-sm font-black text-[#42BFA8]">✅ تم النشاط</div>
+                        <div className="rounded-full bg-[var(--rashid-color-e8f8f3)] px-4 py-2 text-sm font-black text-[var(--rashid-color-42bfa8)]">✅ تم النشاط</div>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="mt-5 rounded-[2rem] border-2 border-dashed border-[#DDEDEA] p-8 text-center font-black text-[#667085]">
+              <div className="mt-5 rounded-[2rem] border-2 border-dashed border-[var(--rashid-color-ddedea)] p-8 text-center font-black text-[var(--rashid-color-667085)]">
                 لا توجد نشاطات بعد
               </div>
             )}

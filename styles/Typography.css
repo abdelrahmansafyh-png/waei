@@ -1,0 +1,59 @@
+/*
+  Rashid central typography.
+  القيم الحالية مطابقة للكود الأصلي. عدّل من هنا فقط إذا بدك تكبر/تصغر الخطوط.
+*/
+:root {
+  /* ===== أحجام مختصرة للتعديل السريع ===== */
+  --font-hero-title: var(--font-size-54px); /* العنوان الرئيسي الكبير */
+  --font-page-title: var(--font-size-42px); /* عنوان الصفحة */
+  --font-section-title: var(--font-size-36px); /* عنوان القسم */
+  --font-section-title-sm: var(--font-size-30px); /* عنوان القسم الصغير */
+  --font-card-title: var(--font-size-24px); /* عنوان الكرت الرئيسي */
+  --font-card-title-sm: var(--font-size-17px); /* عنوان الكرت الفرعي / النشاط */
+  --font-sidebar-title: var(--font-size-18px); /* عنوان السايدبار والتنقل */
+  --font-body-lg: var(--font-size-21px); /* نص كبير */
+  --font-body: var(--font-size-16px); /* النص العادي */
+  --font-body-sm: var(--font-size-14px); /* نص صغير */
+  --font-caption: var(--font-size-13px); /* نص مصغر / شارة */
+  --font-button: var(--font-size-18px); /* الأزرار */
+  --font-nav: var(--font-size-18px); /* روابط التنقل */
+
+  /* ===== كل أحجام font-size الموجودة في الكود بدون تغيير شكل الشاشات ===== */
+  --font-size-11px: 11px;
+  --font-size-12px: 12px;
+  --font-size-13px: 13px;
+  --font-size-14px: 14px;
+  --font-size-15px: 15px;
+  --font-size-16px: 16px;
+  --font-size-17px: 17px;
+  --font-size-18px: 18px;
+  --font-size-19px: 19px;
+  --font-size-21px: 21px;
+  --font-size-22px: 22px;
+  --font-size-23px: 23px;
+  --font-size-24px: 24px;
+  --font-size-26px: 26px;
+  --font-size-28px: 28px;
+  --font-size-30px: 30px;
+  --font-size-32px: 32px;
+  --font-size-36px: 36px;
+  --font-size-38px: 38px;
+  --font-size-42px: 42px;
+  --font-size-54px: 54px;
+  --font-size-56px: 56px;
+}
+
+/* Utility classes لاستخدامها بأي مكان جديد */
+.fs-hero-title { font-size: var(--font-hero-title); }
+.fs-page-title { font-size: var(--font-page-title); }
+.fs-section-title { font-size: var(--font-section-title); }
+.fs-section-title-sm { font-size: var(--font-section-title-sm); }
+.fs-card-title { font-size: var(--font-card-title); }
+.fs-card-title-sm { font-size: var(--font-card-title-sm); }
+.fs-sidebar-title { font-size: var(--font-sidebar-title); }
+.fs-body-lg { font-size: var(--font-body-lg); }
+.fs-body { font-size: var(--font-body); }
+.fs-body-sm { font-size: var(--font-body-sm); }
+.fs-caption { font-size: var(--font-caption); }
+.fs-button { font-size: var(--font-button); }
+.fs-nav { font-size: var(--font-nav); }

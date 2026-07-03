@@ -32,7 +32,7 @@ const cards = [
 export default function AdminDashboardPage() {
   return (
     <section dir="rtl">
-      <div className="mb-8 rounded-[2rem] bg-gradient-to-l from-[#0B4D6B] to-[#42BFA8] p-8 text-white shadow-lg">
+      <div className="mb-8 rounded-[2rem] bg-gradient-to-l from-[var(--rashid-color-0b4d6b)] to-[var(--rashid-color-42bfa8)] p-8 text-white shadow-lg">
         <h2 className="text-4xl font-black">أهلاً بك 👋</h2>
         <p className="mt-3 text-white/80">اختر القسم الذي تريد إدارته.</p>
       </div>
@@ -45,9 +45,9 @@ export default function AdminDashboardPage() {
             className="rounded-[2rem] bg-white p-7 shadow-lg transition hover:-translate-y-1"
           >
             <div className="mb-5 text-5xl">{card.icon}</div>
-            <h3 className="text-2xl font-black text-[#0B4D6B]">{card.title}</h3>
-            <p className="mt-3 leading-7 text-[#6E7A99]">{card.desc}</p>
-            <div className="mt-6 inline-flex rounded-full bg-[#42BFA8] px-5 py-3 text-sm font-black text-white">
+            <h3 className="text-2xl font-black text-[var(--rashid-color-0b4d6b)]">{card.title}</h3>
+            <p className="mt-3 leading-7 text-[var(--rashid-color-6e7a99)]">{card.desc}</p>
+            <div className="mt-6 inline-flex rounded-full bg-[var(--rashid-color-42bfa8)] px-5 py-3 text-sm font-black text-white">
               فتح
             </div>
           </Link>

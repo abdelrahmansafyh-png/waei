@@ -294,9 +294,9 @@ export default function ParentDashboard({ profile }: { profile: any }) {
   return (
     <ParentLayout>
       <div className="mx-auto max-w-7xl space-y-8">
-        <header className="relative overflow-hidden rounded-[3rem] bg-gradient-to-br from-[#0B4D6B] via-[#167A8F] to-[#42BFA8] p-7 text-white shadow-[0_24px_70px_rgba(11,77,107,.22)] md:p-9">
+        <header className="relative overflow-hidden rounded-[3rem] bg-gradient-to-br from-[var(--rashid-color-0b4d6b)] via-[var(--rashid-color-167a8f)] to-[var(--rashid-color-42bfa8)] p-7 text-white shadow-[0_24px_70px_rgba(11,77,107,.22)] md:p-9">
           <div className="absolute -left-20 -top-20 h-64 w-64 rounded-full bg-white/15 blur-3xl" />
-          <div className="absolute -bottom-20 right-20 h-56 w-56 rounded-full bg-[#FFD54A]/25 blur-3xl" />
+          <div className="absolute -bottom-20 right-20 h-56 w-56 rounded-full bg-[var(--rashid-color-ffd54a)]/25 blur-3xl" />
 
           <div className="relative z-10 flex flex-wrap items-center justify-between gap-6">
             <div>
@@ -312,7 +312,7 @@ export default function ParentDashboard({ profile }: { profile: any }) {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <Link href="/dashboard/children/new" className="rounded-full bg-[#FFD54A] px-7 py-4 font-black text-[#14224A] shadow-xl transition hover:-translate-y-1">
+              <Link href="/dashboard/children/new" className="rounded-full bg-[var(--rashid-color-ffd54a)] px-7 py-4 font-black text-[var(--rashid-color-14224a)] shadow-xl transition hover:-translate-y-1">
                 + إضافة طفل
               </Link>
               <Link href="/child-login" className="rounded-full bg-white/18 px-7 py-4 font-black text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white/25">
@@ -329,13 +329,13 @@ export default function ParentDashboard({ profile }: { profile: any }) {
             ["✅", "برامج مكتملة", completedPrograms, "إنجازات"],
             ["⏱️", "وقت التعلم", totalLearningTime, "وقت التعلم"],
           ].map(([icon, title, value, label]) => (
-            <div key={String(title)} className="rounded-[2rem] border border-[#E7F0F7] bg-white p-6 shadow-[0_18px_45px_rgba(18,34,74,.08)]">
+            <div key={String(title)} className="rounded-[2rem] border border-[var(--rashid-color-e7f0f7)] bg-white p-6 shadow-[0_18px_45px_rgba(18,34,74,.08)]">
               <div className="flex items-center justify-between">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#F5FBFF] text-3xl">{icon}</div>
-                <div className="rounded-full bg-[#E8F8F3] px-3 py-1 text-xs font-black text-[#42BFA8]">{label}</div>
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--rashid-color-f5fbff)] text-3xl">{icon}</div>
+                <div className="rounded-full bg-[var(--rashid-color-e8f8f3)] px-3 py-1 text-xs font-black text-[var(--rashid-color-42bfa8)]">{label}</div>
               </div>
-              <div className="mt-5 text-4xl font-black text-[#0B4D6B]">{String(value)}</div>
-              <div className="mt-2 font-black text-[#667085]">{title}</div>
+              <div className="mt-5 text-4xl font-black text-[var(--rashid-color-0b4d6b)]">{String(value)}</div>
+              <div className="mt-2 font-black text-[var(--rashid-color-667085)]">{title}</div>
             </div>
           ))}
         </section>
@@ -343,16 +343,16 @@ export default function ParentDashboard({ profile }: { profile: any }) {
         <section>
           <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <div className="mb-3 inline-flex rounded-full bg-[#E8F8F3] px-5 py-2 font-black text-[#42BFA8]">الأبناء</div>
-              <h2 className="text-4xl font-black text-[#0B4D6B]">إدارة أبناءك</h2>
+              <div className="mb-3 inline-flex rounded-full bg-[var(--rashid-color-e8f8f3)] px-5 py-2 font-black text-[var(--rashid-color-42bfa8)]">الأبناء</div>
+              <h2 className="text-4xl font-black text-[var(--rashid-color-0b4d6b)]">إدارة أبناءك</h2>
             </div>
-            <Link href="/dashboard/children" className="rounded-full bg-white px-6 py-3 font-black text-[#0B4D6B] shadow-lg transition hover:-translate-y-1">
+            <Link href="/dashboard/children" className="rounded-full bg-white px-6 py-3 font-black text-[var(--rashid-color-0b4d6b)] shadow-lg transition hover:-translate-y-1">
               عرض الكل
             </Link>
           </div>
 
           {loading ? (
-            <div className="rounded-[2.5rem] bg-white/95 p-12 text-center text-2xl font-black text-[#7048e8] shadow-xl">جاري تحميل الأبناء...</div>
+            <div className="rounded-[2.5rem] bg-white/95 p-12 text-center text-2xl font-black text-[var(--rashid-color-7048e8)] shadow-xl">جاري تحميل الأبناء...</div>
           ) : children.length ? (
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {children.slice(0, 6).map((child) => {
@@ -360,13 +360,13 @@ export default function ParentDashboard({ profile }: { profile: any }) {
                 const childCompleted = getChildCompletedPrograms(child.id);
 
                 return (
-                  <div key={child.id} className="group overflow-hidden rounded-[2.5rem] border border-[#DDEDEA] bg-[#F9FFFD] p-6 shadow-xl shadow-teal-50 transition hover:-translate-y-2">
+                  <div key={child.id} className="group overflow-hidden rounded-[2.5rem] border border-[var(--rashid-color-ddedea)] bg-[var(--rashid-color-f9fffd)] p-6 shadow-xl shadow-teal-50 transition hover:-translate-y-2">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex items-center gap-4">
                         <div className="flex h-20 w-20 items-center justify-center rounded-[1.7rem] bg-white text-5xl shadow-sm">{child.gender === "female" ? "👧" : "👦"}</div>
                         <div>
-                          <h3 className="text-2xl font-black text-[#0B4D6B]">{child.full_name}</h3>
-                          <p className="mt-1 font-bold text-[#6E7A99]">العمر: {child.age || "-"} سنوات</p>
+                          <h3 className="text-2xl font-black text-[var(--rashid-color-0b4d6b)]">{child.full_name}</h3>
+                          <p className="mt-1 font-bold text-[var(--rashid-color-6e7a99)]">العمر: {child.age || "-"} سنوات</p>
                         </div>
                       </div>
                       <span className={`rounded-full px-4 py-2 text-sm font-black ${child.plan === "pro" ? "bg-yellow-100 text-yellow-700" : "bg-green-100 text-green-700"}`}>
@@ -374,35 +374,35 @@ export default function ParentDashboard({ profile }: { profile: any }) {
                       </span>
                     </div>
 
-                    <div className="mt-5 rounded-[1.6rem] border border-[#DDEDEA] bg-white p-4">
+                    <div className="mt-5 rounded-[1.6rem] border border-[var(--rashid-color-ddedea)] bg-white p-4">
                       <div className="grid gap-3 md:grid-cols-2">
                         <div>
-                          <div className="text-xs font-black text-[#6E7A99]">اسم المستخدم</div>
-                          <div className="mt-1 select-all font-black text-[#0B4D6B]">{child.username || "غير محدد"}</div>
+                          <div className="text-xs font-black text-[var(--rashid-color-6e7a99)]">اسم المستخدم</div>
+                          <div className="mt-1 select-all font-black text-[var(--rashid-color-0b4d6b)]">{child.username || "غير محدد"}</div>
                         </div>
                         <div>
-                          <div className="text-xs font-black text-[#6E7A99]">كود الدخول</div>
-                          <div className="mt-1 select-all font-black tracking-[.16em] text-[#7048e8]">{child.access_code || "-"}</div>
+                          <div className="text-xs font-black text-[var(--rashid-color-6e7a99)]">كود الدخول</div>
+                          <div className="mt-1 select-all font-black tracking-[.16em] text-[var(--rashid-color-7048e8)]">{child.access_code || "-"}</div>
                         </div>
                       </div>
                     </div>
 
                     <div className="mt-5 grid grid-cols-3 gap-3">
                       <div className="rounded-2xl bg-white p-4 text-center">
-                        <div className="font-black text-[#0B4D6B]">⚡ {child.xp || 0}</div>
-                        <div className="mt-1 text-xs font-bold text-[#6E7A99]">XP</div>
+                        <div className="font-black text-[var(--rashid-color-0b4d6b)]">⚡ {child.xp || 0}</div>
+                        <div className="mt-1 text-xs font-bold text-[var(--rashid-color-6e7a99)]">XP</div>
                       </div>
                       <div className="rounded-2xl bg-white p-4 text-center">
-                        <div className="font-black text-[#0B4D6B]">✅ {childCompleted}</div>
-                        <div className="mt-1 text-xs font-bold text-[#6E7A99]">برامج</div>
+                        <div className="font-black text-[var(--rashid-color-0b4d6b)]">✅ {childCompleted}</div>
+                        <div className="mt-1 text-xs font-bold text-[var(--rashid-color-6e7a99)]">برامج</div>
                       </div>
                       <div className="rounded-2xl bg-white p-4 text-center">
-                        <div className="font-black text-[#0B4D6B]">⏱️ {timeText}</div>
-                        <div className="mt-1 text-xs font-bold text-[#6E7A99]">وقت التعلم</div>
+                        <div className="font-black text-[var(--rashid-color-0b4d6b)]">⏱️ {timeText}</div>
+                        <div className="mt-1 text-xs font-bold text-[var(--rashid-color-6e7a99)]">وقت التعلم</div>
                       </div>
                     </div>
 
-                    <Link href={`/dashboard/children/${child.id}`} className="mt-6 block rounded-full bg-[#0B4D6B] px-6 py-3 text-center font-black text-white transition group-hover:bg-[#42BFA8]">
+                    <Link href={`/dashboard/children/${child.id}`} className="mt-6 block rounded-full bg-[var(--rashid-color-0b4d6b)] px-6 py-3 text-center font-black text-white transition group-hover:bg-[var(--rashid-color-42bfa8)]">
                       عرض التفاصيل
                     </Link>
                   </div>
@@ -410,11 +410,11 @@ export default function ParentDashboard({ profile }: { profile: any }) {
               })}
             </div>
           ) : (
-            <div className="rounded-[2.5rem] border-2 border-dashed border-[#DDEDEA] bg-white/95 p-12 text-center">
-              <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-[2rem] bg-[#F5FBFF] text-6xl">👦</div>
-              <h3 className="mt-5 text-3xl font-black text-[#0B4D6B]">لا يوجد أبناء بعد</h3>
-              <p className="mt-3 font-bold text-[#6E7A99]">ابدأ بإضافة أول طفل، وسيظهر له اسم مستخدم وكود دخول.</p>
-              <Link href="/dashboard/children/new" className="mt-6 inline-flex rounded-full bg-[#42BFA8] px-8 py-4 font-black text-white">+ إضافة طفل</Link>
+            <div className="rounded-[2.5rem] border-2 border-dashed border-[var(--rashid-color-ddedea)] bg-white/95 p-12 text-center">
+              <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-[2rem] bg-[var(--rashid-color-f5fbff)] text-6xl">👦</div>
+              <h3 className="mt-5 text-3xl font-black text-[var(--rashid-color-0b4d6b)]">لا يوجد أبناء بعد</h3>
+              <p className="mt-3 font-bold text-[var(--rashid-color-6e7a99)]">ابدأ بإضافة أول طفل، وسيظهر له اسم مستخدم وكود دخول.</p>
+              <Link href="/dashboard/children/new" className="mt-6 inline-flex rounded-full bg-[var(--rashid-color-42bfa8)] px-8 py-4 font-black text-white">+ إضافة طفل</Link>
             </div>
           )}
         </section>
@@ -423,8 +423,8 @@ export default function ParentDashboard({ profile }: { profile: any }) {
             {!!recentAchievements.length && (
               <div className="rounded-[2.5rem] bg-white p-6 shadow-[0_18px_45px_rgba(18,34,74,.08)]">
                 <div className="mb-5 flex items-center justify-between gap-3">
-                  <h2 className="text-3xl font-black text-[#0B4D6B]">آخر إنجازات الأبناء</h2>
-                  <span className="rounded-full bg-[#E8F8F3] px-4 py-2 text-sm font-black text-[#42BFA8]">برامج مكتملة</span>
+                  <h2 className="text-3xl font-black text-[var(--rashid-color-0b4d6b)]">آخر إنجازات الأبناء</h2>
+                  <span className="rounded-full bg-[var(--rashid-color-e8f8f3)] px-4 py-2 text-sm font-black text-[var(--rashid-color-42bfa8)]">برامج مكتملة</span>
                 </div>
 
                 <div className="space-y-3">
@@ -432,12 +432,12 @@ export default function ParentDashboard({ profile }: { profile: any }) {
                     <Link
                       key={`${row.child_profile_id}-${row.program_id}-${row.updated_at}`}
                       href={`/dashboard/children/${row.child_profile_id}`}
-                      className="block rounded-2xl bg-[#F9FFFD] p-4 transition hover:-translate-y-1 hover:bg-[#F1FFFB]"
+                      className="block rounded-2xl bg-[var(--rashid-color-f9fffd)] p-4 transition hover:-translate-y-1 hover:bg-[var(--rashid-color-f1fffb)]"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
-                          <div className="font-black text-[#0B4D6B]">{getChildName(row.child_profile_id)}</div>
-                          <div className="mt-1 text-sm font-bold text-[#667085]">
+                          <div className="font-black text-[var(--rashid-color-0b4d6b)]">{getChildName(row.child_profile_id)}</div>
+                          <div className="mt-1 text-sm font-bold text-[var(--rashid-color-667085)]">
                             أنجز برنامج: {getProgramTitle(row.program_id)}
                           </div>
                         </div>
@@ -452,8 +452,8 @@ export default function ParentDashboard({ profile }: { profile: any }) {
             {!!recentAttempts.length && (
               <div className="rounded-[2.5rem] bg-white p-6 shadow-[0_18px_45px_rgba(18,34,74,.08)]">
                 <div className="mb-5 flex items-center justify-between gap-3">
-                  <h2 className="text-3xl font-black text-[#0B4D6B]">آخر النشاطات</h2>
-                  <span className="rounded-full bg-[#F3EFFF] px-4 py-2 text-sm font-black text-[#7048e8]">ألعاب وقصص</span>
+                  <h2 className="text-3xl font-black text-[var(--rashid-color-0b4d6b)]">آخر النشاطات</h2>
+                  <span className="rounded-full bg-[var(--rashid-color-f3efff)] px-4 py-2 text-sm font-black text-[var(--rashid-color-7048e8)]">ألعاب وقصص</span>
                 </div>
 
                 <div className="space-y-3">
@@ -461,27 +461,27 @@ export default function ParentDashboard({ profile }: { profile: any }) {
                     <Link
                       key={attempt.id}
                       href={`/dashboard/children/${attempt.child_profile_id}`}
-                      className="block rounded-2xl bg-[#F9FFFD] p-4 transition hover:-translate-y-1 hover:bg-[#F1FFFB]"
+                      className="block rounded-2xl bg-[var(--rashid-color-f9fffd)] p-4 transition hover:-translate-y-1 hover:bg-[var(--rashid-color-f1fffb)]"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
-                          <div className="font-black text-[#0B4D6B]">{getChildName(attempt.child_profile_id)}</div>
-                          <div className="mt-1 text-sm font-bold text-[#667085]">
+                          <div className="font-black text-[var(--rashid-color-0b4d6b)]">{getChildName(attempt.child_profile_id)}</div>
+                          <div className="mt-1 text-sm font-bold text-[var(--rashid-color-667085)]">
                             {getAttemptTypeLabel(attempt)}: {getAttemptTitle(attempt)}
                           </div>
-                          <div className="mt-1 text-xs font-bold text-[#8A94AA]">
+                          <div className="mt-1 text-xs font-bold text-[var(--rashid-color-8a94aa)]">
                             داخل: {getProgramTitle(attempt.program_id)}
                           </div>
                         </div>
 
                         <div className="flex flex-col items-end gap-2">
                           {(attempt.max_score || 0) > 0 ? (
-                            <div className="font-bold text-[#667085]">
+                            <div className="font-bold text-[var(--rashid-color-667085)]">
                               {attempt.score || 0} / {attempt.max_score || 0}
                             </div>
                           ) : null}
 
-                          <div className="rounded-full bg-[#E8F8F3] px-4 py-2 text-sm font-black text-[#42BFA8]">
+                          <div className="rounded-full bg-[var(--rashid-color-e8f8f3)] px-4 py-2 text-sm font-black text-[var(--rashid-color-42bfa8)]">
                             ✅ تم النشاط
                           </div>
                         </div>

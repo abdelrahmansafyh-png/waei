@@ -302,11 +302,11 @@ export default function ChildDashboard({ profile }: { profile: any }) {
               <div className="flex items-center gap-5">
                 <div className="hidden text-8xl md:block">🌈</div>
                 <div>
-                  <p className="text-sm font-black text-[#0E9FAA]">👋 أهلاً بعودتك</p>
-                  <h1 className="mt-1 text-3xl font-black text-[#14224A] md:text-6xl">
+                  <p className="text-sm font-black text-[var(--rashid-color-0e9faa)]">👋 أهلاً بعودتك</p>
+                  <h1 className="mt-1 text-3xl font-black text-[var(--rashid-color-14224a)] md:text-6xl">
                     يا {childName}
                   </h1>
-                  <p className="mt-2 text-sm font-bold text-[#566681] md:mt-3 md:text-lg">
+                  <p className="mt-2 text-sm font-bold text-[var(--rashid-color-566681)] md:mt-3 md:text-lg">
                     اختر برنامجك وابدأ رحلة جديدة اليوم.
                   </p>
                 </div>
@@ -315,18 +315,18 @@ export default function ChildDashboard({ profile }: { profile: any }) {
               <div className="flex flex-wrap items-center gap-3">
                 <Link
                   href={proActive ? "/dashboard/subscription" : "/plans"}
-                  className="rounded-[1.2rem] bg-[#FFEBA5] px-4 py-3 text-sm font-black text-[#8A6200] shadow-lg md:rounded-[1.4rem] md:px-6 md:py-4 md:text-base"
+                  className="rounded-[1.2rem] bg-[var(--rashid-color-ffeba5)] px-4 py-3 text-sm font-black text-[var(--rashid-color-8a6200)] shadow-lg md:rounded-[1.4rem] md:px-6 md:py-4 md:text-base"
                 >
                   {proActive ? "👑 اشتراك Pro" : "🟢 اشتراك Free"}
                 </Link>
 
-                <button className="rounded-[1.2rem] bg-[#0E9FAA] px-4 py-3 text-sm font-black text-white shadow-lg md:rounded-[1.4rem] md:px-6 md:py-4 md:text-base">
+                <button className="rounded-[1.2rem] bg-[var(--rashid-color-0e9faa)] px-4 py-3 text-sm font-black text-white shadow-lg md:rounded-[1.4rem] md:px-6 md:py-4 md:text-base">
                   🏆 ترتيبي
                 </button>
 
                 <Link
                   href={continueHref}
-                  className="rounded-[1.2rem] bg-[#7050E8] px-4 py-3 text-sm font-black text-white shadow-lg md:rounded-[1.4rem] md:px-6 md:py-4 md:text-base"
+                  className="rounded-[1.2rem] bg-[var(--rashid-color-7050e8)] px-4 py-3 text-sm font-black text-white shadow-lg md:rounded-[1.4rem] md:px-6 md:py-4 md:text-base"
                 >
                   🚀 {continueLabel}
                 </Link>
@@ -337,17 +337,17 @@ export default function ChildDashboard({ profile }: { profile: any }) {
   
 
           {!proActive && (
-            <section className="mb-7 rounded-[2.4rem] bg-[#FFF4C7] p-5 shadow-lg">
+            <section className="mb-7 rounded-[2.4rem] bg-[var(--rashid-color-fff4c7)] p-5 shadow-lg">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                  <h2 className="text-2xl font-black text-[#14224A]">👑 برامج مميزة بانتظارك</h2>
-                  <p className="mt-2 font-bold text-[#8A6200]">
+                  <h2 className="text-2xl font-black text-[var(--rashid-color-14224a)]">👑 برامج مميزة بانتظارك</h2>
+                  <p className="mt-2 font-bold text-[var(--rashid-color-8a6200)]">
                     بعض البرامج تحتاج اشتراك Pro. يمكنك مشاهدة البرامج، لكن الدخول إلى محتوى Pro يتطلب تفعيل الاشتراك.
                   </p>
                 </div>
                 <Link
                   href="/plans"
-                  className="rounded-full bg-[#0E9FAA] px-7 py-4 font-black text-white shadow-lg"
+                  className="rounded-full bg-[var(--rashid-color-0e9faa)] px-7 py-4 font-black text-white shadow-lg"
                 >
                   مشاهدة الخطط والاشتراكات
                 </Link>
@@ -356,21 +356,21 @@ export default function ChildDashboard({ profile }: { profile: any }) {
           )}
 
           <div className="mb-4 grid grid-cols-3 gap-2 md:mb-7 md:gap-5">
-            <div className="relative overflow-hidden rounded-[1.4rem] bg-gradient-to-br from-[#BFE9FF] to-[#EAF7FF] p-3 text-center text-[#1D3772] shadow-lg md:rounded-[2rem] md:p-6 md:text-start md:shadow-xl">
+            <div className="relative overflow-hidden rounded-[1.4rem] bg-gradient-to-br from-[var(--rashid-color-bfe9ff)] to-[var(--rashid-color-eaf7ff)] p-3 text-center text-[var(--rashid-color-1d3772)] shadow-lg md:rounded-[2rem] md:p-6 md:text-start md:shadow-xl">
               <div className="absolute left-3 top-3 text-3xl opacity-20 md:left-5 md:top-5 md:text-6xl">📚</div>
               <div className="relative text-3xl md:text-6xl">📖</div>
               <div className="relative mt-2 text-3xl font-black md:mt-4 md:text-5xl">{programs.length}</div>
               <div className="relative mt-1 text-xs font-black leading-5 md:mt-2 md:text-base">برامج متاحة</div>
             </div>
 
-            <div className="relative overflow-hidden rounded-[1.4rem] bg-gradient-to-br from-[#DDF8CC] to-[#F2FFE8] p-3 text-center text-[#247B25] shadow-lg md:rounded-[2rem] md:p-6 md:text-start md:shadow-xl">
+            <div className="relative overflow-hidden rounded-[1.4rem] bg-gradient-to-br from-[var(--rashid-color-ddf8cc)] to-[var(--rashid-color-f2ffe8)] p-3 text-center text-[var(--rashid-color-247b25)] shadow-lg md:rounded-[2rem] md:p-6 md:text-start md:shadow-xl">
               <div className="absolute left-3 top-3 text-3xl opacity-20 md:left-5 md:top-5 md:text-6xl">⭐</div>
               <div className="relative text-3xl md:text-6xl">✅</div>
               <div className="relative mt-2 text-3xl font-black md:mt-4 md:text-5xl">{completedPrograms}</div>
               <div className="relative mt-1 text-xs font-black leading-5 md:mt-2 md:text-base">برامج مكتملة</div>
             </div>
 
-            <div className="relative overflow-hidden rounded-[1.4rem] bg-gradient-to-br from-[#FFE89D] to-[#FFF7D8] p-3 text-center text-[#B75A00] shadow-lg md:rounded-[2rem] md:p-6 md:text-start md:shadow-xl">
+            <div className="relative overflow-hidden rounded-[1.4rem] bg-gradient-to-br from-[var(--rashid-color-ffe89d)] to-[var(--rashid-color-fff7d8)] p-3 text-center text-[var(--rashid-color-b75a00)] shadow-lg md:rounded-[2rem] md:p-6 md:text-start md:shadow-xl">
               <div className="absolute left-3 top-3 text-3xl opacity-20 md:left-5 md:top-5 md:text-6xl">⚡</div>
               <div className="relative text-3xl md:text-6xl">⚡</div>
               <div className="relative mt-2 text-3xl font-black md:mt-4 md:text-5xl">{displayXp}</div>
@@ -381,34 +381,34 @@ export default function ChildDashboard({ profile }: { profile: any }) {
           <section className="mb-6 grid gap-4 md:grid-cols-3">
             <div className="rounded-[1.7rem] bg-white/90 p-5 shadow-lg backdrop-blur">
               <div className="text-3xl">🏁</div>
-              <div className="mt-3 text-sm font-black text-[#0E9FAA]">آخر برنامج مكتمل</div>
-              <div className="mt-1 text-xl font-black text-[#14224A]">
+              <div className="mt-3 text-sm font-black text-[var(--rashid-color-0e9faa)]">آخر برنامج مكتمل</div>
+              <div className="mt-1 text-xl font-black text-[var(--rashid-color-14224a)]">
                 {lastCompletedProgram?.title || "لم تكمل برنامجًا بعد"}
               </div>
-              <div className="mt-2 text-sm font-bold text-[#566681]">سيظهر هنا آخر إنجاز كامل.</div>
+              <div className="mt-2 text-sm font-bold text-[var(--rashid-color-566681)]">سيظهر هنا آخر إنجاز كامل.</div>
             </div>
 
             <div className="rounded-[1.7rem] bg-white/90 p-5 shadow-lg backdrop-blur">
               <div className="text-3xl">🚀</div>
-              <div className="mt-3 text-sm font-black text-[#7050E8]">متابعة آخر برنامج</div>
-              <div className="mt-1 text-xl font-black text-[#14224A]">
+              <div className="mt-3 text-sm font-black text-[var(--rashid-color-7050e8)]">متابعة آخر برنامج</div>
+              <div className="mt-1 text-xl font-black text-[var(--rashid-color-14224a)]">
                 {resumeProgram?.title || nextProgram?.title || "كل البرامج مكتملة"}
               </div>
-              <Link href={continueHref} className="mt-3 inline-flex rounded-full bg-[#7050E8] px-5 py-2 text-sm font-black text-white">
+              <Link href={continueHref} className="mt-3 inline-flex rounded-full bg-[var(--rashid-color-7050e8)] px-5 py-2 text-sm font-black text-white">
                 {continueLabel}
               </Link>
             </div>
 
             <div className="rounded-[1.7rem] bg-white/90 p-5 shadow-lg backdrop-blur">
               <div className="text-3xl">☀️</div>
-              <div className="mt-3 text-sm font-black text-[#B75A00]">تقدم اليوم</div>
-              <div className="mt-1 text-xl font-black text-[#14224A]">
+              <div className="mt-3 text-sm font-black text-[var(--rashid-color-b75a00)]">تقدم اليوم</div>
+              <div className="mt-1 text-xl font-black text-[var(--rashid-color-14224a)]">
                 {todayProgress.percentage}%
               </div>
-              <div className="mt-3 h-3 overflow-hidden rounded-full bg-[#FFEEC2]">
-                <div className="h-full rounded-full bg-gradient-to-l from-[#FFD54A] to-[#F59E0B]" style={{ width: `${todayProgress.percentage}%` }} />
+              <div className="mt-3 h-3 overflow-hidden rounded-full bg-[var(--rashid-color-ffeec2)]">
+                <div className="h-full rounded-full bg-gradient-to-l from-[var(--rashid-color-ffd54a)] to-[var(--rashid-color-f59e0b)]" style={{ width: `${todayProgress.percentage}%` }} />
               </div>
-              <div className="mt-2 text-sm font-bold text-[#566681]">
+              <div className="mt-2 text-sm font-bold text-[var(--rashid-color-566681)]">
                 {todayProgress.completedToday} من {todayProgress.dailyTarget} أنشطة اليوم
               </div>
             </div>
@@ -417,18 +417,18 @@ export default function ChildDashboard({ profile }: { profile: any }) {
           <section className="mb-6 overflow-hidden rounded-[1.8rem] bg-white/90 p-4 shadow-lg backdrop-blur md:rounded-[2.2rem] md:p-5 md:shadow-xl">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <p className="font-black text-[#0E9FAA]">رحلتك القادمة</p>
-                <h2 className="mt-1 text-2xl font-black text-[#14224A] md:text-3xl">
+                <p className="font-black text-[var(--rashid-color-0e9faa)]">رحلتك القادمة</p>
+                <h2 className="mt-1 text-2xl font-black text-[var(--rashid-color-14224a)] md:text-3xl">
                   {resumeProgram ? resumeProgram.title : nextProgram ? nextProgram.title : "كل البرامج جاهزة"}
                 </h2>
-                <p className="mt-1 text-sm font-bold text-[#566681]">
+                <p className="mt-1 text-sm font-bold text-[var(--rashid-color-566681)]">
                   {resumeProgram ? "ارجع لنفس المكان الذي وصلت له." : nextProgram ? "ابدأ البرنامج التالي في رحلتك." : "استكشف البرامج أو أعد اللعب لتحسين نتيجتك."}
                 </p>
               </div>
 
               <Link
                 href={continueHref}
-                className="rounded-full bg-[#7050E8] px-7 py-4 font-black text-white shadow-lg"
+                className="rounded-full bg-[var(--rashid-color-7050e8)] px-7 py-4 font-black text-white shadow-lg"
               >
                 {continueLabel} 🚀
               </Link>
@@ -441,17 +441,17 @@ export default function ChildDashboard({ profile }: { profile: any }) {
                 <div className="flex items-center gap-4">
                   <div className="hidden text-7xl md:block">⭐</div>
                   <div>
-                    <p className="font-black text-[#0E9FAA]">آخر نشاط</p>
-                    <h2 className="mt-1 text-3xl font-black text-[#14224A]">
+                    <p className="font-black text-[var(--rashid-color-0e9faa)]">آخر نشاط</p>
+                    <h2 className="mt-1 text-3xl font-black text-[var(--rashid-color-14224a)]">
                       نتيجتك الأخيرة: {lastAttempt.score ?? 0} / {lastAttempt.max_score ?? "-"}
                     </h2>
-                    <p className="mt-2 font-bold text-[#566681]">
+                    <p className="mt-2 font-bold text-[var(--rashid-color-566681)]">
                       استمر، كل محاولة تقرّبك من إنجاز جديد.
                     </p>
                   </div>
                 </div>
 
-                <div className="grid h-28 w-28 place-items-center rounded-full bg-white text-3xl font-black text-[#0E9FAA] shadow-lg ring-8 ring-[#E7FBF4]">
+                <div className="grid h-28 w-28 place-items-center rounded-full bg-white text-3xl font-black text-[var(--rashid-color-0e9faa)] shadow-lg ring-8 ring-[var(--rashid-color-e7fbf4)]">
                   {lastAttempt.percentage ?? 0}%
                 </div>
               </div>
@@ -462,17 +462,17 @@ export default function ChildDashboard({ profile }: { profile: any }) {
           <section className="rounded-[1.8rem] bg-white/82 p-4 shadow-lg backdrop-blur md:rounded-[2.6rem] md:p-6 md:shadow-xl">
             <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
               <div>
-                <div className="mb-3 inline-flex rounded-full bg-[#E8F8F3] px-5 py-2 font-black text-[#0E9FAA]">
+                <div className="mb-3 inline-flex rounded-full bg-[var(--rashid-color-e8f8f3)] px-5 py-2 font-black text-[var(--rashid-color-0e9faa)]">
                   برامجي 🗺️
                 </div>
-                <h2 className="text-2xl font-black text-[#14224A] md:text-4xl">
+                <h2 className="text-2xl font-black text-[var(--rashid-color-14224a)] md:text-4xl">
                   جرّب برامجنا التفاعلية
                 </h2>
               </div>
 
               <Link
                 href="/child/programs"
-                className="inline-flex items-center gap-2 rounded-full bg-[#7050E8] px-5 py-3 text-sm font-black text-white shadow-lg transition hover:-translate-y-1 md:gap-3 md:px-7 md:py-4 md:text-base"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--rashid-color-7050e8)] px-5 py-3 text-sm font-black text-white shadow-lg transition hover:-translate-y-1 md:gap-3 md:px-7 md:py-4 md:text-base"
               >
                 عرض كل البرامج
               </Link>
@@ -480,7 +480,7 @@ export default function ChildDashboard({ profile }: { profile: any }) {
             
 
             {loading ? (
-              <div className="rounded-[2rem] bg-white p-12 text-center font-black text-[#6E7A99]">
+              <div className="rounded-[2rem] bg-white p-12 text-center font-black text-[var(--rashid-color-6e7a99)]">
                 جاري تحميل البرامج...
               </div>
             ) : programs.length > 0 ? (
@@ -498,12 +498,12 @@ export default function ChildDashboard({ profile }: { profile: any }) {
                   const bestScore = getProgramBestScore(program.id);
                   const locked = program.access_type === "pro" && !proActive;
                   const fallbackGradients = [
-                    "from-[#22C7A9] to-[#4DA3FF]",
-                    "from-[#FF5C8A] to-[#FFB347]",
-                    "from-[#4423B8] to-[#6C63FF]",
-                    "from-[#FF8A00] to-[#FFD166]",
-                    "from-[#2A3556] to-[#7464C8]",
-                    "from-[#0E9FAA] to-[#B2F06A]",
+                    "from-[var(--rashid-color-22c7a9)] to-[var(--rashid-color-4da3ff)]",
+                    "from-[var(--rashid-color-ff5c8a)] to-[var(--rashid-color-ffb347)]",
+                    "from-[var(--rashid-color-4423b8)] to-[var(--rashid-color-6c63ff)]",
+                    "from-[var(--rashid-color-ff8a00)] to-[var(--rashid-color-ffd166)]",
+                    "from-[var(--rashid-color-2a3556)] to-[var(--rashid-color-7464c8)]",
+                    "from-[var(--rashid-color-0e9faa)] to-[var(--rashid-color-b2f06a)]",
                   ];
 
                   return (
@@ -526,21 +526,21 @@ export default function ChildDashboard({ profile }: { profile: any }) {
                           )}
 
                           {completed && (
-                            <div className="absolute left-4 top-4 rounded-full bg-[#0E9FAA] px-4 py-2 text-sm font-black text-white shadow-lg">
+                            <div className="absolute left-4 top-4 rounded-full bg-[var(--rashid-color-0e9faa)] px-4 py-2 text-sm font-black text-white shadow-lg">
                               ✅
                             </div>
                           )}
 
                           {locked && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-[#14224A]/45 backdrop-blur-[1px]">
-                              <div className="rounded-2xl bg-white px-4 py-3 text-center font-black text-[#14224A] shadow-xl">
+                            <div className="absolute inset-0 flex items-center justify-center bg-[var(--rashid-color-14224a)]/45 backdrop-blur-[1px]">
+                              <div className="rounded-2xl bg-white px-4 py-3 text-center font-black text-[var(--rashid-color-14224a)] shadow-xl">
                                 Pro 🔒
                               </div>
                             </div>
                           )}
 
                           {bestScore !== null && (
-                            <div className="absolute bottom-3 right-3 rounded-full bg-white/95 px-4 py-2 text-sm font-black text-[#14224A] shadow-lg">
+                            <div className="absolute bottom-3 right-3 rounded-full bg-white/95 px-4 py-2 text-sm font-black text-[var(--rashid-color-14224a)] shadow-lg">
                               {bestScore}%
                             </div>
                           )}
@@ -549,7 +549,7 @@ export default function ChildDashboard({ profile }: { profile: any }) {
                         <div className="p-5">
                           <div className="mb-3 flex flex-wrap gap-2">
                             {program.categories?.name && (
-                              <span className="rounded-full bg-[#D9F5EE] px-3 py-1.5 text-xs font-black text-[#0E9FAA]">
+                              <span className="rounded-full bg-[var(--rashid-color-d9f5ee)] px-3 py-1.5 text-xs font-black text-[var(--rashid-color-0e9faa)]">
                                 {program.categories.name}
                               </span>
                             )}
@@ -565,12 +565,12 @@ export default function ChildDashboard({ profile }: { profile: any }) {
                             </span>
                           </div>
 
-                          <h3 className="text-2xl font-black text-[#14224A]">
+                          <h3 className="text-2xl font-black text-[var(--rashid-color-14224a)]">
                             {program.title}
                           </h3>
 
                           {program.description && (
-                            <p className="mt-2 line-clamp-2 leading-7 text-[#5F5A7B]">
+                            <p className="mt-2 line-clamp-2 leading-7 text-[var(--rashid-color-5f5a7b)]">
                               {program.description}
                             </p>
                           )}
@@ -581,14 +581,14 @@ export default function ChildDashboard({ profile }: { profile: any }) {
                         {locked ? (
                           <Link
                             href="/plans"
-                            className="block rounded-full bg-[#14224A] px-6 py-3 text-center font-black text-white"
+                            className="block rounded-full bg-[var(--rashid-color-14224a)] px-6 py-3 text-center font-black text-white"
                           >
                             فعّل اشتراكك
                           </Link>
                         ) : (
                           <Link
                             href={`/child/programs/${program.slug}`}
-                            className="inline-flex rounded-full bg-[#0E9FAA] px-6 py-3 font-black text-white shadow-lg"
+                            className="inline-flex rounded-full bg-[var(--rashid-color-0e9faa)] px-6 py-3 font-black text-white shadow-lg"
                           >
                             {completed ? "إعادة البرنامج" : "ابدأ الآن"}
                           </Link>
@@ -599,8 +599,8 @@ export default function ChildDashboard({ profile }: { profile: any }) {
                 })}
               </div>
             ) : (
-              <div className="rounded-[2rem] border-2 border-dashed border-[#DDEDEA] bg-white p-12 text-center">
-                <h3 className="text-3xl font-black text-[#14224A]">
+              <div className="rounded-[2rem] border-2 border-dashed border-[var(--rashid-color-ddedea)] bg-white p-12 text-center">
+                <h3 className="text-3xl font-black text-[var(--rashid-color-14224a)]">
                   لا توجد برامج منشورة حاليًا
                 </h3>
               </div>

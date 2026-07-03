@@ -36,10 +36,10 @@ export default function ParentStats({
           className="rounded-[2rem] bg-white/95 p-6 shadow-[0_18px_45px_rgba(62,87,120,.08)]"
         >
           <div className="text-5xl">{card.icon}</div>
-          <div className="mt-4 text-4xl font-black text-[#0B4D6B]">
+          <div className="mt-4 text-4xl font-black text-[var(--rashid-color-0b4d6b)]">
             {card.value}
           </div>
-          <div className="mt-2 font-bold text-[#6E7A99]">{card.label}</div>
+          <div className="mt-2 font-bold text-[var(--rashid-color-6e7a99)]">{card.label}</div>
         </div>
       ))}
     </div>

@@ -160,22 +160,22 @@ export default function ParentChildrenPage() {
         <header className="mb-8 overflow-hidden rounded-[2.8rem] bg-white/95 p-7 shadow-[0_18px_45px_rgba(62,87,120,.13)]">
           <div className="flex flex-wrap items-center justify-between gap-5">
             <div>
-              <div className="mb-3 inline-flex rounded-full bg-[#E8F8F3] px-5 py-2 font-black text-[#42BFA8]">
+              <div className="mb-3 inline-flex rounded-full bg-[var(--rashid-color-e8f8f3)] px-5 py-2 font-black text-[var(--rashid-color-42bfa8)]">
                 إدارة الأبناء
               </div>
 
-              <h1 className="text-5xl font-black leading-[1.2] text-[#20294f]">
+              <h1 className="text-5xl font-black leading-[1.2] text-[var(--rashid-color-20294f)]">
                 أبنائي 👨‍👩‍👧
               </h1>
 
-              <p className="mt-4 max-w-2xl text-lg font-bold leading-8 text-[#667085]">
+              <p className="mt-4 max-w-2xl text-lg font-bold leading-8 text-[var(--rashid-color-667085)]">
                 أضف أبناءك وتابع XP، البرامج المكتملة، ووقت التعلم لكل طفل.
               </p>
             </div>
 
             <Link
               href="/dashboard/children/new"
-              className="rounded-full bg-[#42BFA8] px-8 py-4 font-black text-white shadow-lg transition hover:-translate-y-1"
+              className="rounded-full bg-[var(--rashid-color-42bfa8)] px-8 py-4 font-black text-white shadow-lg transition hover:-translate-y-1"
             >
               + إضافة طفل
             </Link>
@@ -185,31 +185,31 @@ export default function ParentChildrenPage() {
         <div className="mb-8 grid gap-5 md:grid-cols-3">
           <div className="rounded-[2rem] bg-white/95 p-6 shadow-[0_18px_45px_rgba(62,87,120,.08)]">
             <div className="text-5xl">👨‍👩‍👧</div>
-            <div className="mt-4 text-4xl font-black text-[#0B4D6B]">
+            <div className="mt-4 text-4xl font-black text-[var(--rashid-color-0b4d6b)]">
               {children.length}
             </div>
-            <div className="mt-2 font-bold text-[#6E7A99]">عدد الأبناء</div>
+            <div className="mt-2 font-bold text-[var(--rashid-color-6e7a99)]">عدد الأبناء</div>
           </div>
 
           <div className="rounded-[2rem] bg-white/95 p-6 shadow-[0_18px_45px_rgba(62,87,120,.08)]">
             <div className="text-5xl">⚡</div>
-            <div className="mt-4 text-4xl font-black text-[#0B4D6B]">
+            <div className="mt-4 text-4xl font-black text-[var(--rashid-color-0b4d6b)]">
               {totalXp}
             </div>
-            <div className="mt-2 font-bold text-[#6E7A99]">إجمالي XP</div>
+            <div className="mt-2 font-bold text-[var(--rashid-color-6e7a99)]">إجمالي XP</div>
           </div>
 
           <div className="rounded-[2rem] bg-white/95 p-6 shadow-[0_18px_45px_rgba(62,87,120,.08)]">
             <div className="text-5xl">📚</div>
-            <div className="mt-4 text-4xl font-black text-[#0B4D6B]">
+            <div className="mt-4 text-4xl font-black text-[var(--rashid-color-0b4d6b)]">
               {completedPrograms}
             </div>
-            <div className="mt-2 font-bold text-[#6E7A99]">برامج مكتملة</div>
+            <div className="mt-2 font-bold text-[var(--rashid-color-6e7a99)]">برامج مكتملة</div>
           </div>
         </div>
 
         {loading ? (
-          <div className="rounded-[2.5rem] bg-white/95 p-12 text-center text-2xl font-black text-[#7048e8] shadow-xl">
+          <div className="rounded-[2.5rem] bg-white/95 p-12 text-center text-2xl font-black text-[var(--rashid-color-7048e8)] shadow-xl">
             جاري تحميل الأبناء...
           </div>
         ) : children.length ? (
@@ -222,7 +222,7 @@ export default function ParentChildrenPage() {
                 <Link
                   key={child.id}
                   href={`/dashboard/children/${child.id}`}
-                  className="group overflow-hidden rounded-[2.3rem] border border-[#DDEDEA] bg-[#F9FFFD] p-6 shadow-xl shadow-teal-50 transition hover:-translate-y-2"
+                  className="group overflow-hidden rounded-[2.3rem] border border-[var(--rashid-color-ddedea)] bg-[var(--rashid-color-f9fffd)] p-6 shadow-xl shadow-teal-50 transition hover:-translate-y-2"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex h-20 w-20 items-center justify-center rounded-[1.7rem] bg-white text-5xl shadow-sm">
@@ -240,44 +240,44 @@ export default function ParentChildrenPage() {
                     </span>
                   </div>
 
-                  <h3 className="mt-5 text-2xl font-black text-[#0B4D6B]">
+                  <h3 className="mt-5 text-2xl font-black text-[var(--rashid-color-0b4d6b)]">
                     {child.full_name}
                   </h3>
 
-                  <p className="mt-2 font-bold text-[#6E7A99]">
+                  <p className="mt-2 font-bold text-[var(--rashid-color-6e7a99)]">
                     العمر: {child.age || "-"} سنوات
                   </p>
 
                   <div className="mt-5 grid grid-cols-3 gap-3">
                     <div className="rounded-2xl bg-white p-4 text-center">
-                      <div className="font-black text-[#0B4D6B]">
+                      <div className="font-black text-[var(--rashid-color-0b4d6b)]">
                         ⚡ {child.xp || 0}
                       </div>
-                      <div className="mt-1 text-xs font-bold text-[#6E7A99]">
+                      <div className="mt-1 text-xs font-bold text-[var(--rashid-color-6e7a99)]">
                         XP
                       </div>
                     </div>
 
                     <div className="rounded-2xl bg-white p-4 text-center">
-                      <div className="font-black text-[#0B4D6B]">
+                      <div className="font-black text-[var(--rashid-color-0b4d6b)]">
                         📚 {completed}
                       </div>
-                      <div className="mt-1 text-xs font-bold text-[#6E7A99]">
+                      <div className="mt-1 text-xs font-bold text-[var(--rashid-color-6e7a99)]">
                         برامج
                       </div>
                     </div>
 
                     <div className="rounded-2xl bg-white p-4 text-center">
-                      <div className="font-black text-[#0B4D6B]">
+                      <div className="font-black text-[var(--rashid-color-0b4d6b)]">
                         ⏱️ {timeText}
                       </div>
-                      <div className="mt-1 text-xs font-bold text-[#6E7A99]">
+                      <div className="mt-1 text-xs font-bold text-[var(--rashid-color-6e7a99)]">
                         وقت التعلم
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-6 rounded-full bg-[#0B4D6B] px-6 py-3 text-center font-black text-white transition group-hover:bg-[#42BFA8]">
+                  <div className="mt-6 rounded-full bg-[var(--rashid-color-0b4d6b)] px-6 py-3 text-center font-black text-white transition group-hover:bg-[var(--rashid-color-42bfa8)]">
                     عرض التفاصيل
                   </div>
                 </Link>
@@ -285,18 +285,18 @@ export default function ParentChildrenPage() {
             })}
           </div>
         ) : (
-          <div className="rounded-[2.5rem] border-2 border-dashed border-[#DDEDEA] bg-white/95 p-12 text-center">
-            <h3 className="text-3xl font-black text-[#0B4D6B]">
+          <div className="rounded-[2.5rem] border-2 border-dashed border-[var(--rashid-color-ddedea)] bg-white/95 p-12 text-center">
+            <h3 className="text-3xl font-black text-[var(--rashid-color-0b4d6b)]">
               لا يوجد أبناء بعد
             </h3>
 
-            <p className="mt-3 font-bold text-[#6E7A99]">
+            <p className="mt-3 font-bold text-[var(--rashid-color-6e7a99)]">
               ابدأ بإضافة أول طفل لعرض النتائج والتقدم.
             </p>
 
             <Link
               href="/dashboard/children/new"
-              className="mt-6 inline-flex rounded-full bg-[#42BFA8] px-8 py-4 font-black text-white"
+              className="mt-6 inline-flex rounded-full bg-[var(--rashid-color-42bfa8)] px-8 py-4 font-black text-white"
             >
               + إضافة طفل
             </Link>

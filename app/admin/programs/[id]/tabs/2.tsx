@@ -8,6 +8,9 @@ type Tab = {
   title: string;
   type: string;
   sort_order: number;
+  guide_title?: string | null;
+  guide_description?: string | null;
+  award_xp?: boolean | null;
 };
 
 type Program = {
@@ -41,6 +44,9 @@ export default function ProgramTabsPage({
   const [title, setTitle] = useState("");
   const [type, setType] = useState("content");
   const [sortOrder, setSortOrder] = useState(0);
+  const [guideTitle, setGuideTitle] = useState("");
+  const [guideDescription, setGuideDescription] = useState("");
+  const [awardXp, setAwardXp] = useState(true);
 
   useEffect(() => {
     fetchData();
@@ -77,6 +83,9 @@ export default function ProgramTabsPage({
     setTitle("");
     setType("content");
     setSortOrder(0);
+    setGuideTitle("");
+    setGuideDescription("");
+    setAwardXp(true);
   }
 
   function startEdit(tab: Tab) {
@@ -84,6 +93,9 @@ export default function ProgramTabsPage({
     setTitle(tab.title);
     setType(tab.type);
     setSortOrder(tab.sort_order || 0);
+    setGuideTitle(tab.guide_title || "");
+    setGuideDescription(tab.guide_description || "");
+    setAwardXp(tab.award_xp !== false);
 
     window.scrollTo({
       top: 0,
@@ -104,6 +116,9 @@ export default function ProgramTabsPage({
       title: title.trim(),
       type,
       sort_order: Number(sortOrder || tabs.length + 1),
+      guide_title: guideTitle.trim() || null,
+      guide_description: guideDescription.trim() || null,
+      award_xp: awardXp,
     };
 
     const { error } = editingId
@@ -139,9 +154,9 @@ export default function ProgramTabsPage({
   const selectedType = tabTypes.find((x) => x.value === type);
 
   return (
-    <main dir="rtl" className="min-h-screen bg-[#F4FAF8] p-6">
+    <main dir="rtl" className="min-h-screen bg-[var(--rashid-color-f4faf8)] p-6">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-8 rounded-[2.5rem] bg-[#0B4D6B] p-8 text-white shadow-xl">
+        <div className="mb-8 rounded-[2.5rem] bg-[var(--rashid-color-0b4d6b)] p-8 text-white shadow-xl">
           <a
             href="/admin/programs"
             className="mb-5 inline-flex rounded-full bg-white/10 px-5 py-2 font-black text-white"
@@ -158,7 +173,7 @@ export default function ProgramTabsPage({
 
         <div className="grid gap-8 xl:grid-cols-[430px_1fr]">
           <div className="rounded-[2rem] bg-white p-8 shadow-xl">
-            <h2 className="mb-6 text-2xl font-black text-[#0B4D6B]">
+            <h2 className="mb-6 text-2xl font-black text-[var(--rashid-color-0b4d6b)]">
               {editingId ? "تعديل التاب" : "إضافة تاب جديد"}
             </h2>
 
@@ -167,18 +182,18 @@ export default function ProgramTabsPage({
                 placeholder="مثال: أهداف البرنامج"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full rounded-2xl border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] outline-none focus:border-[#42BFA8]"
+                className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] bg-white px-4 py-4 text-[var(--rashid-color-0b4d6b)] outline-none focus:border-[var(--rashid-color-42bfa8)]"
               />
 
               <div>
-                <label className="mb-2 block font-black text-[#0B4D6B]">
+                <label className="mb-2 block font-black text-[var(--rashid-color-0b4d6b)]">
                   نوع التاب
                 </label>
 
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value)}
-                  className="w-full appearance-none rounded-2xl border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] outline-none focus:border-[#42BFA8]"
+                  className="w-full appearance-none rounded-2xl border border-[var(--rashid-color-ddedea)] bg-white px-4 py-4 text-[var(--rashid-color-0b4d6b)] outline-none focus:border-[var(--rashid-color-42bfa8)]"
                 >
                   {tabTypes.map((tab) => (
                     <option key={tab.value} value={tab.value}>
@@ -187,7 +202,7 @@ export default function ProgramTabsPage({
                   ))}
                 </select>
 
-                <div className="mt-3 rounded-2xl bg-[#F4FAF8] p-4 text-sm font-bold text-[#6E7A99]">
+                <div className="mt-3 rounded-2xl bg-[var(--rashid-color-f4faf8)] p-4 text-sm font-bold text-[var(--rashid-color-6e7a99)]">
                   النوع المختار: {selectedType?.icon} {selectedType?.label}
                 </div>
               </div>
@@ -197,12 +212,59 @@ export default function ProgramTabsPage({
                 placeholder="ترتيب التاب"
                 value={sortOrder}
                 onChange={(e) => setSortOrder(Number(e.target.value))}
-                className="w-full rounded-2xl border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] outline-none focus:border-[#42BFA8]"
+                className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] bg-white px-4 py-4 text-[var(--rashid-color-0b4d6b)] outline-none focus:border-[var(--rashid-color-42bfa8)]"
               />
+
+              <div className="rounded-3xl border border-[var(--rashid-color-ddedea)] bg-[var(--rashid-color-f4faf8)] p-4">
+                <label className="mb-2 block font-black text-[var(--rashid-color-0b4d6b)]">
+                  عنوان صندوق التعليمات داخل التاب
+                </label>
+
+                <input
+                  placeholder="مثال: تابع القصص بالترتيب"
+                  value={guideTitle}
+                  onChange={(e) => setGuideTitle(e.target.value)}
+                  className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] bg-white px-4 py-4 text-[var(--rashid-color-0b4d6b)] outline-none focus:border-[var(--rashid-color-42bfa8)]"
+                />
+
+                <label className="mb-2 mt-4 block font-black text-[var(--rashid-color-0b4d6b)]">
+                  الوصف أسفل العنوان
+                </label>
+
+                <textarea
+                  placeholder="مثال: داخل هذا القسم ابدأ النشاط الحالي، وبعد إكماله يفتح النشاط التالي تلقائيًا."
+                  value={guideDescription}
+                  onChange={(e) => setGuideDescription(e.target.value)}
+                  rows={4}
+                  className="w-full resize-none rounded-2xl border border-[var(--rashid-color-ddedea)] bg-white px-4 py-4 leading-8 text-[var(--rashid-color-0b4d6b)] outline-none focus:border-[var(--rashid-color-42bfa8)]"
+                />
+
+                <p className="mt-3 text-xs font-bold leading-6 text-[var(--rashid-color-6e7a99)]">
+                  إذا تركتها فارغة سيظهر النص الافتراضي حسب نوع التاب.
+                </p>
+              </div>
+
+              <label className="flex cursor-pointer items-center justify-between gap-4 rounded-3xl border border-[var(--rashid-color-ddedea)] bg-white p-4">
+                <div>
+                  <div className="font-black text-[var(--rashid-color-0b4d6b)]">
+                    نقاط هذا التاب
+                  </div>
+                  <p className="mt-1 text-sm font-bold leading-6 text-[var(--rashid-color-6e7a99)]">
+                    شغّلها إذا كانت الألعاب/القصص داخل هذا التاب تمنح XP للطفل، وأطفئها إذا كانت تعليمية فقط.
+                  </p>
+                </div>
+
+                <input
+                  type="checkbox"
+                  checked={awardXp}
+                  onChange={(e) => setAwardXp(e.target.checked)}
+                  className="h-6 w-6 accent-[var(--rashid-color-42bfa8)]"
+                />
+              </label>
 
               <button
                 type="submit"
-                className="w-full rounded-full bg-[#42BFA8] py-4 font-black text-white transition hover:-translate-y-1"
+                className="w-full rounded-full bg-[var(--rashid-color-42bfa8)] py-4 font-black text-white transition hover:-translate-y-1"
               >
                 {editingId ? "حفظ التعديل" : "إضافة التاب"}
               </button>
@@ -211,7 +273,7 @@ export default function ProgramTabsPage({
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="w-full rounded-full bg-gray-100 py-4 font-black text-[#0B4D6B]"
+                  className="w-full rounded-full bg-gray-100 py-4 font-black text-[var(--rashid-color-0b4d6b)]"
                 >
                   إلغاء التعديل
                 </button>
@@ -225,14 +287,14 @@ export default function ProgramTabsPage({
                 جاري التحميل...
               </div>
             ) : tabs.length === 0 ? (
-              <div className="rounded-[2rem] border-2 border-dashed border-[#DDEDEA] bg-white p-12 text-center shadow-xl">
+              <div className="rounded-[2rem] border-2 border-dashed border-[var(--rashid-color-ddedea)] bg-white p-12 text-center shadow-xl">
                 <div className="text-5xl">🧩</div>
 
-                <h3 className="mt-5 text-3xl font-black text-[#0B4D6B]">
+                <h3 className="mt-5 text-3xl font-black text-[var(--rashid-color-0b4d6b)]">
                   لا توجد تابات بعد
                 </h3>
 
-                <p className="mt-3 text-[#6E7A99]">
+                <p className="mt-3 text-[var(--rashid-color-6e7a99)]">
                   ابدأ بإضافة تاب مثل: الأهداف، الأنشطة، الألعاب.
                 </p>
               </div>
@@ -246,7 +308,7 @@ export default function ProgramTabsPage({
                       key={tab.id}
                       className="group overflow-hidden rounded-[2rem] bg-white shadow-xl transition hover:-translate-y-2"
                     >
-                      <div className="bg-gradient-to-br from-[#0B4D6B] to-[#42BFA8] p-6 text-white">
+                      <div className="bg-gradient-to-br from-[var(--rashid-color-0b4d6b)] to-[var(--rashid-color-42bfa8)] p-6 text-white">
                         <div className="mb-6 flex items-center justify-between">
                           <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-white/20 text-3xl">
                             {tabType?.icon || "🧩"}
@@ -262,20 +324,32 @@ export default function ProgramTabsPage({
                         <p className="mt-2 text-white/70">
                           {tabType?.label || tab.type}
                         </p>
+
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-black">
+                            {tab.award_xp === false ? "تعليمي فقط" : "يربح نقاط"}
+                          </span>
+
+                          {tab.guide_title ? (
+                            <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-black">
+                              تعليمات مخصصة
+                            </span>
+                          ) : null}
+                        </div>
                       </div>
 
                       <div className="p-5">
                         <div className="grid grid-cols-3 gap-3">
                           <button
                             onClick={() => startEdit(tab)}
-                            className="rounded-2xl bg-[#42BFA8] py-3 text-sm font-black text-white"
+                            className="rounded-2xl bg-[var(--rashid-color-42bfa8)] py-3 text-sm font-black text-white"
                           >
                             تعديل
                           </button>
 
                           <a
                             href={`/admin/tabs/${tab.id}`}
-                            className="rounded-2xl bg-[#0B4D6B] py-3 text-center text-sm font-black text-white"
+                            className="rounded-2xl bg-[var(--rashid-color-0b4d6b)] py-3 text-center text-sm font-black text-white"
                           >
                             المحتوى
                           </a>

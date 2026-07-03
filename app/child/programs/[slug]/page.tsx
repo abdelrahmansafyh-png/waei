@@ -53,6 +53,7 @@ export default function ChildProgramPage() {
   const [storyFeedback, setStoryFeedback] = useState<any>(null);
   const [storyAnswers, setStoryAnswers] = useState<any[]>([]);
   const [storyVideoEnded, setStoryVideoEnded] = useState(false);
+  const [activeTimedContentId, setActiveTimedContentId] = useState("");
 
   const startTimeRef = useRef<number>(Date.now());
   const elapsedSecondsRef = useRef(0);
@@ -509,6 +510,7 @@ export default function ChildProgramPage() {
     setStoryFeedback(null);
     setStoryAnswers([]);
     setStoryVideoEnded(false);
+    setActiveTimedContentId("");
   }, [activeGameId, activeTab]);
 
   useEffect(() => {
@@ -521,21 +523,36 @@ export default function ChildProgramPage() {
   }, [activeTab, contents, profile?.id, program?.id]);
 
   useEffect(() => {
-    // الألعاب/القصص/الأنشطة الفرعية الخارجية مثل Wordwall لا ترسل نتيجة.
-    // لذلك إذا بقي الطفل داخل نفس التاب الفرعي 25 ثانية نحسبه مكتمل.
-    // ألعاب راشد الداخلية التي لديها game_folder تبقى تعتمد على RASHID_GAME_RESULT فقط.
-    if (!selectedGame) return;
-    if (!isTimedExternalPlayableContent(selectedGame)) return;
-    if (completedContentIds.includes(selectedGame.id)) return;
-    if (externalIframeTimersRef.current[selectedGame.id]) return;
+    // أنشطة Wordwall / iframe الخارجية لا ترسل نتيجة من داخل اللعبة.
+    // لذلك نحسبها مكتملة بعد 25 ثانية، لكن فقط بعد فتح اللعبة فعليًا
+    // وليس بمجرد ظهور كرت النشاط في شاشة الاختيار.
+    if (!activeTimedContentId) return;
 
-    const contentToComplete = selectedGame;
+    const contentToComplete = contents.find((item) => item.id === activeTimedContentId);
 
-    externalIframeTimersRef.current[contentToComplete.id] = window.setTimeout(() => {
+    if (!contentToComplete) return;
+    if (!isTimedExternalPlayableContent(contentToComplete)) return;
+    if (completedContentIds.includes(contentToComplete.id)) {
+      setActiveTimedContentId("");
+      return;
+    }
+
+    const timerId = window.setTimeout(() => {
       markContentCompleted(contentToComplete);
       delete externalIframeTimersRef.current[contentToComplete.id];
+      setActiveTimedContentId("");
     }, 25000);
-  }, [selectedGame?.id, completedContentIds.join("|")]);
+
+    externalIframeTimersRef.current[contentToComplete.id] = timerId;
+
+    return () => {
+      window.clearTimeout(timerId);
+
+      if (externalIframeTimersRef.current[contentToComplete.id] === timerId) {
+        delete externalIframeTimersRef.current[contentToComplete.id];
+      }
+    };
+  }, [activeTimedContentId, contents, completedContentIds.join("|")]);
 
   const activeIndex = tabs.findIndex((x) => x.id === activeTab);
 
@@ -789,6 +806,23 @@ export default function ChildProgramPage() {
     return isActivityUnlockedInList(iframeGames, index);
   }
 
+  function openFullscreenGame(game: Content | null | undefined) {
+    if (!game) return;
+
+    setFullscreenGame(getGameIframeSrc(game));
+
+    if (isTimedExternalPlayableContent(game) && !completedContentIds.includes(game.id)) {
+      setActiveTimedContentId(game.id);
+    } else {
+      setActiveTimedContentId("");
+    }
+  }
+
+  function closeFullscreenGame() {
+    setFullscreenGame(null);
+    setActiveTimedContentId("");
+  }
+
   function openLearningActivity(game: Content | null | undefined, index: number) {
     if (!game) return;
 
@@ -799,7 +833,7 @@ export default function ChildProgramPage() {
 
     saveCurrentPosition(game);
     setActiveGameId(game.id);
-    setFullscreenGame(getGameIframeSrc(game));
+    openFullscreenGame(game);
   }
 
   function startSelectedLearningActivity() {
@@ -812,7 +846,7 @@ export default function ChildProgramPage() {
       return;
     }
 
-    setFullscreenGame(getGameIframeSrc(selectedGame));
+    openFullscreenGame(selectedGame);
   }
 
   function resetNativeStoryState() {
@@ -821,6 +855,7 @@ export default function ChildProgramPage() {
     setStoryFeedback(null);
     setStoryAnswers([]);
     setStoryVideoEnded(false);
+    setActiveTimedContentId("");
     setGameAnswers([]);
     setGameResult(null);
   }
@@ -1020,7 +1055,7 @@ export default function ChildProgramPage() {
             <button
               type="button"
               className="desktop-fullscreen-btn"
-              onClick={() => setFullscreenGame(getGameIframeSrc(selectedGame))}
+              onClick={() => openFullscreenGame(selectedGame)}
               aria-label="فتح القصة على كامل الشاشة"
               title="كامل الشاشة"
             >
@@ -1100,8 +1135,8 @@ export default function ChildProgramPage() {
               className={`story-start-art ${storyCover.startsWith("linear-gradient") ? "" : "has-image"}`}
               style={{ background: storyCover }}
             >
-              <div className="story-floating-character">🎭</div>
-              <span className="story-start-badge">{scenes.length} مشاهد</span>
+              {/* <div className="story-floating-character">🎭</div>
+              <span className="story-start-badge">{scenes.length} مشاهد</span> */}
             </div>
             <div className="story-start-body">
               <div className="story-kicker">رحلة قصة</div>
@@ -1644,7 +1679,7 @@ export default function ChildProgramPage() {
                                                 type="button"
                                                 className="desktop-fullscreen-btn"
                                                 onClick={() =>
-                                                  setFullscreenGame(getGameIframeSrc(selectedGame))
+                                                  openFullscreenGame(selectedGame)
                                                 }
                                                 aria-label="فتح اللعبة على كامل الشاشة"
                                                 title="كامل الشاشة"
@@ -1664,7 +1699,7 @@ export default function ChildProgramPage() {
                                           <div
                                             className="game-player-mobile-preview"
                                             onClick={() =>
-                                              setFullscreenGame(getGameIframeSrc(selectedGame))
+                                              openFullscreenGame(selectedGame)
                                             }
                                             role="button"
                                             tabIndex={0}
@@ -1686,12 +1721,12 @@ export default function ChildProgramPage() {
                                       <div
                                         style={{
                                           marginTop: 20,
-                                          background: "#E9FFF7",
-                                          border: "2px solid #0E9FAA",
+                                          background: "var(--rashid-color-e9fff7)",
+                                          border: "2px solid var(--rashid-color-0e9faa)",
                                           borderRadius: 24,
                                           padding: 20,
                                           fontWeight: 900,
-                                          color: "#064E3B",
+                                          color: "var(--rashid-color-064e3b)",
                                         }}
                                       >
                                         <div>✅ وصلت نتيجة اللعبة بنجاح</div>
@@ -1716,7 +1751,7 @@ export default function ChildProgramPage() {
                                             <div
                                               style={{
                                                 fontSize: 26,
-                                                color: "#0E9FAA",
+                                                color: "var(--rashid-color-0e9faa)",
                                               }}
                                             >
                                               {gameResult.score ?? 0}
@@ -1737,7 +1772,7 @@ export default function ChildProgramPage() {
                                             <div
                                               style={{
                                                 fontSize: 26,
-                                                color: "#0E9FAA",
+                                                color: "var(--rashid-color-0e9faa)",
                                               }}
                                             >
                                               {gameResult.maxScore ?? "-"}
@@ -1758,7 +1793,7 @@ export default function ChildProgramPage() {
                                             <div
                                               style={{
                                                 fontSize: 26,
-                                                color: "#0E9FAA",
+                                                color: "var(--rashid-color-0e9faa)",
                                               }}
                                             >
                                               {gameResult.percentage ?? 0}%
@@ -1897,7 +1932,7 @@ export default function ChildProgramPage() {
           <div className="game-fullscreen" dir="rtl">
             <button
               type="button"
-              onClick={() => setFullscreenGame(null)}
+              onClick={closeFullscreenGame}
               className="game-fullscreen-close"
             >
               ✕ خروج

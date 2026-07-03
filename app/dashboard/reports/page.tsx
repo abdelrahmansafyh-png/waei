@@ -270,7 +270,7 @@ export default function ParentReportsPage() {
   return (
     <ParentLayout>
       <div className="mx-auto max-w-7xl space-y-7">
-        <header className="overflow-hidden rounded-[3rem] bg-gradient-to-br from-[#0B4D6B] via-[#167A8F] to-[#42BFA8] p-8 text-white shadow-[0_24px_70px_rgba(11,77,107,.22)]">
+        <header className="overflow-hidden rounded-[3rem] bg-gradient-to-br from-[var(--rashid-color-0b4d6b)] via-[var(--rashid-color-167a8f)] to-[var(--rashid-color-42bfa8)] p-8 text-white shadow-[0_24px_70px_rgba(11,77,107,.22)]">
           <div className="mb-3 inline-flex rounded-full bg-white/18 px-5 py-2 font-black text-white backdrop-blur">
             التقارير
           </div>
@@ -281,7 +281,7 @@ export default function ParentReportsPage() {
         </header>
 
         <section className="rounded-[2.2rem] bg-white p-5 shadow-[0_18px_45px_rgba(18,34,74,.08)]">
-          <div className="mb-4 text-lg font-black text-[#0B4D6B]">فلترة التقرير حسب التاريخ</div>
+          <div className="mb-4 text-lg font-black text-[var(--rashid-color-0b4d6b)]">فلترة التقرير حسب التاريخ</div>
 
           <div className="flex flex-wrap gap-3">
             {[
@@ -298,8 +298,8 @@ export default function ParentReportsPage() {
                 onClick={() => setDateFilter(value as typeof dateFilter)}
                 className={`rounded-full px-5 py-3 text-sm font-black transition ${
                   dateFilter === value
-                    ? "bg-[#42BFA8] text-white shadow-lg"
-                    : "bg-[#F5FBFF] text-[#0B4D6B] hover:bg-[#E8F8F3]"
+                    ? "bg-[var(--rashid-color-42bfa8)] text-white shadow-lg"
+                    : "bg-[var(--rashid-color-f5fbff)] text-[var(--rashid-color-0b4d6b)] hover:bg-[var(--rashid-color-e8f8f3)]"
                 }`}
               >
                 {label}
@@ -310,22 +310,22 @@ export default function ParentReportsPage() {
           {dateFilter === "custom" ? (
             <div className="mt-5 grid gap-4 md:grid-cols-2">
               <label className="block">
-                <span className="mb-2 block text-sm font-black text-[#667085]">من تاريخ</span>
+                <span className="mb-2 block text-sm font-black text-[var(--rashid-color-667085)]">من تاريخ</span>
                 <input
                   type="date"
                   value={fromDate}
                   onChange={(event) => setFromDate(event.target.value)}
-                  className="w-full rounded-2xl border border-[#DDEDEA] bg-white px-4 py-3 font-bold text-[#0B4D6B] outline-none focus:border-[#42BFA8]"
+                  className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] bg-white px-4 py-3 font-bold text-[var(--rashid-color-0b4d6b)] outline-none focus:border-[var(--rashid-color-42bfa8)]"
                 />
               </label>
 
               <label className="block">
-                <span className="mb-2 block text-sm font-black text-[#667085]">إلى تاريخ</span>
+                <span className="mb-2 block text-sm font-black text-[var(--rashid-color-667085)]">إلى تاريخ</span>
                 <input
                   type="date"
                   value={toDate}
                   onChange={(event) => setToDate(event.target.value)}
-                  className="w-full rounded-2xl border border-[#DDEDEA] bg-white px-4 py-3 font-bold text-[#0B4D6B] outline-none focus:border-[#42BFA8]"
+                  className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] bg-white px-4 py-3 font-bold text-[var(--rashid-color-0b4d6b)] outline-none focus:border-[var(--rashid-color-42bfa8)]"
                 />
               </label>
             </div>
@@ -333,7 +333,7 @@ export default function ParentReportsPage() {
         </section>
 
         {loading ? (
-          <div className="rounded-[2.5rem] bg-white p-12 text-center text-2xl font-black text-[#7048e8] shadow-xl">
+          <div className="rounded-[2.5rem] bg-white p-12 text-center text-2xl font-black text-[var(--rashid-color-7048e8)] shadow-xl">
             جاري تحميل التقارير...
           </div>
         ) : childReports.length ? (
@@ -346,47 +346,47 @@ export default function ParentReportsPage() {
               >
                 <div className="mb-5 flex items-start justify-between gap-4">
                   <div className="flex items-center gap-4">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#F5FBFF] text-4xl">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--rashid-color-f5fbff)] text-4xl">
                       {report.child.gender === "female" ? "👧" : "👦"}
                     </div>
                     <div>
-                      <h2 className="text-2xl font-black text-[#0B4D6B]">{report.child.full_name || "طفل"}</h2>
-                      <p className="mt-1 font-bold text-[#667085]">XP: {report.child.xp || 0}</p>
+                      <h2 className="text-2xl font-black text-[var(--rashid-color-0b4d6b)]">{report.child.full_name || "طفل"}</h2>
+                      <p className="mt-1 font-bold text-[var(--rashid-color-667085)]">XP: {report.child.xp || 0}</p>
                     </div>
                   </div>
 
-                  <div className="rounded-full bg-[#E8F8F3] px-4 py-2 text-sm font-black text-[#42BFA8]">
+                  <div className="rounded-full bg-[var(--rashid-color-e8f8f3)] px-4 py-2 text-sm font-black text-[var(--rashid-color-42bfa8)]">
                     {formatDuration(report.totalSeconds)}
                   </div>
                 </div>
 
                 <div className="grid gap-3 md:grid-cols-2">
-                  <div className="rounded-2xl bg-[#F9FFFD] p-4">
-                    <div className="text-sm font-black text-[#42BFA8]">أكثر برنامج</div>
-                    <div className="mt-1 font-black text-[#0B4D6B]">{report.mostWorkedTitle}</div>
+                  <div className="rounded-2xl bg-[var(--rashid-color-f9fffd)] p-4">
+                    <div className="text-sm font-black text-[var(--rashid-color-42bfa8)]">أكثر برنامج</div>
+                    <div className="mt-1 font-black text-[var(--rashid-color-0b4d6b)]">{report.mostWorkedTitle}</div>
                   </div>
-                  <div className="rounded-2xl bg-[#F5FBFF] p-4">
-                    <div className="text-sm font-black text-[#42BFA8]">نتائج الأنشطة</div>
-                    <div className="mt-1 font-black text-[#0B4D6B]">{report.activityPoints}</div>
-                    <div className="mt-1 text-xs font-bold text-[#667085]">{report.rawScoreText}</div>
+                  <div className="rounded-2xl bg-[var(--rashid-color-f5fbff)] p-4">
+                    <div className="text-sm font-black text-[var(--rashid-color-42bfa8)]">نتائج الأنشطة</div>
+                    <div className="mt-1 font-black text-[var(--rashid-color-0b4d6b)]">{report.activityPoints}</div>
+                    <div className="mt-1 text-xs font-bold text-[var(--rashid-color-667085)]">{report.rawScoreText}</div>
                   </div>
-                  <div className="rounded-2xl bg-[#FFF9E8] p-4">
-                    <div className="text-sm font-black text-[#B75A00]">ملخص الأداء</div>
-                    <div className="mt-1 font-black text-[#0B4D6B]">{report.strengthText}</div>
+                  <div className="rounded-2xl bg-[var(--rashid-color-fff9e8)] p-4">
+                    <div className="text-sm font-black text-[var(--rashid-color-b75a00)]">ملخص الأداء</div>
+                    <div className="mt-1 font-black text-[var(--rashid-color-0b4d6b)]">{report.strengthText}</div>
                   </div>
-                  <div className="rounded-2xl bg-[#F3EFFF] p-4">
-                    <div className="text-sm font-black text-[#7048e8]">آخر نشاط</div>
-                    <div className="mt-1 font-black text-[#0B4D6B]">{report.lastActivity}</div>
-                    <div className="mt-1 text-xs font-bold text-[#667085]">داخل: {report.lastProgram}</div>
+                  <div className="rounded-2xl bg-[var(--rashid-color-f3efff)] p-4">
+                    <div className="text-sm font-black text-[var(--rashid-color-7048e8)]">آخر نشاط</div>
+                    <div className="mt-1 font-black text-[var(--rashid-color-0b4d6b)]">{report.lastActivity}</div>
+                    <div className="mt-1 text-xs font-bold text-[var(--rashid-color-667085)]">داخل: {report.lastProgram}</div>
                   </div>
                 </div>
               </Link>
             ))}
           </div>
         ) : (
-          <div className="rounded-[2.5rem] border-2 border-dashed border-[#DDEDEA] bg-white p-12 text-center">
-            <h3 className="text-3xl font-black text-[#0B4D6B]">لا توجد بيانات بعد</h3>
-            <p className="mt-3 font-bold text-[#667085]">أضف طفلًا وابدأ برنامجًا حتى تظهر التقارير.</p>
+          <div className="rounded-[2.5rem] border-2 border-dashed border-[var(--rashid-color-ddedea)] bg-white p-12 text-center">
+            <h3 className="text-3xl font-black text-[var(--rashid-color-0b4d6b)]">لا توجد بيانات بعد</h3>
+            <p className="mt-3 font-bold text-[var(--rashid-color-667085)]">أضف طفلًا وابدأ برنامجًا حتى تظهر التقارير.</p>
           </div>
         )}
       </div>

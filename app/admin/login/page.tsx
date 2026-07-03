@@ -36,26 +36,26 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <main dir="rtl" className="min-h-screen bg-[#F4FAF8] flex items-center justify-center px-6">
+    <main dir="rtl" className="min-h-screen bg-[var(--rashid-color-f4faf8)] flex items-center justify-center px-6">
       <div className="w-full max-w-md rounded-[2rem] bg-white p-8 shadow-2xl">
         <div className="mb-8 text-center">
           <img src="/images/logo.png" alt="راشد" className="mx-auto h-24 w-auto" />
-          <h1 className="mt-4 text-3xl font-black text-[#0B4D6B]">
+          <h1 className="mt-4 text-3xl font-black text-[var(--rashid-color-0b4d6b)]">
             دخول الأدمن
           </h1>
-          <p className="mt-2 text-[#6E7A99]">
+          <p className="mt-2 text-[var(--rashid-color-6e7a99)]">
             لوحة تحكم منصة راشد
           </p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-5">
           <div>
-            <label className="mb-2 block font-bold text-[#0B4D6B]">
+            <label className="mb-2 block font-bold text-[var(--rashid-color-0b4d6b)]">
               البريد الإلكتروني
             </label>
             <input
               type="email"
-              className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none focus:border-[#42BFA8]"
+              className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none focus:border-[var(--rashid-color-42bfa8)]"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="admin@rashid.app"
@@ -63,12 +63,12 @@ export default function AdminLoginPage() {
           </div>
 
           <div>
-            <label className="mb-2 block font-bold text-[#0B4D6B]">
+            <label className="mb-2 block font-bold text-[var(--rashid-color-0b4d6b)]">
               كلمة المرور
             </label>
             <input
               type="password"
-              className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none focus:border-[#42BFA8]"
+              className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none focus:border-[var(--rashid-color-42bfa8)]"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
@@ -84,7 +84,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-full bg-[#42BFA8] py-4 font-black text-white transition hover:-translate-y-1 disabled:opacity-60"
+            className="w-full rounded-full bg-[var(--rashid-color-42bfa8)] py-4 font-black text-white transition hover:-translate-y-1 disabled:opacity-60"
           >
             {loading ? "جاري الدخول..." : "تسجيل الدخول"}
           </button>

@@ -3,7 +3,7 @@ import ParentSidebar from "./ParentSidebar";
 
 export default function ParentLayout({ children }: { children: React.ReactNode }) {
   return (
-    <main dir="rtl" className="min-h-screen bg-white text-[#0B4D6B]">
+    <main dir="rtl" className="min-h-screen bg-white text-[var(--rashid-color-0b4d6b)]">
       <div className="flex">
         <ParentSidebar />
 

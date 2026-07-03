@@ -263,22 +263,22 @@ export default function AdminProgramsPage() {
   }
 
   return (
-    <main dir="rtl" className="min-h-screen bg-[#F4FAF8] p-6">
+    <main dir="rtl" className="min-h-screen bg-[var(--rashid-color-f4faf8)] p-6">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>
-            <h1 className="text-4xl font-black text-[#0B4D6B]">
+            <h1 className="text-4xl font-black text-[var(--rashid-color-0b4d6b)]">
               إدارة البرامج
             </h1>
 
-            <p className="mt-3 text-[#6E7A99]">
+            <p className="mt-3 text-[var(--rashid-color-6e7a99)]">
               إضافة البرامج، الصور، التصنيفات، والفئات العمرية.
             </p>
           </div>
 
           <button
             onClick={resetForm}
-            className="rounded-full bg-[#0B4D6B] px-6 py-3 font-black text-white"
+            className="rounded-full bg-[var(--rashid-color-0b4d6b)] px-6 py-3 font-black text-white"
           >
             إضافة برنامج جديد
           </button>
@@ -286,7 +286,7 @@ export default function AdminProgramsPage() {
 
         <div className="grid gap-8 xl:grid-cols-[430px_1fr]">
           <div className="rounded-[2rem] bg-white p-8 shadow-xl">
-            <h2 className="mb-6 text-2xl font-black text-[#0B4D6B]">
+            <h2 className="mb-6 text-2xl font-black text-[var(--rashid-color-0b4d6b)]">
               {editingId ? "تعديل البرنامج" : "إضافة برنامج"}
             </h2>
 
@@ -301,7 +301,7 @@ export default function AdminProgramsPage() {
                     title: e.target.value,
                   })
                 }
-                className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none focus:border-[#42BFA8]"
+                className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none focus:border-[var(--rashid-color-42bfa8)]"
               />
 
               <select
@@ -313,7 +313,7 @@ export default function AdminProgramsPage() {
                     new_category: "",
                   })
                 }
-                className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none focus:border-[#42BFA8]"
+                className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none focus:border-[var(--rashid-color-42bfa8)]"
               >
                 <option value="">اختر تصنيف موجود</option>
 
@@ -334,7 +334,7 @@ export default function AdminProgramsPage() {
                     category_id: "",
                   })
                 }
-                className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none focus:border-[#42BFA8]"
+                className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none focus:border-[var(--rashid-color-42bfa8)]"
               />
 
               <textarea
@@ -346,7 +346,7 @@ export default function AdminProgramsPage() {
                     description: e.target.value,
                   })
                 }
-                className="h-32 w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none focus:border-[#42BFA8]"
+                className="h-32 w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none focus:border-[var(--rashid-color-42bfa8)]"
               />
 
               <input
@@ -358,7 +358,7 @@ export default function AdminProgramsPage() {
                     age_range: e.target.value,
                   })
                 }
-                className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none focus:border-[#42BFA8]"
+                className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none focus:border-[var(--rashid-color-42bfa8)]"
               />
 
               <select
@@ -369,14 +369,14 @@ export default function AdminProgramsPage() {
                     access_type: e.target.value,
                     })
                 }
-                className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none focus:border-[#42BFA8]"
+                className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none focus:border-[var(--rashid-color-42bfa8)]"
                 >
                 <option value="free">🟢 مجاني</option>
                 <option value="pro">👑 Pro</option>
             </select>
 
-              <div className="rounded-2xl border border-dashed border-[#42BFA8] bg-[#F4FAF8] p-5">
-                <label className="mb-3 block font-black text-[#0B4D6B]">
+              <div className="rounded-2xl border border-dashed border-[var(--rashid-color-42bfa8)] bg-[var(--rashid-color-f4faf8)] p-5">
+                <label className="mb-3 block font-black text-[var(--rashid-color-0b4d6b)]">
                   صورة البرنامج
                 </label>
 
@@ -394,14 +394,14 @@ export default function AdminProgramsPage() {
                 />
 
                 {uploading && (
-                  <p className="mt-3 font-bold text-[#42BFA8]">
+                  <p className="mt-3 font-bold text-[var(--rashid-color-42bfa8)]">
                     جاري رفع الصورة...
                   </p>
                 )}
 
                 {form.image_url && (
                   <div className="mt-4">
-                    <div className="overflow-hidden rounded-2xl border border-[#DDEDEA] bg-white">
+                    <div className="overflow-hidden rounded-2xl border border-[var(--rashid-color-ddedea)] bg-white">
                       <img
                         src={getFileUrl(form.image_url)}
                         alt="preview"
@@ -435,10 +435,10 @@ export default function AdminProgramsPage() {
                     sort_order: Number(e.target.value),
                   })
                 }
-                className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none focus:border-[#42BFA8]"
+                className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none focus:border-[var(--rashid-color-42bfa8)]"
               />
 
-              <label className="flex items-center gap-3 rounded-2xl bg-[#F4FAF8] p-4 font-bold">
+              <label className="flex items-center gap-3 rounded-2xl bg-[var(--rashid-color-f4faf8)] p-4 font-bold">
                 <input
                   type="checkbox"
                   checked={form.is_published}
@@ -456,7 +456,7 @@ export default function AdminProgramsPage() {
               <button
                 type="submit"
                 disabled={uploading}
-                className="w-full rounded-full bg-[#42BFA8] py-4 font-black text-white disabled:opacity-50"
+                className="w-full rounded-full bg-[var(--rashid-color-42bfa8)] py-4 font-black text-white disabled:opacity-50"
               >
                 {editingId ? "حفظ التعديل" : "حفظ البرنامج"}
               </button>
@@ -465,7 +465,7 @@ export default function AdminProgramsPage() {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="w-full rounded-full bg-gray-100 py-4 font-black text-[#0B4D6B]"
+                  className="w-full rounded-full bg-gray-100 py-4 font-black text-[var(--rashid-color-0b4d6b)]"
                 >
                   إلغاء التعديل
                 </button>
@@ -496,7 +496,7 @@ export default function AdminProgramsPage() {
                         className="h-44 w-full object-cover"
                       />
                     ) : (
-                      <div className="h-64 bg-gradient-to-br from-[#0B4D6B] to-[#42BFA8]" />
+                      <div className="h-64 bg-gradient-to-br from-[var(--rashid-color-0b4d6b)] to-[var(--rashid-color-42bfa8)]" />
                     )}
 
                     <div className="p-6">
@@ -511,13 +511,13 @@ export default function AdminProgramsPage() {
                           {program.is_published ? "منشور" : "مسودة"}
                         </span>
 
-                        <span className="text-sm font-black text-[#6E7A99]">
+                        <span className="text-sm font-black text-[var(--rashid-color-6e7a99)]">
                           ترتيب: {program.sort_order}
                         </span>
                       </div>
 
                       {program.categories?.name && (
-                        <div className="mb-3 inline-flex rounded-full bg-[#D9F5EE] px-4 py-2 text-sm font-black text-[#0B4D6B]">
+                        <div className="mb-3 inline-flex rounded-full bg-[var(--rashid-color-d9f5ee)] px-4 py-2 text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                           {program.categories.name}
                         </div>
                       )}
@@ -533,19 +533,19 @@ export default function AdminProgramsPage() {
                     </div>
 
 
-                      <h2 className="text-3xl font-black text-[#0B4D6B]">
+                      <h2 className="text-3xl font-black text-[var(--rashid-color-0b4d6b)]">
                         {program.title}
                       </h2>
 
                      
                       {program.age_range && (
-                        <p className="mt-3 font-bold text-[#0B4D6B]">
+                        <p className="mt-3 font-bold text-[var(--rashid-color-0b4d6b)]">
                           العمر: {program.age_range}
                         </p>
                       )}
 
                       {program.description && (
-                        <p className="mt-4 leading-8 text-[#6E7A99]">
+                        <p className="mt-4 leading-8 text-[var(--rashid-color-6e7a99)]">
                           {program.description}
                         </p>
                       )}
@@ -553,28 +553,28 @@ export default function AdminProgramsPage() {
                       <div className="mt-8 grid grid-cols-2 gap-2 xl:grid-cols-3">
                         <button
                           onClick={() => startEdit(program)}
-                          className="rounded-2xl bg-[#42BFA8] py-3 text-sm font-black text-white transition hover:scale-[1.03]"
+                          className="rounded-2xl bg-[var(--rashid-color-42bfa8)] py-3 text-sm font-black text-white transition hover:scale-[1.03]"
                         >
                           تعديل
                         </button>
 
                         <button
                           onClick={() => togglePublish(program)}
-                          className="rounded-full bg-yellow-100 py-3 font-black text-[#0B4D6B]"
+                          className="rounded-full bg-yellow-100 py-3 font-black text-[var(--rashid-color-0b4d6b)]"
                         >
                           {program.is_published ? "إخفاء" : "نشر"}
                         </button>
 
                         <a
                           href={`/admin/programs/${program.id}/tabs`}
-                          className="rounded-full bg-[#0B4D6B] py-3 text-center font-black text-white"
+                          className="rounded-full bg-[var(--rashid-color-0b4d6b)] py-3 text-center font-black text-white"
                         >
                           التابات
                         </a>
 
                         <a
                         href={`/admin/programs/${program.id}/preview`}
-                        className="rounded-2xl bg-[#D8F36A] py-3 text-center text-sm font-black text-[#0B4D6B]"
+                        className="rounded-2xl bg-[var(--rashid-color-d8f36a)] py-3 text-center text-sm font-black text-[var(--rashid-color-0b4d6b)]"
                         >
                         معاينة
                         </a>

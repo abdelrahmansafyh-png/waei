@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
 
     const { data: content } = await supabase
       .from("tab_contents")
-      .select("id, tab_id, content_type, iframe_url, program_tabs!inner(program_id)")
+      .select("id, tab_id, content_type, iframe_url, program_tabs!inner(program_id, award_xp)")
       .eq("id", contentId)
       .eq("program_tabs.program_id", programId)
       .maybeSingle();
@@ -113,6 +113,10 @@ export async function POST(req: NextRequest) {
     const rawPercentage = toNumber(result.percentage, maxScore > 0 ? Math.round((score / maxScore) * 100) : 0);
     const percentage = Math.max(0, Math.min(100, rawPercentage));
     const contentKind = getContentKind(String(content.content_type || ""));
+    const tabInfo = Array.isArray((content as any).program_tabs)
+      ? (content as any).program_tabs[0]
+      : (content as any).program_tabs;
+    const tabAwardsXp = tabInfo?.award_xp !== false;
 
     // لا نسجل محاولات للتابات التعليمية العادية (نص/صورة/فيديو/يوتيوب).
     // المحاولات تظهر عند ولي الأمر فقط للألعاب/القصص/أنشطة iframe الخارجية.
@@ -140,10 +144,20 @@ export async function POST(req: NextRequest) {
       .eq("content_id", contentId)
       .maybeSingle();
 
-    const alreadyAwarded = Boolean(existingProgress?.xp_awarded);
-    const xpEarned = alreadyAwarded
-      ? toNumber(existingProgress?.xp_earned, 0)
-      : calculateXp(score, maxScore, percentage);
+    // نعتبر النقاط مصروفة سابقًا فقط إذا كان التاب يربح نقاط
+    // وكان هناك XP فعلي محفوظ. هذا يمنع تابات "تعليمي فقط" من قفل فرصة النقاط
+    // بقيمة xp_awarded=true و xp_earned=0.
+    const previousXpEarned = toNumber(existingProgress?.xp_earned, 0);
+    const alreadyAwarded = Boolean(existingProgress?.xp_awarded) && previousXpEarned > 0;
+
+    const calculatedXp = calculateXp(score, maxScore, percentage);
+    const xpEarned = !tabAwardsXp
+      ? 0
+      : alreadyAwarded
+      ? previousXpEarned
+      : calculatedXp;
+
+    const progressXpAwarded = tabAwardsXp && xpEarned > 0;
 
     const progressPayload = {
       child_profile_id: profile.id,
@@ -155,7 +169,7 @@ export async function POST(req: NextRequest) {
       max_score: Math.max(maxScore, toNumber(existingProgress?.max_score, 0)),
       percentage: Math.max(percentage, toNumber(existingProgress?.percentage, 0)),
       xp_earned: xpEarned,
-      xp_awarded: true,
+      xp_awarded: progressXpAwarded,
       last_position: lastPosition,
       updated_at: new Date().toISOString(),
     };
@@ -188,7 +202,7 @@ export async function POST(req: NextRequest) {
     let nextXp = toNumber(profile.xp, 0);
     let awardedNow = false;
 
-    if (!alreadyAwarded && xpEarned > 0) {
+    if (tabAwardsXp && !alreadyAwarded && xpEarned > 0) {
       awardedNow = true;
       nextXp += xpEarned;
 
@@ -211,6 +225,8 @@ export async function POST(req: NextRequest) {
       awarded_now: awardedNow,
       total_xp: nextXp,
       already_awarded: alreadyAwarded,
+      xp_awarded: progressXpAwarded,
+      tab_awards_xp: tabAwardsXp,
     });
   } catch (error: any) {
     return NextResponse.json(

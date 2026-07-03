@@ -179,21 +179,21 @@ export default function TabContentPage({
   }
 
   return (
-    <main dir="rtl" className="min-h-screen bg-[#F4FAF8] p-6">
+    <main dir="rtl" className="min-h-screen bg-[var(--rashid-color-f4faf8)] p-6">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8">
-          <h1 className="text-4xl font-black text-[#0B4D6B]">
+          <h1 className="text-4xl font-black text-[var(--rashid-color-0b4d6b)]">
             محتوى التاب
           </h1>
 
-          <p className="mt-3 text-[#6E7A99]">
+          <p className="mt-3 text-[var(--rashid-color-6e7a99)]">
             {tab ? `التاب: ${tab.title}` : "إدارة محتوى التاب"}
           </p>
         </div>
 
         <div className="grid gap-8 xl:grid-cols-[430px_1fr]">
           <div className="rounded-[2rem] bg-white p-8 shadow-xl">
-            <h2 className="mb-6 text-2xl font-black text-[#0B4D6B]">
+            <h2 className="mb-6 text-2xl font-black text-[var(--rashid-color-0b4d6b)]">
               {editingId ? "تعديل محتوى" : "إضافة محتوى"}
             </h2>
 
@@ -209,7 +209,7 @@ export default function TabContentPage({
                     iframe_url: "",
                   })
                 }
-                className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none"
+                className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none"
               >
                 {contentTypes.map((type) => (
                   <option key={type.value} value={type.value}>
@@ -222,7 +222,7 @@ export default function TabContentPage({
                 placeholder="عنوان اختياري"
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
-                className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none"
+                className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none"
               />
 
               {form.content_type === "text" && (
@@ -230,13 +230,13 @@ export default function TabContentPage({
                   placeholder="اكتب النص هنا"
                   value={form.body}
                   onChange={(e) => setForm({ ...form, body: e.target.value })}
-                  className="h-44 w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none"
+                  className="h-44 w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none"
                 />
               )}
 
               {["image", "file", "video"].includes(form.content_type) && (
-                <div className="rounded-2xl border border-dashed border-[#42BFA8] bg-[#F4FAF8] p-5">
-                  <label className="mb-3 block font-black text-[#0B4D6B]">
+                <div className="rounded-2xl border border-dashed border-[var(--rashid-color-42bfa8)] bg-[var(--rashid-color-f4faf8)] p-5">
+                  <label className="mb-3 block font-black text-[var(--rashid-color-0b4d6b)]">
                     رفع ملف من الجهاز
                   </label>
 
@@ -257,7 +257,7 @@ export default function TabContentPage({
                   />
 
                   {uploading && (
-                    <p className="mt-3 font-bold text-[#42BFA8]">
+                    <p className="mt-3 font-bold text-[var(--rashid-color-42bfa8)]">
                       جاري الرفع...
                     </p>
                   )}
@@ -271,7 +271,7 @@ export default function TabContentPage({
                           className="h-44 w-full rounded-2xl object-cover"
                         />
                       ) : (
-                        <p className="break-all rounded-xl bg-white p-3 text-xs text-[#6E7A99]">
+                        <p className="break-all rounded-xl bg-white p-3 text-xs text-[var(--rashid-color-6e7a99)]">
                           {form.file_url}
                         </p>
                       )}
@@ -295,7 +295,7 @@ export default function TabContentPage({
                   onChange={(e) =>
                     setForm({ ...form, youtube_url: e.target.value })
                   }
-                  className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none"
+                  className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none"
                 />
               )}
 
@@ -306,7 +306,7 @@ export default function TabContentPage({
                   onChange={(e) =>
                     setForm({ ...form, iframe_url: e.target.value })
                   }
-                  className="h-32 w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none"
+                  className="h-32 w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none"
                 />
               )}
 
@@ -317,13 +317,13 @@ export default function TabContentPage({
                 onChange={(e) =>
                   setForm({ ...form, sort_order: Number(e.target.value) })
                 }
-                className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none"
+                className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none"
               />
 
               <button
                 type="submit"
                 disabled={uploading}
-                className="w-full rounded-full bg-[#42BFA8] py-4 font-black text-white disabled:opacity-50"
+                className="w-full rounded-full bg-[var(--rashid-color-42bfa8)] py-4 font-black text-white disabled:opacity-50"
               >
                 {editingId ? "حفظ التعديل" : "حفظ المحتوى"}
               </button>
@@ -332,7 +332,7 @@ export default function TabContentPage({
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="w-full rounded-full bg-gray-100 py-4 font-black text-[#0B4D6B]"
+                  className="w-full rounded-full bg-gray-100 py-4 font-black text-[var(--rashid-color-0b4d6b)]"
                 >
                   إلغاء التعديل
                 </button>
@@ -342,7 +342,7 @@ export default function TabContentPage({
             {tab?.type === "games" && (
               <a
                 href={`/admin/games/new?tab=${tabId}`}
-                className="mt-5 block rounded-full bg-[#0B4D6B] py-4 text-center font-black text-white"
+                className="mt-5 block rounded-full bg-[var(--rashid-color-0b4d6b)] py-4 text-center font-black text-white"
               >
                 إضافة لعبة داخل هذا التاب
               </a>
@@ -382,35 +382,35 @@ export default function TabContentPage({
                     )}
 
                     <div className="p-6">
-                      <span className="rounded-full bg-[#D9F5EE] px-4 py-2 text-xs font-black text-[#0B4D6B]">
+                      <span className="rounded-full bg-[var(--rashid-color-d9f5ee)] px-4 py-2 text-xs font-black text-[var(--rashid-color-0b4d6b)]">
                         {contentTypes.find((x) => x.value === item.content_type)
                           ?.label || item.content_type}
                       </span>
 
-                      <h2 className="mt-5 text-2xl font-black text-[#0B4D6B]">
+                      <h2 className="mt-5 text-2xl font-black text-[var(--rashid-color-0b4d6b)]">
                         {item.title || "بدون عنوان"}
                       </h2>
 
                       {item.body && (
-                        <p className="mt-4 line-clamp-4 leading-8 text-[#6E7A99]">
+                        <p className="mt-4 line-clamp-4 leading-8 text-[var(--rashid-color-6e7a99)]">
                           {item.body}
                         </p>
                       )}
 
                       {item.file_url && item.content_type !== "image" && (
-                        <p className="mt-4 truncate rounded-xl bg-[#F4FAF8] p-3 text-xs text-[#6E7A99]">
+                        <p className="mt-4 truncate rounded-xl bg-[var(--rashid-color-f4faf8)] p-3 text-xs text-[var(--rashid-color-6e7a99)]">
                           {item.file_url}
                         </p>
                       )}
 
                       {item.youtube_url && (
-                        <p className="mt-4 truncate rounded-xl bg-[#F4FAF8] p-3 text-xs text-[#6E7A99]">
+                        <p className="mt-4 truncate rounded-xl bg-[var(--rashid-color-f4faf8)] p-3 text-xs text-[var(--rashid-color-6e7a99)]">
                           {item.youtube_url}
                         </p>
                       )}
 
                       {item.iframe_url && (
-                        <p className="mt-4 truncate rounded-xl bg-[#F4FAF8] p-3 text-xs text-[#6E7A99]">
+                        <p className="mt-4 truncate rounded-xl bg-[var(--rashid-color-f4faf8)] p-3 text-xs text-[var(--rashid-color-6e7a99)]">
                           {item.iframe_url}
                         </p>
                       )}
@@ -418,7 +418,7 @@ export default function TabContentPage({
                       <div className="mt-6 grid grid-cols-2 gap-3">
                         <button
                           onClick={() => startEdit(item)}
-                          className="rounded-2xl bg-[#42BFA8] py-3 font-black text-white"
+                          className="rounded-2xl bg-[var(--rashid-color-42bfa8)] py-3 font-black text-white"
                         >
                           تعديل
                         </button>

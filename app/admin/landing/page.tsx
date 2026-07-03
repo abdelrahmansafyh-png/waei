@@ -30,10 +30,10 @@ const defaultItems: LandingItem[] = [
   { section: "hero_feature", item_key: "progress", icon: "⭐", title: "تقدم وتحفيز", subtitle: null, description: "نظام نقاط وشارات يحفّز الطفل على التعلم.", button_text: null, button_link: null, image_url: null, color_class: null, sort_order: 4, is_active: true },
 
   { section: "methodology_header", item_key: "main", icon: null, title: "منهجية راشد", subtitle: "منهجية تبني المهارة والقيمة بطريقة ممتعة", description: "في راشد لا نقدم محتوى جامد؛ بل رحلة تفاعلية تجمع اللعب، القصة، التدريب، والمتابعة حتى يتعلم الطفل بسعادة وثقة.", button_text: null, button_link: null, image_url: null, color_class: null, sort_order: 1, is_active: true },
-  { section: "methodology", item_key: "journey", icon: "🧭", title: "رحلة تعلم موجهة", subtitle: null, description: "يبدأ كل برنامج بهدف واضح ومهارة محددة، ضمن مسار تعليمي متدرج يناسب عمر الطفل واحتياجاته.", button_text: null, button_link: null, image_url: null, color_class: "from-[#19C6D4] to-[#0F9EB2]", sort_order: 1, is_active: true },
-  { section: "methodology", item_key: "stories", icon: "📖", title: "قصص ومواقف تفاعلية", subtitle: null, description: "يخوض الطفل مواقف واقعية وقصصًا تفاعلية، يختار فيها كيف يتصرف ليتعلم من نتائج قراراته.", button_text: null, button_link: null, image_url: null, color_class: "from-[#8B5CF6] to-[#6847F5]", sort_order: 2, is_active: true },
-  { section: "methodology", item_key: "games", icon: "🎮", title: "ألعاب وتحديات تعليمية", subtitle: null, description: "أنشطة وألعاب تفاعلية تساعد الطفل على اكتساب المهارات بطريقة ممتعة ومشوقة.", button_text: null, button_link: null, image_url: null, color_class: "from-[#6ED46E] to-[#3AAE55]", sort_order: 3, is_active: true },
-  { section: "methodology", item_key: "daily", icon: "🚀", title: "تطبيق في الحياة اليومية", subtitle: null, description: "تدريبات عملية تساعد الطفل على تحويل ما تعلمه إلى سلوك يومي دائم.", button_text: null, button_link: null, image_url: null, color_class: "from-[#FFD54A] to-[#F59E0B]", sort_order: 4, is_active: true },
+  { section: "methodology", item_key: "journey", icon: "🧭", title: "رحلة تعلم موجهة", subtitle: null, description: "يبدأ كل برنامج بهدف واضح ومهارة محددة، ضمن مسار تعليمي متدرج يناسب عمر الطفل واحتياجاته.", button_text: null, button_link: null, image_url: null, color_class: "from-[var(--rashid-color-19c6d4)] to-[var(--rashid-color-0f9eb2)]", sort_order: 1, is_active: true },
+  { section: "methodology", item_key: "stories", icon: "📖", title: "قصص ومواقف تفاعلية", subtitle: null, description: "يخوض الطفل مواقف واقعية وقصصًا تفاعلية، يختار فيها كيف يتصرف ليتعلم من نتائج قراراته.", button_text: null, button_link: null, image_url: null, color_class: "from-[var(--rashid-color-8b5cf6)] to-[var(--rashid-color-6847f5)]", sort_order: 2, is_active: true },
+  { section: "methodology", item_key: "games", icon: "🎮", title: "ألعاب وتحديات تعليمية", subtitle: null, description: "أنشطة وألعاب تفاعلية تساعد الطفل على اكتساب المهارات بطريقة ممتعة ومشوقة.", button_text: null, button_link: null, image_url: null, color_class: "from-[var(--rashid-color-6ed46e)] to-[var(--rashid-color-3aae55)]", sort_order: 3, is_active: true },
+  { section: "methodology", item_key: "daily", icon: "🚀", title: "تطبيق في الحياة اليومية", subtitle: null, description: "تدريبات عملية تساعد الطفل على تحويل ما تعلمه إلى سلوك يومي دائم.", button_text: null, button_link: null, image_url: null, color_class: "from-[var(--rashid-color-ffd54a)] to-[var(--rashid-color-f59e0b)]", sort_order: 4, is_active: true },
 
   { section: "parents_header", item_key: "main", icon: null, title: "لماذا يختار الآباء راشد؟", subtitle: "تجربة تعليمية مختلفة لطفلك", description: null, button_text: null, button_link: null, image_url: null, color_class: null, sort_order: 1, is_active: true },
   { section: "parent_feature", item_key: "practice", icon: "🌱", title: "تعلم بالممارسة", subtitle: null, description: "يطبق الطفل ما يتعلمه عبر أنشطة وتجارب تفاعلية.", button_text: null, button_link: null, image_url: null, color_class: null, sort_order: 1, is_active: true },
@@ -81,6 +81,8 @@ const sectionHelp: Record<string, string> = {
 };
 
 const cardSections = new Set(["hero_feature", "methodology", "parent_feature", "story_feature"]);
+const defaultItemKeys = new Set(defaultItems.map((item) => `${item.section}.${item.item_key}`));
+const addableSections = new Set(["hero_feature", "methodology", "parent_feature", "story_feature"]);
 const imageSections = new Set(["hero", "stories_header", "cta", "footer"]);
 const buttonSections = new Set(["hero", "programs_header", "cta"]);
 const linkSections = new Set(["nav", "hero", "programs_header", "cta"]);
@@ -132,12 +134,16 @@ export default function AdminLandingPage() {
     const savedMap = new Map<string, LandingItem>();
     (data || []).forEach((item: any) => savedMap.set(`${item.section}.${item.item_key}`, item));
 
-    setItems(
-      defaultItems.map((item) => ({
-        ...item,
-        ...(savedMap.get(`${item.section}.${item.item_key}`) || {}),
-      }))
+    const mergedDefaults = defaultItems.map((item) => ({
+      ...item,
+      ...(savedMap.get(`${item.section}.${item.item_key}`) || {}),
+    }));
+
+    const extraSavedItems = ((data || []) as LandingItem[]).filter(
+      (item) => !defaultItemKeys.has(`${item.section}.${item.item_key}`)
     );
+
+    setItems([...mergedDefaults, ...extraSavedItems]);
     setLoading(false);
   }
 
@@ -147,6 +153,64 @@ export default function AdminLandingPage() {
       copy[index] = { ...copy[index], [key]: value };
       return copy;
     });
+  }
+
+  function createCardKey(section: string) {
+    return `custom_${section}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+  }
+
+  function addCardToActiveSection() {
+    if (!addableSections.has(activeSection)) return;
+
+    const sectionItems = items.filter((item) => item.section === activeSection);
+    const nextSortOrder =
+      sectionItems.length > 0
+        ? Math.max(...sectionItems.map((item) => Number(item.sort_order) || 0)) + 1
+        : 1;
+
+    const newCard: LandingItem = {
+      section: activeSection,
+      item_key: createCardKey(activeSection),
+      icon: "⭐",
+      title: "كرت جديد",
+      subtitle: null,
+      description: "اكتب وصف الكرت هنا.",
+      button_text: null,
+      button_link: null,
+      image_url: null,
+      color_class: null,
+      sort_order: nextSortOrder,
+      is_active: true,
+    };
+
+    setItems((prev) => [...prev, newCard]);
+    setMessage("تم إضافة كرت جديد. عدّل محتواه ثم اضغط حفظ كل التعديلات.");
+  }
+
+  async function deleteCustomCard(index: number) {
+    const item = items[index];
+    if (!item) return;
+
+    const itemKey = `${item.section}.${item.item_key}`;
+    if (defaultItemKeys.has(itemKey)) return;
+
+    const confirmed = window.confirm("هل تريد حذف هذا الكرت؟");
+    if (!confirmed) return;
+
+    setDbError("");
+    setMessage("");
+
+    if (item.id) {
+      const { error } = await supabase.from("landing_content").delete().eq("id", item.id);
+
+      if (error) {
+        setDbError(error.message);
+        return;
+      }
+    }
+
+    setItems((prev) => prev.filter((_, itemIndex) => itemIndex !== index));
+    setMessage("تم حذف الكرت.");
   }
 
   function setMediaType(index: number, type: "icon" | "image") {
@@ -239,7 +303,7 @@ export default function AdminLandingPage() {
 
   return (
     <section dir="rtl">
-      <div className="mb-8 rounded-[2rem] bg-gradient-to-l from-[#0B4D6B] to-[#42BFA8] p-8 text-white shadow-lg">
+      <div className="mb-8 rounded-[2rem] bg-gradient-to-l from-[var(--rashid-color-0b4d6b)] to-[var(--rashid-color-42bfa8)] p-8 text-white shadow-lg">
         <h2 className="text-4xl font-black">إعدادات الصفحة الرئيسية</h2>
         <p className="mt-3 text-white/80">تحكم فقط بالعناصر الظاهرة فعليًا في الصفحة الرئيسية.</p>
       </div>
@@ -259,7 +323,7 @@ export default function AdminLandingPage() {
             key={section}
             onClick={() => setActiveSection(section)}
             className={`rounded-full px-5 py-3 text-sm font-black transition ${
-              activeSection === section ? "bg-[#0B4D6B] text-white" : "bg-[#F5FAF8] text-[#0B4D6B]"
+              activeSection === section ? "bg-[var(--rashid-color-0b4d6b)] text-white" : "bg-[var(--rashid-color-f5faf8)] text-[var(--rashid-color-0b4d6b)]"
             }`}
           >
             {sectionLabels[section] || section}
@@ -267,12 +331,24 @@ export default function AdminLandingPage() {
         ))}
       </div>
 
-      <div className="mb-6 rounded-[2rem] bg-[#F5FAF8] p-5 font-bold leading-8 text-[#0B4D6B]">
+      <div className="mb-6 rounded-[2rem] bg-[var(--rashid-color-f5faf8)] p-5 font-bold leading-8 text-[var(--rashid-color-0b4d6b)]">
         {sectionHelp[activeSection]}
       </div>
 
+      {addableSections.has(activeSection) && (
+        <div className="mb-6 flex justify-end">
+          <button
+            type="button"
+            onClick={addCardToActiveSection}
+            className="rounded-full bg-[var(--rashid-color-0b4d6b)] px-7 py-3 text-base font-black text-white shadow-lg transition hover:-translate-y-1 hover:bg-[var(--rashid-color-42bfa8)]"
+          >
+            + إضافة كرت جديد
+          </button>
+        </div>
+      )}
+
       {loading ? (
-        <div className="rounded-[2rem] bg-white p-10 text-center text-xl font-black text-[#0B4D6B] shadow-lg">جاري التحميل...</div>
+        <div className="rounded-[2rem] bg-white p-10 text-center text-xl font-black text-[var(--rashid-color-0b4d6b)] shadow-lg">جاري التحميل...</div>
       ) : (
         <div className="space-y-5">
           {visibleItems.map(({ item, index }) => {
@@ -286,38 +362,50 @@ export default function AdminLandingPage() {
 
             return (
               <div key={itemKey} className="rounded-[2rem] bg-white p-6 shadow-lg">
-                <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-[#E4EFEA] pb-4">
+                <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-[var(--rashid-color-e4efea)] pb-4">
                   <div>
-                    <div className="text-xs font-black text-[#42BFA8]">{itemKey}</div>
-                    <h3 className="mt-1 text-2xl font-black text-[#0B4D6B]">{item.title || item.button_text || item.item_key}</h3>
+                    <div className="text-xs font-black text-[var(--rashid-color-42bfa8)]">{itemKey}</div>
+                    <h3 className="mt-1 text-2xl font-black text-[var(--rashid-color-0b4d6b)]">{item.title || item.button_text || item.item_key}</h3>
                   </div>
 
-                  <label className="flex items-center gap-2 rounded-full bg-[#F5FAF8] px-4 py-2 font-black text-[#0B4D6B]">
-                    <input
-                      type="checkbox"
-                      checked={item.is_active}
-                      onChange={(e) => updateItem(index, "is_active", e.target.checked)}
-                    />
-                    مفعّل
-                  </label>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {!defaultItemKeys.has(itemKey) && (
+                      <button
+                        type="button"
+                        onClick={() => deleteCustomCard(index)}
+                        className="rounded-full bg-red-50 px-4 py-2 text-sm font-black text-red-600 transition hover:bg-red-100"
+                      >
+                        حذف الكرت
+                      </button>
+                    )}
+
+                    <label className="flex items-center gap-2 rounded-full bg-[var(--rashid-color-f5faf8)] px-4 py-2 font-black text-[var(--rashid-color-0b4d6b)]">
+                      <input
+                        type="checkbox"
+                        checked={item.is_active}
+                        onChange={(e) => updateItem(index, "is_active", e.target.checked)}
+                      />
+                      مفعّل
+                    </label>
+                  </div>
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
                   {showMediaControls && (
-                    <div className="rounded-2xl border border-[#E4EFEA] bg-[#F9FFFD] p-4 md:col-span-2">
-                      <div className="mb-3 font-black text-[#0B4D6B]">الأيقونة / الصورة الصغيرة</div>
+                    <div className="rounded-2xl border border-[var(--rashid-color-e4efea)] bg-[var(--rashid-color-f9fffd)] p-4 md:col-span-2">
+                      <div className="mb-3 font-black text-[var(--rashid-color-0b4d6b)]">الأيقونة / الصورة الصغيرة</div>
                       <div className="mb-4 flex flex-wrap gap-3">
                         <button
                           type="button"
                           onClick={() => setMediaType(index, "icon")}
-                          className={`rounded-full px-5 py-2 font-black ${mediaType === "icon" ? "bg-[#0B4D6B] text-white" : "bg-white text-[#0B4D6B]"}`}
+                          className={`rounded-full px-5 py-2 font-black ${mediaType === "icon" ? "bg-[var(--rashid-color-0b4d6b)] text-white" : "bg-white text-[var(--rashid-color-0b4d6b)]"}`}
                         >
                           أيقونة
                         </button>
                         <button
                           type="button"
                           onClick={() => setMediaType(index, "image")}
-                          className={`rounded-full px-5 py-2 font-black ${mediaType === "image" ? "bg-[#0B4D6B] text-white" : "bg-white text-[#0B4D6B]"}`}
+                          className={`rounded-full px-5 py-2 font-black ${mediaType === "image" ? "bg-[var(--rashid-color-0b4d6b)] text-white" : "bg-white text-[var(--rashid-color-0b4d6b)]"}`}
                         >
                           صورة
                         </button>
@@ -334,9 +422,9 @@ export default function AdminLandingPage() {
 
                         <div className="grid gap-3">
                           <label className="block">
-                            <span className="mb-2 block font-black text-[#0B4D6B]">الأيقونة</span>
+                            <span className="mb-2 block font-black text-[var(--rashid-color-0b4d6b)]">الأيقونة</span>
                             <input
-                              className="w-full rounded-2xl border border-[#E4EFEA] p-3"
+                              className="w-full rounded-2xl border border-[var(--rashid-color-e4efea)] p-3"
                               value={fieldValue(item.icon)}
                               onChange={(e) => {
                                 updateItem(index, "icon", e.target.value);
@@ -347,12 +435,12 @@ export default function AdminLandingPage() {
                           </label>
 
                           <label className="block">
-                            <span className="mb-2 block font-black text-[#0B4D6B]">اختيار صورة من الجهاز بدل الأيقونة</span>
+                            <span className="mb-2 block font-black text-[var(--rashid-color-0b4d6b)]">اختيار صورة من الجهاز بدل الأيقونة</span>
                             <input
                               type="file"
                               accept="image/*"
                               onChange={(e) => uploadImage(index, e.target.files?.[0] || null)}
-                              className="w-full rounded-2xl border border-[#E4EFEA] bg-white p-3"
+                              className="w-full rounded-2xl border border-[var(--rashid-color-e4efea)] bg-white p-3"
                             />
                           </label>
 
@@ -366,47 +454,52 @@ export default function AdminLandingPage() {
                             </button>
                           )}
 
-                          {uploadingKey === itemKey && <div className="text-sm font-black text-[#42BFA8]">جاري رفع الصورة...</div>}
+                          {uploadingKey === itemKey && <div className="text-sm font-black text-[var(--rashid-color-42bfa8)]">جاري رفع الصورة...</div>}
                         </div>
                       </div>
                     </div>
                   )}
 
-                  {/* <label className="block">
-                    <span className="mb-2 block font-black text-[#0B4D6B]">الترتيب</span>
-                    <input type="number" className="w-full rounded-2xl border border-[#E4EFEA] p-3" value={item.sort_order || 0} onChange={(e) => updateItem(index, "sort_order", Number(e.target.value))} />
-                  </label> */}
+                  <label className="block">
+                    <span className="mb-2 block font-black text-[var(--rashid-color-0b4d6b)]">الترتيب</span>
+                    <input
+                      type="number"
+                      className="w-full rounded-2xl border border-[var(--rashid-color-e4efea)] p-3"
+                      value={item.sort_order || 0}
+                      onChange={(e) => updateItem(index, "sort_order", Number(e.target.value))}
+                    />
+                  </label>
 
                   <label className="block md:col-span-2">
-                    <span className="mb-2 block font-black text-[#0B4D6B]">العنوان</span>
-                    <input className="w-full rounded-2xl border border-[#E4EFEA] p-3" value={fieldValue(item.title)} onChange={(e) => updateItem(index, "title", e.target.value)} />
+                    <span className="mb-2 block font-black text-[var(--rashid-color-0b4d6b)]">العنوان</span>
+                    <input className="w-full rounded-2xl border border-[var(--rashid-color-e4efea)] p-3" value={fieldValue(item.title)} onChange={(e) => updateItem(index, "title", e.target.value)} />
                   </label>
 
                   {showSubtitle && (
                     <label className="block md:col-span-2">
-                      <span className="mb-2 block font-black text-[#0B4D6B]">العنوان الفرعي</span>
-                      <input className="w-full rounded-2xl border border-[#E4EFEA] p-3" value={fieldValue(item.subtitle)} onChange={(e) => updateItem(index, "subtitle", e.target.value)} />
+                      <span className="mb-2 block font-black text-[var(--rashid-color-0b4d6b)]">العنوان الفرعي</span>
+                      <input className="w-full rounded-2xl border border-[var(--rashid-color-e4efea)] p-3" value={fieldValue(item.subtitle)} onChange={(e) => updateItem(index, "subtitle", e.target.value)} />
                     </label>
                   )}
 
                   {showDescription && (
                     <label className="block md:col-span-2">
-                      <span className="mb-2 block font-black text-[#0B4D6B]">الوصف</span>
-                      <textarea rows={4} className="w-full rounded-2xl border border-[#E4EFEA] p-3" value={fieldValue(item.description)} onChange={(e) => updateItem(index, "description", e.target.value)} />
+                      <span className="mb-2 block font-black text-[var(--rashid-color-0b4d6b)]">الوصف</span>
+                      <textarea rows={4} className="w-full rounded-2xl border border-[var(--rashid-color-e4efea)] p-3" value={fieldValue(item.description)} onChange={(e) => updateItem(index, "description", e.target.value)} />
                     </label>
                   )}
 
                   {/* {showButton && (
                     <label className="block">
-                      <span className="mb-2 block font-black text-[#0B4D6B]">نص الزر</span>
-                      <input className="w-full rounded-2xl border border-[#E4EFEA] p-3" value={fieldValue(item.button_text)} onChange={(e) => updateItem(index, "button_text", e.target.value)} />
+                      <span className="mb-2 block font-black text-[var(--rashid-color-0b4d6b)]">نص الزر</span>
+                      <input className="w-full rounded-2xl border border-[var(--rashid-color-e4efea)] p-3" value={fieldValue(item.button_text)} onChange={(e) => updateItem(index, "button_text", e.target.value)} />
                     </label>
                   )} */}
 
                   {/* {showLink && (
                     <label className="block">
-                      <span className="mb-2 block font-black text-[#0B4D6B]">الرابط</span>
-                      <input className="w-full rounded-2xl border border-[#E4EFEA] p-3" value={fieldValue(item.button_link)} onChange={(e) => updateItem(index, "button_link", e.target.value)} placeholder="#programs أو /register" />
+                      <span className="mb-2 block font-black text-[var(--rashid-color-0b4d6b)]">الرابط</span>
+                      <input className="w-full rounded-2xl border border-[var(--rashid-color-e4efea)] p-3" value={fieldValue(item.button_link)} onChange={(e) => updateItem(index, "button_link", e.target.value)} placeholder="#programs أو /register" />
                     </label>
                   )} */}
                 </div>
@@ -418,7 +511,7 @@ export default function AdminLandingPage() {
             <button
               onClick={saveAll}
               disabled={saving}
-              className="rounded-full bg-[#42BFA8] px-9 py-4 text-lg font-black text-white shadow-xl disabled:opacity-60"
+              className="rounded-full bg-[var(--rashid-color-42bfa8)] px-9 py-4 text-lg font-black text-white shadow-xl disabled:opacity-60"
             >
               {saving ? "جاري الحفظ..." : "حفظ كل التعديلات"}
             </button>

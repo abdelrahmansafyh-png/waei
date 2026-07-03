@@ -82,12 +82,12 @@ export function getActivityCover(item: Content | null | undefined, index = 0) {
   if (cover) return `url("${getFileUrl(cover)}")`;
 
   const fallback = [
-    "linear-gradient(135deg, #dff7ff, #f6e7ff)",
-    "linear-gradient(135deg, #fff2cc, #e3fff1)",
-    "linear-gradient(135deg, #e9ddff, #f5fbff)",
-    "linear-gradient(135deg, #d9f99d, #e0f2fe)",
-    "linear-gradient(135deg, #ffe4e6, #ede9fe)",
-    "linear-gradient(135deg, #ccfbf1, #fef3c7)",
+    "linear-gradient(135deg, var(--rashid-color-dff7ff), var(--rashid-color-f6e7ff))",
+    "linear-gradient(135deg, var(--rashid-color-fff2cc), var(--rashid-color-e3fff1))",
+    "linear-gradient(135deg, var(--rashid-color-e9ddff), var(--rashid-color-f5fbff))",
+    "linear-gradient(135deg, var(--rashid-color-d9f99d), var(--rashid-color-e0f2fe))",
+    "linear-gradient(135deg, var(--rashid-color-ffe4e6), var(--rashid-color-ede9fe))",
+    "linear-gradient(135deg, var(--rashid-color-ccfbf1), var(--rashid-color-fef3c7))",
   ];
 
   return fallback[index % fallback.length];
@@ -118,6 +118,8 @@ export function hasAnyWord(value: string, words: string[]) {
 export function getSequentialExperienceCopy(tab: Tab | null | undefined) {
   const title = (tab?.title || "").trim();
   const titlePart = title ? `قسم "${title}"` : "هذا القسم";
+  const customGuideTitle = (tab?.guide_title || "").trim();
+  const customGuideDescription = (tab?.guide_description || "").trim();
 
   if (tab?.type === "interactive_stories") {
     return {
@@ -129,8 +131,10 @@ export function getSequentialExperienceCopy(tab: Tab | null | undefined) {
       itemNext: "القصة التالية",
       itemLabel: "قصة",
       fallbackTitle: "القصة",
-      guideTitle: "تابع القصص بالترتيب",
-      guideDescription: `داخل ${titlePart}: ابدأ القصة الحالية، وبعد إكمالها تفتح القصة التالية تلقائيًا.`,
+      guideTitle: customGuideTitle || "تابع القصص بالترتيب",
+      guideDescription:
+        customGuideDescription ||
+        `داخل ${titlePart}: ابدأ القصة الحالية، وبعد إكمالها تفتح القصة التالية تلقائيًا.`,
       lockedAlert: "أكمل القصة السابقة أولًا 🎭",
       currentAlert: "أكمل القصة الحالية أولًا 🎭",
       doneStatus: "مكتملة",
@@ -181,8 +185,10 @@ export function getSequentialExperienceCopy(tab: Tab | null | undefined) {
       itemNext: "التحدي التالي",
       itemLabel: "تحدي",
       fallbackTitle: "التحدي",
-      guideTitle: "امشِ على التحديات بالترتيب",
-      guideDescription: `داخل ${titlePart}: اضغط على التحدي الحالي، وبعد إكماله يفتح التحدي التالي تلقائيًا.`,
+      guideTitle: customGuideTitle || "امشِ على التحديات بالترتيب",
+      guideDescription:
+        customGuideDescription ||
+        `داخل ${titlePart}: اضغط على التحدي الحالي، وبعد إكماله يفتح التحدي التالي تلقائيًا.`,
       lockedAlert: "أكمل التحدي السابق أولًا 🏆",
       currentAlert: "أكمل التحدي الحالي أولًا 🏆",
       doneStatus: "مكتمل",
@@ -201,8 +207,10 @@ export function getSequentialExperienceCopy(tab: Tab | null | undefined) {
     itemNext: "النشاط التالي",
     itemLabel: "نشاط",
     fallbackTitle: "النشاط",
-    guideTitle: "امشِ على الأنشطة بالترتيب",
-    guideDescription: `داخل ${titlePart}: اضغط على النشاط الحالي، وبعد إكماله يفتح النشاط التالي تلقائيًا.`,
+    guideTitle: customGuideTitle || "امشِ على الأنشطة بالترتيب",
+    guideDescription:
+      customGuideDescription ||
+      `داخل ${titlePart}: اضغط على النشاط الحالي، وبعد إكماله يفتح النشاط التالي تلقائيًا.`,
     lockedAlert: "أكمل النشاط السابق أولًا 🌱",
     currentAlert: "أكمل النشاط الحالي أولًا 🌱",
     doneStatus: "مكتمل",

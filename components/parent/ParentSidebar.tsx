@@ -23,12 +23,12 @@ export default function ParentSidebar() {
   }
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-[240px] shrink-0 overflow-y-auto border-l border-[#E6F1EE] bg-white px-5 py-6 lg:block">
+    <aside className="sticky top-0 hidden h-screen w-[240px] shrink-0 overflow-y-auto border-l border-[var(--rashid-color-e6f1ee)] bg-white px-5 py-6 lg:block">
       <Link href="/" className="mb-8 flex items-center gap-3">
         <img src="/images/logo.png" alt="راشد" className="h-16 w-auto" />
         <div>
-          <h2 className="text-2xl font-black text-[#0B4D6B]">راشد</h2>
-          <p className="text-xs font-black text-[#42BFA8]">لوحة ولي الأمر</p>
+          <h2 className="text-2xl font-black text-[var(--rashid-color-0b4d6b)]">راشد</h2>
+          <p className="text-xs font-black text-[var(--rashid-color-42bfa8)]">لوحة ولي الأمر</p>
         </div>
       </Link>
 
@@ -45,8 +45,8 @@ export default function ParentSidebar() {
               href={item.href}
               className={`flex items-center gap-3 rounded-2xl px-4 py-4 font-black transition ${
                 active
-                  ? "bg-[#ECFBF7] text-[#0B4D6B] shadow-sm"
-                  : "text-[#6E7A99] hover:bg-[#F6FBF9] hover:text-[#0B4D6B]"
+                  ? "bg-[var(--rashid-color-ecfbf7)] text-[var(--rashid-color-0b4d6b)] shadow-sm"
+                  : "text-[var(--rashid-color-6e7a99)] hover:bg-[var(--rashid-color-f6fbf9)] hover:text-[var(--rashid-color-0b4d6b)]"
               }`}
             >
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-2xl shadow-sm">

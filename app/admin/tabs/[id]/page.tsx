@@ -1119,9 +1119,9 @@ export default function TabContentPage({
     <main dir="rtl">
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 rounded-[2rem] bg-white p-6 shadow-lg">
-          <h1 className="text-3xl font-black text-[#0B4D6B]">محتوى التاب</h1>
+          <h1 className="text-3xl font-black text-[var(--rashid-color-0b4d6b)]">محتوى التاب</h1>
 
-          <p className="mt-2 text-[#6E7A99]">
+          <p className="mt-2 text-[var(--rashid-color-6e7a99)]">
             {tab
               ? `${tab.title} — أضف المحتوى الذي سيظهر للطفل.`
               : "إدارة محتوى التاب"}
@@ -1130,10 +1130,10 @@ export default function TabContentPage({
         <div className="space-y-8">
           <div className="flex flex-wrap items-center justify-between gap-4 rounded-[2rem] bg-white p-5 shadow-lg">
             <div>
-              <h2 className="text-2xl font-black text-[#0B4D6B]">
+              <h2 className="text-2xl font-black text-[var(--rashid-color-0b4d6b)]">
                 المحتوى المضاف
               </h2>
-              <p className="mt-1 text-sm font-bold text-[#6E7A99]">
+              <p className="mt-1 text-sm font-bold text-[var(--rashid-color-6e7a99)]">
                 اعرض المحتوى هنا، والإضافة أو التعديل تتم من نافذة كبيرة.
               </p>
             </div>
@@ -1144,21 +1144,21 @@ export default function TabContentPage({
                 resetForm();
                 setFormOpen(true);
               }}
-              className="rounded-full bg-[#42BFA8] px-8 py-4 font-black text-white shadow-lg transition hover:-translate-y-1"
+              className="rounded-full bg-[var(--rashid-color-42bfa8)] px-8 py-4 font-black text-white shadow-lg transition hover:-translate-y-1"
             >
               + إضافة محتوى
             </button>
           </div>
 
           {formOpen && (
-            <div className="fixed inset-0 z-[999] flex items-start justify-center overflow-y-auto bg-[#062033]/70 p-4 backdrop-blur-sm">
+            <div className="fixed inset-0 z-[999] flex items-start justify-center overflow-y-auto bg-[var(--rashid-color-062033)]/70 p-4 backdrop-blur-sm">
               <section className="my-6 w-full max-w-6xl overflow-hidden rounded-[2rem] bg-white shadow-2xl">
-                <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-[#DDEDEA] bg-white/95 p-6 backdrop-blur">
+                <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-[var(--rashid-color-ddedea)] bg-white/95 p-6 backdrop-blur">
                   <div>
-                    <h2 className="text-3xl font-black text-[#0B4D6B]">
+                    <h2 className="text-3xl font-black text-[var(--rashid-color-0b4d6b)]">
                       {editingId ? "تعديل المحتوى" : "إضافة محتوى جديد"}
                     </h2>
-                    <p className="mt-1 text-sm font-bold text-[#6E7A99]">
+                    <p className="mt-1 text-sm font-bold text-[var(--rashid-color-6e7a99)]">
                       نافذة واسعة لإدخال المحتوى بدون حشر.
                     </p>
                   </div>
@@ -1173,16 +1173,16 @@ export default function TabContentPage({
                 </div>
 
                 <div className="p-6">
-                  <div className="mb-6 rounded-[1.6rem] bg-gradient-to-l from-[#E8F7F3] to-[#F5FBFF] p-5">
+                  <div className="mb-6 rounded-[1.6rem] bg-gradient-to-l from-[var(--rashid-color-e8f7f3)] to-[var(--rashid-color-f5fbff)] p-5">
                     <div className="flex items-center gap-3">
-                      <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#0B4D6B] text-2xl text-white">
+                      <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[var(--rashid-color-0b4d6b)] text-2xl text-white">
                         {editingId ? "✏️" : "➕"}
                       </div>
                       <div>
-                        <h2 className="text-2xl font-black text-[#0B4D6B]">
+                        <h2 className="text-2xl font-black text-[var(--rashid-color-0b4d6b)]">
                           {editingId ? "تعديل المحتوى" : "إضافة محتوى جديد"}
                         </h2>
-                        <p className="mt-1 text-sm font-bold text-[#6E7A99]">
+                        <p className="mt-1 text-sm font-bold text-[var(--rashid-color-6e7a99)]">
                           اختر النوع ثم عبئ البيانات بهدوء.
                         </p>
                       </div>
@@ -1191,7 +1191,7 @@ export default function TabContentPage({
 
                   <form onSubmit={saveContent} className="space-y-5">
                     <label className="block">
-                      <span className="mb-2 block font-black text-[#0B4D6B]">
+                      <span className="mb-2 block font-black text-[var(--rashid-color-0b4d6b)]">
                         نوع المحتوى
                       </span>
 
@@ -1206,7 +1206,7 @@ export default function TabContentPage({
                             iframe_url: "",
                           })
                         }
-                        className="w-full appearance-none rounded-[1.4rem] border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] shadow-sm outline-none transition focus:border-[#42BFA8] focus:ring-4 focus:ring-[#42BFA8]/10"
+                        className="w-full appearance-none rounded-[1.4rem] border border-[var(--rashid-color-ddedea)] bg-white px-4 py-4 text-[var(--rashid-color-0b4d6b)] shadow-sm outline-none transition focus:border-[var(--rashid-color-42bfa8)] focus:ring-4 focus:ring-[var(--rashid-color-42bfa8)]/10"
                       >
                         {availableContentTypes.map((type) => (
                           <option key={type.value} value={type.value}>
@@ -1216,7 +1216,7 @@ export default function TabContentPage({
                       </select>
                     </label>
 
-                    <div className="rounded-[1.4rem] border border-[#DDEDEA] bg-[#F4FAF8] p-4 text-sm font-black text-[#0B4D6B]">
+                    <div className="rounded-[1.4rem] border border-[var(--rashid-color-ddedea)] bg-[var(--rashid-color-f4faf8)] p-4 text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                       النوع المختار: {selectedType?.icon} {selectedType?.label}
                     </div>
 
@@ -1230,15 +1230,15 @@ export default function TabContentPage({
                       onChange={(e) =>
                         setForm({ ...form, title: e.target.value })
                       }
-                      className="w-full rounded-[1.4rem] border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] shadow-sm outline-none transition focus:border-[#42BFA8] focus:ring-4 focus:ring-[#42BFA8]/10"
+                      className="w-full rounded-[1.4rem] border border-[var(--rashid-color-ddedea)] bg-white px-4 py-4 text-[var(--rashid-color-0b4d6b)] shadow-sm outline-none transition focus:border-[var(--rashid-color-42bfa8)] focus:ring-4 focus:ring-[var(--rashid-color-42bfa8)]/10"
                     />
 
                     {["iframe", "zip_game", "interactive_story"].includes(form.content_type) && (
-                      <div className="rounded-2xl border border-dashed border-[#8b5cf6]/40 bg-[#F7F3FF] p-5">
-                        <label className="mb-3 block font-black text-[#0B4D6B]">
+                      <div className="rounded-2xl border border-dashed border-[var(--rashid-color-8b5cf6)]/40 bg-[var(--rashid-color-f7f3ff)] p-5">
+                        <label className="mb-3 block font-black text-[var(--rashid-color-0b4d6b)]">
                           صورة النشاط / اللعبة
                         </label>
-                        <p className="mb-4 text-sm font-bold leading-7 text-[#6E7A99]">
+                        <p className="mb-4 text-sm font-bold leading-7 text-[var(--rashid-color-6e7a99)]">
                           هذه الصورة تظهر في كروت "العب وتعلّم" بدل صورة iframe.
                         </p>
 
@@ -1249,7 +1249,7 @@ export default function TabContentPage({
                             const file = e.target.files?.[0];
                             if (file) uploadActivityCover(file);
                           }}
-                          className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#8b5cf6]/50 bg-white p-4 text-sm font-bold text-[#0B4D6B]"
+                          className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[var(--rashid-color-8b5cf6)]/50 bg-white p-4 text-sm font-bold text-[var(--rashid-color-0b4d6b)]"
                         />
 
                         {form.cover_image_url && (
@@ -1278,13 +1278,13 @@ export default function TabContentPage({
                         onChange={(e) =>
                           setForm({ ...form, body: e.target.value })
                         }
-                        className="h-44 w-full rounded-[1.4rem] border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] shadow-sm outline-none transition focus:border-[#42BFA8] focus:ring-4 focus:ring-[#42BFA8]/10"
+                        className="h-44 w-full rounded-[1.4rem] border border-[var(--rashid-color-ddedea)] bg-white px-4 py-4 text-[var(--rashid-color-0b4d6b)] shadow-sm outline-none transition focus:border-[var(--rashid-color-42bfa8)] focus:ring-4 focus:ring-[var(--rashid-color-42bfa8)]/10"
                       />
                     )}
 
                     {["image", "file", "video"].includes(form.content_type) && (
-                      <div className="rounded-2xl border border-dashed border-[#42BFA8] bg-[#F4FAF8] p-5">
-                        <label className="mb-3 block font-black text-[#0B4D6B]">
+                      <div className="rounded-2xl border border-dashed border-[var(--rashid-color-42bfa8)] bg-[var(--rashid-color-f4faf8)] p-5">
+                        <label className="mb-3 block font-black text-[var(--rashid-color-0b4d6b)]">
                           رفع ملف من الجهاز
                         </label>
 
@@ -1301,11 +1301,11 @@ export default function TabContentPage({
                             const file = e.target.files?.[0];
                             if (file) uploadFile(file);
                           }}
-                          className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-white p-4 text-sm font-bold text-[#0B4D6B]"
+                          className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[var(--rashid-color-42bfa8)]/60 bg-white p-4 text-sm font-bold text-[var(--rashid-color-0b4d6b)]"
                         />
 
                         {uploading && (
-                          <p className="mt-3 font-bold text-[#42BFA8]">
+                          <p className="mt-3 font-bold text-[var(--rashid-color-42bfa8)]">
                             جاري الرفع...
                           </p>
                         )}
@@ -1325,7 +1325,7 @@ export default function TabContentPage({
                                 className="h-44 w-full rounded-2xl object-cover"
                               />
                             ) : (
-                              <p className="break-all rounded-xl bg-white p-3 text-xs text-[#6E7A99]">
+                              <p className="break-all rounded-xl bg-white p-3 text-xs text-[var(--rashid-color-6e7a99)]">
                                 {form.file_url}
                               </p>
                             )}
@@ -1343,9 +1343,9 @@ export default function TabContentPage({
                     )}
 
                     {form.content_type === "interactive_story" && (
-                      <div className="space-y-5 rounded-2xl border border-dashed border-[#42BFA8] bg-[#F4FAF8] p-5">
+                      <div className="space-y-5 rounded-2xl border border-dashed border-[var(--rashid-color-42bfa8)] bg-[var(--rashid-color-f4faf8)] p-5">
                         <div className="rounded-2xl bg-white p-4">
-                          <label className="mb-3 block font-black text-[#0B4D6B]">
+                          <label className="mb-3 block font-black text-[var(--rashid-color-0b4d6b)]">
                             بيانات القصة التفاعلية
                           </label>
 
@@ -1355,7 +1355,7 @@ export default function TabContentPage({
                             onChange={(e) =>
                               setStoryDescription(e.target.value)
                             }
-                            className="h-24 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                            className="h-24 w-full rounded-[1.2rem] border border-[var(--rashid-color-ddedea)] p-3 shadow-sm outline-none focus:border-[var(--rashid-color-42bfa8)]"
                           />
                         </div>
 
@@ -1366,7 +1366,7 @@ export default function TabContentPage({
                               className="rounded-2xl bg-white p-4 shadow-sm"
                             >
                               <div className="mb-3 flex items-center justify-between gap-3">
-                                <div className="text-lg font-black text-[#0B4D6B]">
+                                <div className="text-lg font-black text-[var(--rashid-color-0b4d6b)]">
                                   🎬 المشهد {sceneIndex + 1}
                                 </div>
 
@@ -1395,10 +1395,10 @@ export default function TabContentPage({
                                   next[sceneIndex].title = e.target.value;
                                   setStoryScenes(next);
                                 }}
-                                className="mb-3 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                                className="mb-3 w-full rounded-[1.2rem] border border-[var(--rashid-color-ddedea)] p-3 shadow-sm outline-none focus:border-[var(--rashid-color-42bfa8)]"
                               />
 
-                              <label className="mb-2 block text-sm font-black text-[#0B4D6B]">
+                              <label className="mb-2 block text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                                 فيديو المشهد
                               </label>
                               <input
@@ -1415,11 +1415,11 @@ export default function TabContentPage({
                                   }
                                   setUploading(false);
                                 }}
-                                className="mb-3 w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-[#F4FAF8] p-4 text-sm font-bold text-[#0B4D6B]"
+                                className="mb-3 w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[var(--rashid-color-42bfa8)]/60 bg-[var(--rashid-color-f4faf8)] p-4 text-sm font-bold text-[var(--rashid-color-0b4d6b)]"
                               />
 
                               {scene.videoUrl && (
-                                <p className="mb-3 break-all rounded-xl bg-[#F4FAF8] p-3 text-xs font-bold text-[#6E7A99]">
+                                <p className="mb-3 break-all rounded-xl bg-[var(--rashid-color-f4faf8)] p-3 text-xs font-bold text-[var(--rashid-color-6e7a99)]">
                                   {scene.videoUrl}
                                 </p>
                               )}
@@ -1432,11 +1432,11 @@ export default function TabContentPage({
                                   next[sceneIndex].question = e.target.value;
                                   setStoryScenes(next);
                                 }}
-                                className="mb-4 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                                className="mb-4 w-full rounded-[1.2rem] border border-[var(--rashid-color-ddedea)] p-3 shadow-sm outline-none focus:border-[var(--rashid-color-42bfa8)]"
                               />
 
-                              <div className="space-y-3 rounded-2xl bg-[#F4FAF8] p-4">
-                                <div className="font-black text-[#0B4D6B]">
+                              <div className="space-y-3 rounded-2xl bg-[var(--rashid-color-f4faf8)] p-4">
+                                <div className="font-black text-[var(--rashid-color-0b4d6b)]">
                                   الخيارات ونتيجة كل خيار
                                 </div>
 
@@ -1444,7 +1444,7 @@ export default function TabContentPage({
                                   (answer: any, answerIndex: number) => (
                                     <div
                                       key={answerIndex}
-                                      className="rounded-2xl border border-[#DDEDEA] bg-white p-3"
+                                      className="rounded-2xl border border-[var(--rashid-color-ddedea)] bg-white p-3"
                                     >
                                       <input
                                         placeholder={`نص الخيار ${answerIndex + 1}`}
@@ -1456,10 +1456,10 @@ export default function TabContentPage({
                                           ].text = e.target.value;
                                           setStoryScenes(next);
                                         }}
-                                        className="mb-2 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                                        className="mb-2 w-full rounded-[1.2rem] border border-[var(--rashid-color-ddedea)] p-3 shadow-sm outline-none focus:border-[var(--rashid-color-42bfa8)]"
                                       />
 
-                                      <label className="mb-3 flex items-center gap-2 text-sm font-black text-[#0B4D6B]">
+                                      <label className="mb-3 flex items-center gap-2 text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                                         <input
                                           type="checkbox"
                                           checked={answer.isCorrect}
@@ -1474,7 +1474,7 @@ export default function TabContentPage({
                                         إجابة صحيحة
                                       </label>
 
-                                      <label className="mb-2 block text-sm font-black text-[#0B4D6B]">
+                                      <label className="mb-2 block text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                                         فيديو نتيجة هذا الخيار
                                       </label>
                                       <input
@@ -1497,11 +1497,11 @@ export default function TabContentPage({
                                           }
                                           setUploading(false);
                                         }}
-                                        className="mb-2 w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-[#F4FAF8] p-4 text-sm font-bold text-[#0B4D6B]"
+                                        className="mb-2 w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[var(--rashid-color-42bfa8)]/60 bg-[var(--rashid-color-f4faf8)] p-4 text-sm font-bold text-[var(--rashid-color-0b4d6b)]"
                                       />
 
                                       {answer.feedbackVideoUrl && (
-                                        <p className="mb-3 break-all rounded-xl bg-[#F4FAF8] p-3 text-xs font-bold text-[#6E7A99]">
+                                        <p className="mb-3 break-all rounded-xl bg-[var(--rashid-color-f4faf8)] p-3 text-xs font-bold text-[var(--rashid-color-6e7a99)]">
                                           {answer.feedbackVideoUrl}
                                         </p>
                                       )}
@@ -1515,7 +1515,7 @@ export default function TabContentPage({
                                           ].nextQuestionIndex = e.target.value;
                                           setStoryScenes(next);
                                         }}
-                                        className="w-full rounded-xl border border-[#DDEDEA] bg-white p-3 font-bold text-[#0B4D6B]"
+                                        className="w-full rounded-xl border border-[var(--rashid-color-ddedea)] bg-white p-3 font-bold text-[var(--rashid-color-0b4d6b)]"
                                       >
                                         <option value="end">
                                           تنتهي القصة بعد فيديو النتيجة
@@ -1565,7 +1565,7 @@ export default function TabContentPage({
                                     });
                                     setStoryScenes(next);
                                   }}
-                                  className="rounded-full bg-[#42BFA8] px-5 py-2 text-sm font-black text-white"
+                                  className="rounded-full bg-[var(--rashid-color-42bfa8)] px-5 py-2 text-sm font-black text-white"
                                 >
                                   + إضافة خيار
                                 </button>
@@ -1600,7 +1600,7 @@ export default function TabContentPage({
                               },
                             ])
                           }
-                          className="w-full rounded-full bg-[#42BFA8] py-3 font-black text-white"
+                          className="w-full rounded-full bg-[var(--rashid-color-42bfa8)] py-3 font-black text-white"
                         >
                           + إضافة مشهد جديد
                         </button>
@@ -1609,23 +1609,23 @@ export default function TabContentPage({
                           type="button"
                           disabled={uploading}
                           onClick={generateInteractiveStory}
-                          className="w-full rounded-full bg-[#0B4D6B] py-3 font-black text-white disabled:opacity-50"
+                          className="w-full rounded-full bg-[var(--rashid-color-0b4d6b)] py-3 font-black text-white disabled:opacity-50"
                         >
                           حفظ بيانات القصة وتجهيز العرض الداخلي
                         </button>
 
                         {uploading && (
-                          <p className="rounded-xl bg-[#FFF7D8] p-3 font-bold text-[#9A6B00]">
+                          <p className="rounded-xl bg-[var(--rashid-color-fff7d8)] p-3 font-bold text-[var(--rashid-color-9a6b00)]">
                             جاري حفظ البيانات...
                           </p>
                         )}
 
                         {form.iframe_url && (
                           <div className="rounded-2xl bg-white p-4">
-                            <div className="mb-3 text-sm font-black text-[#0B4D6B]">
+                            <div className="mb-3 text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                               تم حفظ بيانات القصة بنجاح 🎉
                             </div>
-                            <p className="break-all text-xs text-[#6E7A99]">
+                            <p className="break-all text-xs text-[var(--rashid-color-6e7a99)]">
                               سيتم عرض القصة داخل الموقع. الرابط القديم بقي محفوظًا كخيار احتياطي: {form.iframe_url}
                             </p>
                           </div>
@@ -1634,9 +1634,9 @@ export default function TabContentPage({
                     )}
 
                     {form.content_type === "zip_game" && (
-                      <div className="space-y-5 rounded-2xl border border-dashed border-[#42BFA8] bg-[#F4FAF8] p-5">
+                      <div className="space-y-5 rounded-2xl border border-dashed border-[var(--rashid-color-42bfa8)] bg-[var(--rashid-color-f4faf8)] p-5">
                         <div className="rounded-2xl bg-white p-4">
-                          <label className="mb-3 block font-black text-[#0B4D6B]">
+                          <label className="mb-3 block font-black text-[var(--rashid-color-0b4d6b)]">
                             إنشاء لعبة من Template
                           </label>
 
@@ -1685,7 +1685,7 @@ export default function TabContentPage({
                                 },
                               ]);
                             }}
-                            className="mb-3 w-full rounded-xl border border-[#DDEDEA] bg-white p-3 font-bold text-[#0B4D6B]"
+                            className="mb-3 w-full rounded-xl border border-[var(--rashid-color-ddedea)] bg-white p-3 font-bold text-[var(--rashid-color-0b4d6b)]"
                           >
                             {GAME_TEMPLATES.map((template) => (
                               <option key={template.id} value={template.id}>
@@ -1694,8 +1694,8 @@ export default function TabContentPage({
                             ))}
                           </select>
 
-                          <div className="mb-4 rounded-2xl border border-[#DDEDEA] bg-white p-4">
-                            <div className="mb-4 text-lg font-black text-[#0B4D6B]">
+                          <div className="mb-4 rounded-2xl border border-[var(--rashid-color-ddedea)] bg-white p-4">
+                            <div className="mb-4 text-lg font-black text-[var(--rashid-color-0b4d6b)]">
                               بيانات اللعبة
                             </div>
 
@@ -1708,7 +1708,7 @@ export default function TabContentPage({
                                   title: e.target.value,
                                 })
                               }
-                              className="mb-3 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                              className="mb-3 w-full rounded-[1.2rem] border border-[var(--rashid-color-ddedea)] p-3 shadow-sm outline-none focus:border-[var(--rashid-color-42bfa8)]"
                             />
 
                             {templateId !== "drag_dynamic_kid" &&
@@ -1723,12 +1723,12 @@ export default function TabContentPage({
                                       question: e.target.value,
                                     })
                                   }
-                                  className="mb-3 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                                  className="mb-3 w-full rounded-[1.2rem] border border-[var(--rashid-color-ddedea)] p-3 shadow-sm outline-none focus:border-[var(--rashid-color-42bfa8)]"
                                 />
 
                                 {templateId !== "maze_quiz" && (
-                                  <div className="mb-3 rounded-2xl bg-[#F4FAF8] p-3">
-                                    <label className="mb-2 block text-sm font-black text-[#0B4D6B]">
+                                  <div className="mb-3 rounded-2xl bg-[var(--rashid-color-f4faf8)] p-3">
+                                    <label className="mb-2 block text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                                       صوت السؤال
                                     </label>
                                     <div className="grid gap-2 md:grid-cols-[1fr_auto]">
@@ -1754,7 +1754,7 @@ export default function TabContentPage({
                                           }
                                           setUploading(false);
                                         }}
-                                        className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-white p-4 text-sm font-bold text-[#0B4D6B]"
+                                        className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[var(--rashid-color-42bfa8)]/60 bg-white p-4 text-sm font-bold text-[var(--rashid-color-0b4d6b)]"
                                       />
 
                                       <button
@@ -1776,7 +1776,7 @@ export default function TabContentPage({
                                           }
                                           setUploading(false);
                                         }}
-                                        className="rounded-[1.2rem] bg-[#42BFA8] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                        className="rounded-[1.2rem] bg-[var(--rashid-color-42bfa8)] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
                                       >
                                         توليد الصوت
                                       </button>
@@ -1789,7 +1789,7 @@ export default function TabContentPage({
                                           src={getFileUrl(templateMeta.questionAudio)}
                                           className="w-full"
                                         />
-                                        <p className="mt-2 break-all text-xs font-bold text-[#6E7A99]">
+                                        <p className="mt-2 break-all text-xs font-bold text-[var(--rashid-color-6e7a99)]">
                                           {templateMeta.questionAudio}
                                         </p>
                                       </div>
@@ -1806,7 +1806,7 @@ export default function TabContentPage({
                                       targetCategory: e.target.value,
                                     })
                                   }
-                                  className="mb-3 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                                  className="mb-3 w-full rounded-[1.2rem] border border-[var(--rashid-color-ddedea)] p-3 shadow-sm outline-none focus:border-[var(--rashid-color-42bfa8)]"
                                 />
 
                                 {templateId === "fishing_game" && (
@@ -1822,7 +1822,7 @@ export default function TabContentPage({
                                         targetCount: e.target.value,
                                       })
                                     }
-                                    className="w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                                    className="w-full rounded-[1.2rem] border border-[var(--rashid-color-ddedea)] p-3 shadow-sm outline-none focus:border-[var(--rashid-color-42bfa8)]"
                                   />
                                 )}
                               </>
@@ -1837,11 +1837,11 @@ export default function TabContentPage({
                                       instruction: e.target.value,
                                     })
                                   }
-                                  className="h-28 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                                  className="h-28 w-full rounded-[1.2rem] border border-[var(--rashid-color-ddedea)] p-3 shadow-sm outline-none focus:border-[var(--rashid-color-42bfa8)]"
                                 />
 
-                                <div className="mt-3 rounded-2xl bg-[#F4FAF8] p-3">
-                                  <label className="mb-2 block text-sm font-black text-[#0B4D6B]">
+                                <div className="mt-3 rounded-2xl bg-[var(--rashid-color-f4faf8)] p-3">
+                                  <label className="mb-2 block text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                                     صوت السؤال
                                   </label>
 
@@ -1866,7 +1866,7 @@ export default function TabContentPage({
 
                                         setUploading(false);
                                       }}
-                                      className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-white p-4 text-sm font-bold text-[#0B4D6B]"
+                                      className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[var(--rashid-color-42bfa8)]/60 bg-white p-4 text-sm font-bold text-[var(--rashid-color-0b4d6b)]"
                                     />
 
                                     <button
@@ -1889,7 +1889,7 @@ export default function TabContentPage({
 
                                         setUploading(false);
                                       }}
-                                      className="rounded-[1.2rem] bg-[#42BFA8] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                      className="rounded-[1.2rem] bg-[var(--rashid-color-42bfa8)] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
                                     >
                                       توليد الصوت
                                     </button>
@@ -1902,7 +1902,7 @@ export default function TabContentPage({
                                         src={getFileUrl(templateMeta.questionAudio)}
                                         className="w-full"
                                       />
-                                      <p className="mt-2 break-all text-xs font-bold text-[#6E7A99]">
+                                      <p className="mt-2 break-all text-xs font-bold text-[var(--rashid-color-6e7a99)]">
                                         {templateMeta.questionAudio}
                                       </p>
                                     </div>
@@ -1913,8 +1913,8 @@ export default function TabContentPage({
                           </div>
 
                           {templateId === "maze_quiz" && (
-                            <div className="mb-4 rounded-2xl bg-[#F4FAF8] p-4">
-                              <div className="mb-3 text-sm font-black text-[#0B4D6B]">
+                            <div className="mb-4 rounded-2xl bg-[var(--rashid-color-f4faf8)] p-4">
+                              <div className="mb-3 text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                                 أسئلة المتاهة
                               </div>
 
@@ -1922,7 +1922,7 @@ export default function TabContentPage({
                                 {templateQuestions.map((question, qIndex) => (
                                   <div
                                     key={qIndex}
-                                    className="rounded-2xl border border-[#DDEDEA] bg-white p-4"
+                                    className="rounded-2xl border border-[var(--rashid-color-ddedea)] bg-white p-4"
                                   >
                                     <input
                                       placeholder={`السؤال ${qIndex + 1}`}
@@ -1932,11 +1932,11 @@ export default function TabContentPage({
                                         next[qIndex].q = e.target.value;
                                         setTemplateQuestions(next);
                                       }}
-                                      className="mb-3 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                                      className="mb-3 w-full rounded-[1.2rem] border border-[var(--rashid-color-ddedea)] p-3 shadow-sm outline-none focus:border-[var(--rashid-color-42bfa8)]"
                                     />
 
-                                    <div className="mb-3 rounded-2xl bg-[#F4FAF8] p-3">
-                                      <label className="mb-2 block text-sm font-black text-[#0B4D6B]">
+                                    <div className="mb-3 rounded-2xl bg-[var(--rashid-color-f4faf8)] p-3">
+                                      <label className="mb-2 block text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                                         صوت السؤال
                                       </label>
 
@@ -1960,7 +1960,7 @@ export default function TabContentPage({
 
                                             setUploading(false);
                                           }}
-                                          className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-white p-4 text-sm font-bold text-[#0B4D6B]"
+                                          className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[var(--rashid-color-42bfa8)]/60 bg-white p-4 text-sm font-bold text-[var(--rashid-color-0b4d6b)]"
                                         />
 
                                         <button
@@ -1982,7 +1982,7 @@ export default function TabContentPage({
 
                                             setUploading(false);
                                           }}
-                                          className="rounded-[1.2rem] bg-[#42BFA8] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                          className="rounded-[1.2rem] bg-[var(--rashid-color-42bfa8)] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
                                         >
                                           توليد الصوت
                                         </button>
@@ -1995,7 +1995,7 @@ export default function TabContentPage({
                                             src={getFileUrl(question.audio)}
                                             className="w-full"
                                           />
-                                          <p className="mt-2 break-all text-xs font-bold text-[#6E7A99]">
+                                          <p className="mt-2 break-all text-xs font-bold text-[var(--rashid-color-6e7a99)]">
                                             {question.audio}
                                           </p>
                                         </div>
@@ -2007,7 +2007,7 @@ export default function TabContentPage({
                                         (answer: any, aIndex: number) => (
                                           <div
                                             key={aIndex}
-                                            className="grid gap-2 rounded-xl bg-[#F4FAF8] p-3 md:grid-cols-[1fr_auto]"
+                                            className="grid gap-2 rounded-xl bg-[var(--rashid-color-f4faf8)] p-3 md:grid-cols-[1fr_auto]"
                                           >
                                             <input
                                               placeholder={`الإجابة ${aIndex + 1}`}
@@ -2021,10 +2021,10 @@ export default function TabContentPage({
                                                 ].text = e.target.value;
                                                 setTemplateQuestions(next);
                                               }}
-                                              className="rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                                              className="rounded-[1.2rem] border border-[var(--rashid-color-ddedea)] p-3 shadow-sm outline-none focus:border-[var(--rashid-color-42bfa8)]"
                                             />
 
-                                            <label className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-sm font-black text-[#0B4D6B]">
+                                            <label className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                                               <input
                                                 type="radio"
                                                 name={`correct-${qIndex}`}
@@ -2048,7 +2048,7 @@ export default function TabContentPage({
                                             </label>
 
                                             <div className="md:col-span-2 rounded-2xl bg-white p-3">
-                                              <label className="mb-2 block text-sm font-black text-[#0B4D6B]">
+                                              <label className="mb-2 block text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                                                 صوت الإجابة
                                               </label>
 
@@ -2072,7 +2072,7 @@ export default function TabContentPage({
 
                                                     setUploading(false);
                                                   }}
-                                                  className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-[#F4FAF8] p-4 text-sm font-bold text-[#0B4D6B]"
+                                                  className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[var(--rashid-color-42bfa8)]/60 bg-[var(--rashid-color-f4faf8)] p-4 text-sm font-bold text-[var(--rashid-color-0b4d6b)]"
                                                 />
 
                                                 <button
@@ -2094,20 +2094,20 @@ export default function TabContentPage({
 
                                                     setUploading(false);
                                                   }}
-                                                  className="rounded-[1.2rem] bg-[#42BFA8] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                                  className="rounded-[1.2rem] bg-[var(--rashid-color-42bfa8)] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
                                                 >
                                                   توليد الصوت
                                                 </button>
                                               </div>
 
                                               {answer.audio && (
-                                                <div className="mt-2 rounded-xl bg-[#F4FAF8] p-2">
+                                                <div className="mt-2 rounded-xl bg-[var(--rashid-color-f4faf8)] p-2">
                                                   <audio
                                                     controls
                                                     src={getFileUrl(answer.audio)}
                                                     className="w-full"
                                                   />
-                                                  <p className="mt-2 break-all text-xs font-bold text-[#6E7A99]">
+                                                  <p className="mt-2 break-all text-xs font-bold text-[var(--rashid-color-6e7a99)]">
                                                     {answer.audio}
                                                   </p>
                                                 </div>
@@ -2155,7 +2155,7 @@ export default function TabContentPage({
                                     },
                                   ])
                                 }
-                                className="mt-3 rounded-full bg-[#42BFA8] px-5 py-2 text-sm font-black text-white"
+                                className="mt-3 rounded-full bg-[var(--rashid-color-42bfa8)] px-5 py-2 text-sm font-black text-white"
                               >
                                 + إضافة سؤال
                               </button>
@@ -2163,8 +2163,8 @@ export default function TabContentPage({
                           )}
 
                           {templateId !== "maze_quiz" && (
-                            <div className="mb-4 rounded-2xl bg-[#F4FAF8] p-4">
-                              <div className="mb-3 text-sm font-black text-[#0B4D6B]">
+                            <div className="mb-4 rounded-2xl bg-[var(--rashid-color-f4faf8)] p-4">
+                              <div className="mb-3 text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                                 العناصر / الإجابات
                               </div>
 
@@ -2172,7 +2172,7 @@ export default function TabContentPage({
                                 {templateItems.map((item, index) => (
                                   <div
                                     key={index}
-                                    className="rounded-2xl border border-[#DDEDEA] bg-white p-3"
+                                    className="rounded-2xl border border-[var(--rashid-color-ddedea)] bg-white p-3"
                                   >
                                     <input
                                       placeholder="النص"
@@ -2182,7 +2182,7 @@ export default function TabContentPage({
                                         next[index].text = e.target.value;
                                         setTemplateItems(next);
                                       }}
-                                      className="mb-2 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                                      className="mb-2 w-full rounded-[1.2rem] border border-[var(--rashid-color-ddedea)] p-3 shadow-sm outline-none focus:border-[var(--rashid-color-42bfa8)]"
                                     />
 
                                     <input
@@ -2197,7 +2197,7 @@ export default function TabContentPage({
                                         next[index].category = e.target.value;
                                         setTemplateItems(next);
                                       }}
-                                      className="mb-2 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                                      className="mb-2 w-full rounded-[1.2rem] border border-[var(--rashid-color-ddedea)] p-3 shadow-sm outline-none focus:border-[var(--rashid-color-42bfa8)]"
                                     />
 
                                     <input
@@ -2224,7 +2224,7 @@ export default function TabContentPage({
 
                                         setUploading(false);
                                       }}
-                                      className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-[#F4FAF8] p-4 text-sm font-bold text-[#0B4D6B]"
+                                      className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[var(--rashid-color-42bfa8)]/60 bg-[var(--rashid-color-f4faf8)] p-4 text-sm font-bold text-[var(--rashid-color-0b4d6b)]"
                                     />
 
                                     {item.image && (
@@ -2236,8 +2236,8 @@ export default function TabContentPage({
                                     )}
 
                                     {templateId !== "maze_quiz" && (
-                                      <div className="mt-3 rounded-2xl bg-[#F4FAF8] p-3">
-                                        <label className="mb-2 block text-sm font-black text-[#0B4D6B]">
+                                      <div className="mt-3 rounded-2xl bg-[var(--rashid-color-f4faf8)] p-3">
+                                        <label className="mb-2 block text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                                           صوت هذا الخيار
                                         </label>
                                         <div className="grid gap-2 md:grid-cols-[1fr_auto]">
@@ -2262,7 +2262,7 @@ export default function TabContentPage({
                                               }
                                               setUploading(false);
                                             }}
-                                            className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-white p-4 text-sm font-bold text-[#0B4D6B]"
+                                            className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[var(--rashid-color-42bfa8)]/60 bg-white p-4 text-sm font-bold text-[var(--rashid-color-0b4d6b)]"
                                           />
 
                                           <button
@@ -2283,7 +2283,7 @@ export default function TabContentPage({
                                               }
                                               setUploading(false);
                                             }}
-                                            className="rounded-[1.2rem] bg-[#42BFA8] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                            className="rounded-[1.2rem] bg-[var(--rashid-color-42bfa8)] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
                                           >
                                             توليد الصوت
                                           </button>
@@ -2296,7 +2296,7 @@ export default function TabContentPage({
                                               src={getFileUrl(item.audio)}
                                               className="w-full"
                                             />
-                                            <p className="mt-2 break-all text-xs font-bold text-[#6E7A99]">
+                                            <p className="mt-2 break-all text-xs font-bold text-[var(--rashid-color-6e7a99)]">
                                               {item.audio}
                                             </p>
                                           </div>
@@ -2339,7 +2339,7 @@ export default function TabContentPage({
                                     },
                                   ])
                                 }
-                                className="mt-3 rounded-full bg-[#42BFA8] px-5 py-2 text-sm font-black text-white"
+                                className="mt-3 rounded-full bg-[var(--rashid-color-42bfa8)] px-5 py-2 text-sm font-black text-white"
                               >
                                 + إضافة عنصر
                               </button>
@@ -2347,15 +2347,15 @@ export default function TabContentPage({
                           )}
 
                           {templateId === "fishing_game" && (
-                            <div className="mb-4 rounded-2xl bg-[#FFF7E8] p-4">
-                              <div className="mb-3 text-sm font-black text-[#0B4D6B]">
+                            <div className="mb-4 rounded-2xl bg-[var(--rashid-color-fff7e8)] p-4">
+                              <div className="mb-3 text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                                 كلمات المدح وأصواتها
                               </div>
                               <div className="space-y-3">
                                 {templatePraiseSounds.map((praise, index) => (
                                   <div
                                     key={index}
-                                    className="rounded-2xl border border-[#F3D7A8] bg-white p-3"
+                                    className="rounded-2xl border border-[var(--rashid-color-f3d7a8)] bg-white p-3"
                                   >
                                     <input
                                       placeholder="كلمة المدح مثل: أحسنت، رائع"
@@ -2365,7 +2365,7 @@ export default function TabContentPage({
                                         next[index].text = e.target.value;
                                         setTemplatePraiseSounds(next);
                                       }}
-                                      className="mb-2 w-full rounded-[1.2rem] border border-[#DDEDEA] p-3 shadow-sm outline-none focus:border-[#42BFA8]"
+                                      className="mb-2 w-full rounded-[1.2rem] border border-[var(--rashid-color-ddedea)] p-3 shadow-sm outline-none focus:border-[var(--rashid-color-42bfa8)]"
                                     />
                                     <div className="grid gap-2 md:grid-cols-[1fr_auto]">
                                       <input
@@ -2390,7 +2390,7 @@ export default function TabContentPage({
                                           }
                                           setUploading(false);
                                         }}
-                                        className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#F59E0B]/60 bg-[#FFF7E8] p-4 text-sm font-bold text-[#0B4D6B]"
+                                        className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[var(--rashid-color-f59e0b)]/60 bg-[var(--rashid-color-fff7e8)] p-4 text-sm font-bold text-[var(--rashid-color-0b4d6b)]"
                                       />
 
                                       <button
@@ -2411,20 +2411,20 @@ export default function TabContentPage({
                                           }
                                           setUploading(false);
                                         }}
-                                        className="rounded-[1.2rem] bg-[#F59E0B] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
+                                        className="rounded-[1.2rem] bg-[var(--rashid-color-f59e0b)] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50"
                                       >
                                         توليد الصوت
                                       </button>
                                     </div>
 
                                     {praise.audio && (
-                                      <div className="mt-2 rounded-xl bg-[#FFF7E8] p-2">
+                                      <div className="mt-2 rounded-xl bg-[var(--rashid-color-fff7e8)] p-2">
                                         <audio
                                           controls
                                           src={getFileUrl(praise.audio)}
                                           className="w-full"
                                         />
-                                        <p className="mt-2 break-all text-xs font-bold text-[#6E7A99]">
+                                        <p className="mt-2 break-all text-xs font-bold text-[var(--rashid-color-6e7a99)]">
                                           {praise.audio}
                                         </p>
                                       </div>
@@ -2455,7 +2455,7 @@ export default function TabContentPage({
                                     { text: "", audio: "" },
                                   ])
                                 }
-                                className="mt-3 rounded-full bg-[#F59E0B] px-5 py-2 text-sm font-black text-white"
+                                className="mt-3 rounded-full bg-[var(--rashid-color-f59e0b)] px-5 py-2 text-sm font-black text-white"
                               >
                                 + إضافة كلمة مدح
                               </button>
@@ -2466,12 +2466,12 @@ export default function TabContentPage({
                             type="button"
                             disabled={uploading}
                             onClick={generateTemplateGame}
-                            className="mt-3 w-full rounded-full bg-[#0B4D6B] py-3 font-black text-white disabled:opacity-50"
+                            className="mt-3 w-full rounded-full bg-[var(--rashid-color-0b4d6b)] py-3 font-black text-white disabled:opacity-50"
                           >
                             حفظ بيانات اللعبة وتوليد الأصوات الجديدة فقط
                           </button>
 
-                          <p className="mt-3 text-xs font-bold leading-6 text-[#6E7A99]">
+                          <p className="mt-3 text-xs font-bold leading-6 text-[var(--rashid-color-6e7a99)]">
                             ملاحظة: عند التعديل يتم إعادة استخدام الأصوات
                             القديمة إذا النص لم يتغير، ويتم توليد الصوت فقط
                             للكلمات/الجمل الجديدة.
@@ -2479,7 +2479,7 @@ export default function TabContentPage({
                         </div>
 
                         <div className="rounded-2xl bg-white p-4">
-                          <label className="mb-3 block font-black text-[#0B4D6B]">
+                          <label className="mb-3 block font-black text-[var(--rashid-color-0b4d6b)]">
                             أو رفع لعبة ZIP جاهزة
                           </label>
 
@@ -2490,23 +2490,23 @@ export default function TabContentPage({
                               const file = e.target.files?.[0];
                               if (file) uploadZipGame(file);
                             }}
-                            className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[#42BFA8]/60 bg-[#F4FAF8] p-4 text-sm font-bold text-[#0B4D6B]"
+                            className="w-full cursor-pointer rounded-[1.2rem] border-2 border-dashed border-[var(--rashid-color-42bfa8)]/60 bg-[var(--rashid-color-f4faf8)] p-4 text-sm font-bold text-[var(--rashid-color-0b4d6b)]"
                           />
                         </div>
 
                         {uploading && (
-                          <p className="rounded-xl bg-[#FFF7D8] p-3 font-bold text-[#9A6B00]">
+                          <p className="rounded-xl bg-[var(--rashid-color-fff7d8)] p-3 font-bold text-[var(--rashid-color-9a6b00)]">
                             جاري حفظ البيانات وتوليد الناقص فقط...
                           </p>
                         )}
 
                         {form.iframe_url && (
                           <div className="rounded-2xl bg-white p-4">
-                            <div className="mb-3 text-sm font-black text-[#0B4D6B]">
+                            <div className="mb-3 text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                               تم تجهيز اللعبة بنجاح 🎉
                             </div>
 
-                            <p className="break-all text-xs text-[#6E7A99]">
+                            <p className="break-all text-xs text-[var(--rashid-color-6e7a99)]">
                               {form.iframe_url}
                             </p>
 
@@ -2535,7 +2535,7 @@ export default function TabContentPage({
                         onChange={(e) =>
                           setForm({ ...form, youtube_url: e.target.value })
                         }
-                        className="w-full rounded-[1.4rem] border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] shadow-sm outline-none transition focus:border-[#42BFA8] focus:ring-4 focus:ring-[#42BFA8]/10"
+                        className="w-full rounded-[1.4rem] border border-[var(--rashid-color-ddedea)] bg-white px-4 py-4 text-[var(--rashid-color-0b4d6b)] shadow-sm outline-none transition focus:border-[var(--rashid-color-42bfa8)] focus:ring-4 focus:ring-[var(--rashid-color-42bfa8)]/10"
                       />
                     )}
 
@@ -2546,7 +2546,7 @@ export default function TabContentPage({
                         onChange={(e) =>
                           setForm({ ...form, iframe_url: e.target.value })
                         }
-                        className="h-32 w-full rounded-[1.4rem] border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] shadow-sm outline-none transition focus:border-[#42BFA8] focus:ring-4 focus:ring-[#42BFA8]/10"
+                        className="h-32 w-full rounded-[1.4rem] border border-[var(--rashid-color-ddedea)] bg-white px-4 py-4 text-[var(--rashid-color-0b4d6b)] shadow-sm outline-none transition focus:border-[var(--rashid-color-42bfa8)] focus:ring-4 focus:ring-[var(--rashid-color-42bfa8)]/10"
                       />
                     )}
 
@@ -2557,14 +2557,14 @@ export default function TabContentPage({
                       onChange={(e) =>
                         setForm({ ...form, sort_order: Number(e.target.value) })
                       }
-                      className="w-full rounded-[1.4rem] border border-[#DDEDEA] bg-white px-4 py-4 text-[#0B4D6B] shadow-sm outline-none transition focus:border-[#42BFA8] focus:ring-4 focus:ring-[#42BFA8]/10"
+                      className="w-full rounded-[1.4rem] border border-[var(--rashid-color-ddedea)] bg-white px-4 py-4 text-[var(--rashid-color-0b4d6b)] shadow-sm outline-none transition focus:border-[var(--rashid-color-42bfa8)] focus:ring-4 focus:ring-[var(--rashid-color-42bfa8)]/10"
                     />
 
                     <div className="sticky bottom-0 -mx-2 rounded-[1.5rem] bg-white/95 p-3 shadow-[0_-12px_30px_rgba(11,77,107,.08)] backdrop-blur">
                       <button
                         type="submit"
                         disabled={uploading}
-                        className="w-full rounded-full bg-[#42BFA8] py-4 font-black text-white shadow-lg disabled:opacity-50"
+                        className="w-full rounded-full bg-[var(--rashid-color-42bfa8)] py-4 font-black text-white shadow-lg disabled:opacity-50"
                       >
                         {editingId ? "حفظ التعديل" : "حفظ المحتوى"}
                       </button>
@@ -2573,7 +2573,7 @@ export default function TabContentPage({
                         <button
                           type="button"
                           onClick={resetForm}
-                          className="mt-3 w-full rounded-full bg-gray-100 py-4 font-black text-[#0B4D6B]"
+                          className="mt-3 w-full rounded-full bg-gray-100 py-4 font-black text-[var(--rashid-color-0b4d6b)]"
                         >
                           إلغاء التعديل
                         </button>
@@ -2588,14 +2588,14 @@ export default function TabContentPage({
           <section>
             <div className="mb-5 flex items-center justify-between rounded-[1.6rem] bg-white p-5 shadow-lg">
               <div>
-                <h2 className="text-2xl font-black text-[#0B4D6B]">
+                <h2 className="text-2xl font-black text-[var(--rashid-color-0b4d6b)]">
                   قائمة المحتوى
                 </h2>
-                <p className="mt-1 text-sm font-bold text-[#6E7A99]">
+                <p className="mt-1 text-sm font-bold text-[var(--rashid-color-6e7a99)]">
                   الكروت الموجودة داخل هذا التاب.
                 </p>
               </div>
-              <span className="rounded-full bg-[#D9F5EE] px-5 py-2 text-sm font-black text-[#0B4D6B]">
+              <span className="rounded-full bg-[var(--rashid-color-d9f5ee)] px-5 py-2 text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                 {contents.length} عنصر
               </span>
             </div>
@@ -2605,12 +2605,12 @@ export default function TabContentPage({
                 جاري التحميل...
               </div>
             ) : contents.length === 0 ? (
-              <div className="rounded-[2rem] border-2 border-dashed border-[#DDEDEA] bg-white p-12 text-center shadow-xl">
+              <div className="rounded-[2rem] border-2 border-dashed border-[var(--rashid-color-ddedea)] bg-white p-12 text-center shadow-xl">
                 <div className="text-5xl">📦</div>
-                <h3 className="mt-5 text-3xl font-black text-[#0B4D6B]">
+                <h3 className="mt-5 text-3xl font-black text-[var(--rashid-color-0b4d6b)]">
                   لا يوجد محتوى
                 </h3>
-                <p className="mt-3 text-[#6E7A99]">
+                <p className="mt-3 text-[var(--rashid-color-6e7a99)]">
                   أضف أول محتوى داخل هذا التاب.
                 </p>
               </div>
@@ -2644,7 +2644,7 @@ export default function TabContentPage({
 
                       {(item.content_type === "zip_game" ||
                         item.content_type === "interactive_story") && (
-                        <div className="flex h-44 w-full items-center justify-center bg-gradient-to-br from-[#0B4D6B] to-[#42BFA8] text-6xl">
+                        <div className="flex h-44 w-full items-center justify-center bg-gradient-to-br from-[var(--rashid-color-0b4d6b)] to-[var(--rashid-color-42bfa8)] text-6xl">
                           {item.content_type === "interactive_story"
                             ? "🎭"
                             : "🕹️"}
@@ -2653,28 +2653,28 @@ export default function TabContentPage({
 
                       <div className="p-6">
                         <div className="mb-4 flex items-center justify-between">
-                          <span className="rounded-full bg-[#D9F5EE] px-4 py-2 text-xs font-black text-[#0B4D6B]">
+                          <span className="rounded-full bg-[var(--rashid-color-d9f5ee)] px-4 py-2 text-xs font-black text-[var(--rashid-color-0b4d6b)]">
                             {type?.icon} {type?.label}
                           </span>
 
-                          <span className="text-xs font-black text-[#6E7A99]">
+                          <span className="text-xs font-black text-[var(--rashid-color-6e7a99)]">
                             #{item.sort_order}
                           </span>
                         </div>
 
-                        <h2 className="text-2xl font-black text-[#0B4D6B]">
+                        <h2 className="text-2xl font-black text-[var(--rashid-color-0b4d6b)]">
                           {item.title || "بدون عنوان"}
                         </h2>
 
                         {item.body && item.content_type === "text" && (
-                          <p className="mt-4 line-clamp-4 leading-8 text-[#6E7A99]">
+                          <p className="mt-4 line-clamp-4 leading-8 text-[var(--rashid-color-6e7a99)]">
                             {item.body}
                           </p>
                         )}
 
                         {(item.content_type === "zip_game" ||
                           item.content_type === "interactive_story") && (
-                          <div className="mt-4 rounded-2xl bg-[#F4FAF8] p-4 text-sm font-black text-[#0B4D6B]">
+                          <div className="mt-4 rounded-2xl bg-[var(--rashid-color-f4faf8)] p-4 text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                             {item.content_type === "interactive_story"
                               ? "قصة جاهزة للعرض داخل البرنامج"
                               : "لعبة جاهزة للعرض داخل البرنامج"}
@@ -2682,7 +2682,7 @@ export default function TabContentPage({
                         )}
 
                         {item.youtube_url && (
-                          <p className="mt-4 truncate rounded-xl bg-[#F4FAF8] p-3 text-xs text-[#6E7A99]">
+                          <p className="mt-4 truncate rounded-xl bg-[var(--rashid-color-f4faf8)] p-3 text-xs text-[var(--rashid-color-6e7a99)]">
                             {item.youtube_url}
                           </p>
                         )}
@@ -2690,7 +2690,7 @@ export default function TabContentPage({
                         <div className="mt-6 grid grid-cols-2 gap-3">
                           <button
                             onClick={() => startEdit(item)}
-                            className="rounded-2xl bg-[#42BFA8] py-3 font-black text-white"
+                            className="rounded-2xl bg-[var(--rashid-color-42bfa8)] py-3 font-black text-white"
                           >
                             تعديل
                           </button>

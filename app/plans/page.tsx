@@ -228,7 +228,7 @@ export default function PlansPage() {
     return (
       <Layout>
         <div className="flex min-h-[80vh] items-center justify-center">
-          <div className="rounded-[2rem] bg-white px-8 py-6 text-2xl font-black text-[#0B4D6B] shadow-xl">
+          <div className="rounded-[2rem] bg-white px-8 py-6 text-2xl font-black text-[var(--rashid-color-0b4d6b)] shadow-xl">
             جاري تحميل الخطط...
           </div>
         </div>
@@ -244,33 +244,33 @@ export default function PlansPage() {
         <header className="mb-8 overflow-hidden rounded-[2.6rem] bg-white/95 p-7 shadow-[0_18px_45px_rgba(62,87,120,.10)]">
           <div className="flex flex-wrap items-center justify-between gap-5">
             <div>
-              <div className="mb-3 inline-flex rounded-full bg-[#E8F8F3] px-5 py-2 font-black text-[#42BFA8]">
+              <div className="mb-3 inline-flex rounded-full bg-[var(--rashid-color-e8f8f3)] px-5 py-2 font-black text-[var(--rashid-color-42bfa8)]">
                 الخطط والاشتراكات
               </div>
 
-              <h1 className="text-4xl font-black leading-[1.3] text-[#20294f]">
+              <h1 className="text-4xl font-black leading-[1.3] text-[var(--rashid-color-20294f)]">
                 {profile?.role === "parent"
                   ? "إدارة اشتراك الأطفال"
                   : "ترقية حسابي"}
               </h1>
 
-              <p className="mt-3 max-w-2xl text-base font-bold leading-8 text-[#667085]">
+              <p className="mt-3 max-w-2xl text-base font-bold leading-8 text-[var(--rashid-color-667085)]">
                 {profile?.role === "parent"
                   ? "اختر الطفل، ثم فعّل الخطة المناسبة له. الاشتراك يُطبق على الطفل المحدد فقط."
                   : "يمكنك ترقية حسابك للوصول إلى جميع البرامج والمميزات الحصرية داخل راشد."}
               </p>
             </div>
 
-            <div className="rounded-[2rem] bg-[#F4FAF8] px-6 py-5 text-center">
-              <div className="text-sm font-black text-[#667085]">الحساب المحدد</div>
-              <div className="mt-2 max-w-[240px] truncate text-2xl font-black text-[#0B4D6B]">
+            <div className="rounded-[2rem] bg-[var(--rashid-color-f4faf8)] px-6 py-5 text-center">
+              <div className="text-sm font-black text-[var(--rashid-color-667085)]">الحساب المحدد</div>
+              <div className="mt-2 max-w-[240px] truncate text-2xl font-black text-[var(--rashid-color-0b4d6b)]">
                 {targetAccount?.nickname || targetAccount?.full_name || "—"}
               </div>
               <div
                 className={`mt-2 inline-flex rounded-full px-4 py-2 text-sm font-black ${
                   targetIsPro
-                    ? "bg-[#FFF8D9] text-[#8A6A00]"
-                    : "bg-[#ECFBF7] text-[#0B4D6B]"
+                    ? "bg-[var(--rashid-color-fff8d9)] text-[var(--rashid-color-8a6a00)]"
+                    : "bg-[var(--rashid-color-ecfbf7)] text-[var(--rashid-color-0b4d6b)]"
                 }`}
               >
                 {targetIsPro ? "👑 Pro" : "🟢 Free"}
@@ -282,8 +282,8 @@ export default function PlansPage() {
         {profile?.role === "parent" && (
           <section className="mb-7 rounded-[2.3rem] bg-white/95 p-5 shadow-[0_14px_35px_rgba(62,87,120,.08)]">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-2xl font-black text-[#0B4D6B]">الأطفال</h2>
-              <span className="text-sm font-black text-[#667085]">
+              <h2 className="text-2xl font-black text-[var(--rashid-color-0b4d6b)]">الأطفال</h2>
+              <span className="text-sm font-black text-[var(--rashid-color-667085)]">
                 اختر من تريد تفعيل الخطة له
               </span>
             </div>
@@ -300,8 +300,8 @@ export default function PlansPage() {
                       onClick={() => setSelectedChildId(child.id)}
                       className={`flex min-w-[245px] items-center gap-4 rounded-[1.8rem] border-2 p-4 text-right transition ${
                         selected
-                          ? "border-[#42BFA8] bg-[#ECFBF7] shadow-[0_12px_30px_rgba(66,191,168,.16)]"
-                          : "border-[#E5EEF1] bg-white hover:border-[#BFE9DF]"
+                          ? "border-[var(--rashid-color-42bfa8)] bg-[var(--rashid-color-ecfbf7)] shadow-[0_12px_30px_rgba(66,191,168,.16)]"
+                          : "border-[var(--rashid-color-e5eef1)] bg-white hover:border-[var(--rashid-color-bfe9df)]"
                       }`}
                     >
                       <div className="flex h-14 w-14 items-center justify-center rounded-[1.3rem] bg-white text-3xl shadow-sm">
@@ -309,11 +309,11 @@ export default function PlansPage() {
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <div className="truncate text-lg font-black text-[#0B4D6B]">
+                        <div className="truncate text-lg font-black text-[var(--rashid-color-0b4d6b)]">
                           {child.nickname || child.full_name}
                         </div>
 
-                        <div className="mt-1 text-xs font-black text-[#667085]">
+                        <div className="mt-1 text-xs font-black text-[var(--rashid-color-667085)]">
                           {childPro ? "👑 Pro" : "🟢 Free"}
                           {childPro && child.pro_until
                             ? ` • ${new Date(child.pro_until).toLocaleDateString("ar")}`
@@ -322,7 +322,7 @@ export default function PlansPage() {
                       </div>
 
                       {selected && (
-                        <div className="rounded-full bg-[#42BFA8] px-3 py-1 text-xs font-black text-white">
+                        <div className="rounded-full bg-[var(--rashid-color-42bfa8)] px-3 py-1 text-xs font-black text-white">
                           محدد
                         </div>
                       )}
@@ -331,7 +331,7 @@ export default function PlansPage() {
                 })}
               </div>
             ) : (
-              <div className="rounded-2xl bg-[#FFF8D9] p-5 font-black text-[#8A6A00]">
+              <div className="rounded-2xl bg-[var(--rashid-color-fff8d9)] p-5 font-black text-[var(--rashid-color-8a6a00)]">
                 لا يوجد أبناء بعد. أضف طفل أولاً من لوحة ولي الأمر.
               </div>
             )}
@@ -355,15 +355,15 @@ export default function PlansPage() {
                   key={plan.id}
                   className={`overflow-hidden rounded-[2.4rem] border p-5 shadow-[0_14px_35px_rgba(62,87,120,.08)] transition hover:-translate-y-1 ${
                     featured
-                      ? "border-[#42BFA8] bg-gradient-to-br from-[#0B4D6B] to-[#246F82] text-white"
-                      : "border-[#E6F1EE] bg-white/95 text-[#0B4D6B]"
+                      ? "border-[var(--rashid-color-42bfa8)] bg-gradient-to-br from-[var(--rashid-color-0b4d6b)] to-[var(--rashid-color-246f82)] text-white"
+                      : "border-[var(--rashid-color-e6f1ee)] bg-white/95 text-[var(--rashid-color-0b4d6b)]"
                   }`}
                 >
                   <div className="grid gap-5 xl:grid-cols-[1.15fr_.95fr_240px] xl:items-center">
                     <div className="flex items-start gap-4">
                       <div
                         className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-[1.5rem] text-3xl ${
-                          featured ? "bg-white/15" : "bg-[#EEF8F4]"
+                          featured ? "bg-white/15" : "bg-[var(--rashid-color-eef8f4)]"
                         }`}
                       >
                         {free ? "🟢" : "👑"}
@@ -381,7 +381,7 @@ export default function PlansPage() {
 
                         <p
                           className={`mt-3 max-w-xl font-bold leading-8 ${
-                            featured ? "text-white/75" : "text-[#667085]"
+                            featured ? "text-white/75" : "text-[var(--rashid-color-667085)]"
                           }`}
                         >
                           {plan.description}
@@ -391,7 +391,7 @@ export default function PlansPage() {
 
                     <div
                       className={`rounded-[1.8rem] p-4 ${
-                        featured ? "bg-white/10" : "bg-[#F8FBFC]"
+                        featured ? "bg-white/10" : "bg-[var(--rashid-color-f8fbfc)]"
                       }`}
                     >
                       <div className="mb-3 text-sm font-black opacity-70">المميزات</div>
@@ -400,7 +400,7 @@ export default function PlansPage() {
                           <div key={index} className="flex items-center gap-2">
                             <span
                               className={`flex h-5 w-5 items-center justify-center rounded-full text-xs ${
-                                featured ? "bg-white/15" : "bg-[#E7F8F1]"
+                                featured ? "bg-white/15" : "bg-[var(--rashid-color-e7f8f1)]"
                               }`}
                             >
                               ✓
@@ -416,7 +416,7 @@ export default function PlansPage() {
                         <div className="text-5xl font-black leading-none">{plan.price}</div>
                         <div
                           className={`mt-2 text-sm font-black ${
-                            featured ? "text-white/70" : "text-[#667085]"
+                            featured ? "text-white/70" : "text-[var(--rashid-color-667085)]"
                           }`}
                         >
                           {plan.currency || "ر.ق"} / {plan.period || "شهريًا"}
@@ -426,7 +426,7 @@ export default function PlansPage() {
                       {active ? (
                         <div
                           className={`rounded-[1.6rem] p-4 text-center font-black ${
-                            featured ? "bg-white/15" : "bg-[#EEF8F3]"
+                            featured ? "bg-white/15" : "bg-[var(--rashid-color-eef8f3)]"
                           }`}
                         >
                           {free ? "الخطة المجانية مفعلة ✅" : "أنت مشترك 👑"}
@@ -437,7 +437,7 @@ export default function PlansPage() {
                           )}
                         </div>
                       ) : free ? (
-                        <div className="rounded-[1.6rem] bg-[#F4FAF8] p-4 text-center font-black text-[#667085]">
+                        <div className="rounded-[1.6rem] bg-[var(--rashid-color-f4faf8)] p-4 text-center font-black text-[var(--rashid-color-667085)]">
                           متاحة دائمًا
                         </div>
                       ) : (
@@ -449,8 +449,8 @@ export default function PlansPage() {
                           }
                           className={`w-full rounded-[1.6rem] py-4 font-black transition hover:-translate-y-1 disabled:opacity-50 ${
                             featured
-                              ? "bg-white text-[#0B4D6B]"
-                              : "bg-[#0B4D6B] text-white"
+                              ? "bg-white text-[var(--rashid-color-0b4d6b)]"
+                              : "bg-[var(--rashid-color-0b4d6b)] text-white"
                           }`}
                         >
                           {activating === plan.id ? "جاري التفعيل..." : "تفعيل الخطة"}

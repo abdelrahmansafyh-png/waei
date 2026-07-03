@@ -14,6 +14,9 @@ export type Tab = {
   title: string;
   type: string;
   sort_order: number;
+  guide_title?: string | null;
+  guide_description?: string | null;
+  award_xp?: boolean | null;
 };
 
 export type Content = {

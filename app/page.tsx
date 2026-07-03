@@ -6,6 +6,7 @@ import { getFileUrl } from "@/lib/files";
 import HomeBannersSlider from "@/components/HomeBannersSlider";
 import LandingAuthActions from "@/components/LandingAuthActions";
 import LandingSimpleCardsSlider from "@/components/LandingSimpleCardsSlider";
+import LandingCtaAction from "@/components/LandingCtaAction";
 
 type Banner = {
   id: string;
@@ -81,10 +82,10 @@ const defaults: LandingItem[] = [
   { section: "hero_feature", item_key: "progress", icon: "⭐", title: "تقدم وتحفيز", subtitle: null, description: "نظام نقاط وشارات يحفّز الطفل على التعلم.", button_text: null, button_link: null, image_url: null, color_class: null, sort_order: 4, is_active: true },
 
   { section: "methodology_header", item_key: "main", icon: null, title: "منهجية راشد", subtitle: "منهجية تبني المهارة والقيمة بطريقة ممتعة", description: "في راشد لا نقدم محتوى جامد؛ بل رحلة تفاعلية تجمع اللعب، القصة، التدريب، والمتابعة حتى يتعلم الطفل بسعادة وثقة.", button_text: null, button_link: null, image_url: null, color_class: null, sort_order: 1, is_active: true },
-  { section: "methodology", item_key: "journey", icon: "🧭", title: "رحلة تعلم موجهة", subtitle: null, description: "يبدأ كل برنامج بهدف واضح ومهارة محددة، ضمن مسار تعليمي متدرج يناسب عمر الطفل واحتياجاته.", button_text: null, button_link: null, image_url: null, color_class: "from-[#19C6D4] to-[#0F9EB2]", sort_order: 1, is_active: true },
-  { section: "methodology", item_key: "stories", icon: "📖", title: "قصص ومواقف تفاعلية", subtitle: null, description: "يخوض الطفل مواقف واقعية وقصصًا تفاعلية، يختار فيها كيف يتصرف ليتعلم من نتائج قراراته.", button_text: null, button_link: null, image_url: null, color_class: "from-[#8B5CF6] to-[#6847F5]", sort_order: 2, is_active: true },
-  { section: "methodology", item_key: "games", icon: "🎮", title: "ألعاب وتحديات تعليمية", subtitle: null, description: "أنشطة وألعاب تفاعلية تساعد الطفل على اكتساب المهارات بطريقة ممتعة ومشوقة.", button_text: null, button_link: null, image_url: null, color_class: "from-[#6ED46E] to-[#3AAE55]", sort_order: 3, is_active: true },
-  { section: "methodology", item_key: "daily", icon: "🚀", title: "تطبيق في الحياة اليومية", subtitle: null, description: "تدريبات عملية تساعد الطفل على تحويل ما تعلمه إلى سلوك يومي دائم.", button_text: null, button_link: null, image_url: null, color_class: "from-[#FFD54A] to-[#F59E0B]", sort_order: 4, is_active: true },
+  { section: "methodology", item_key: "journey", icon: "🧭", title: "رحلة تعلم موجهة", subtitle: null, description: "يبدأ كل برنامج بهدف واضح ومهارة محددة، ضمن مسار تعليمي متدرج يناسب عمر الطفل واحتياجاته.", button_text: null, button_link: null, image_url: null, color_class: "from-[var(--rashid-color-19c6d4)] to-[var(--rashid-color-0f9eb2)]", sort_order: 1, is_active: true },
+  { section: "methodology", item_key: "stories", icon: "📖", title: "قصص ومواقف تفاعلية", subtitle: null, description: "يخوض الطفل مواقف واقعية وقصصًا تفاعلية، يختار فيها كيف يتصرف ليتعلم من نتائج قراراته.", button_text: null, button_link: null, image_url: null, color_class: "from-[var(--rashid-color-8b5cf6)] to-[var(--rashid-color-6847f5)]", sort_order: 2, is_active: true },
+  { section: "methodology", item_key: "games", icon: "🎮", title: "ألعاب وتحديات تعليمية", subtitle: null, description: "أنشطة وألعاب تفاعلية تساعد الطفل على اكتساب المهارات بطريقة ممتعة ومشوقة.", button_text: null, button_link: null, image_url: null, color_class: "from-[var(--rashid-color-6ed46e)] to-[var(--rashid-color-3aae55)]", sort_order: 3, is_active: true },
+  { section: "methodology", item_key: "daily", icon: "🚀", title: "تطبيق في الحياة اليومية", subtitle: null, description: "تدريبات عملية تساعد الطفل على تحويل ما تعلمه إلى سلوك يومي دائم.", button_text: null, button_link: null, image_url: null, color_class: "from-[var(--rashid-color-ffd54a)] to-[var(--rashid-color-f59e0b)]", sort_order: 4, is_active: true },
 
   { section: "parents_header", item_key: "main", icon: null, title: "لماذا يختار الآباء راشد؟", subtitle: "تجربة تعليمية مختلفة لطفلك", description: null, button_text: null, button_link: null, image_url: null, color_class: null, sort_order: 1, is_active: true },
   { section: "parent_feature", item_key: "practice", icon: "🌱", title: "تعلم بالممارسة", subtitle: null, description: "يطبق الطفل ما يتعلمه عبر أنشطة وتجارب تفاعلية.", button_text: null, button_link: null, image_url: null, color_class: null, sort_order: 1, is_active: true },
@@ -240,7 +241,7 @@ export default async function LandingPage() {
   const footerLines = (footer.description || "").split("\n").filter(Boolean);
 
   return (
-    <main dir="rtl" className="min-h-screen overflow-hidden bg-[#F5FBFF] text-[#14224A]">
+    <main dir="rtl" className="min-h-screen overflow-hidden bg-[var(--rashid-color-f5fbff)] text-[var(--rashid-color-14224a)]">
       <style>{`
         @keyframes floatY { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-14px) } }
         @keyframes floatX { 0%,100%{ transform: translateX(0) rotate(0deg) } 50%{ transform: translateX(10px) rotate(4deg) } }
@@ -251,9 +252,9 @@ export default async function LandingPage() {
         .rashid-shimmer{ animation: shimmer 4s ease-in-out infinite; }
         .rashid-slide-up{ animation: slideUp .8s ease both; }
         .rashid-hero-card{ position: relative; border: 1px solid rgba(255,255,255,.82); background: linear-gradient(135deg, rgba(255,255,255,.88), rgba(255,255,255,.58)); box-shadow: 0 28px 80px rgba(20,34,74,.16); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 42px; padding: clamp(22px, 4vw, 44px); }
-        .rashid-hero-title{ color:#101B3D; letter-spacing:-.03em; text-shadow: 0 3px 0 rgba(255,255,255,.85), 0 16px 35px rgba(20,34,74,.16); }
-        .rashid-hero-word{ color:#0E9FAA; text-shadow: 0 3px 0 rgba(255,255,255,.92), 0 14px 30px rgba(14,159,170,.20); -webkit-text-stroke: 1px rgba(255,255,255,.78); }
-        .rashid-hero-desc{ color:#203154; text-shadow: 0 2px 0 rgba(255,255,255,.8); }
+        .rashid-hero-title{ color:var(--rashid-color-101b3d); letter-spacing:-.03em; text-shadow: 0 3px 0 rgba(255,255,255,.85), 0 16px 35px rgba(20,34,74,.16); }
+        .rashid-hero-word{ color:var(--rashid-color-0e9faa); text-shadow: 0 3px 0 rgba(255,255,255,.92), 0 14px 30px rgba(14,159,170,.20); -webkit-text-stroke: 1px rgba(255,255,255,.78); }
+        .rashid-hero-desc{ color:var(--rashid-color-203154); text-shadow: 0 2px 0 rgba(255,255,255,.8); }
         @media (max-width: 768px){ .rashid-hero-card{ border-radius: 32px; } .rashid-hero-title{ letter-spacing:-.015em; } }
       `}</style>
 
@@ -263,9 +264,9 @@ export default async function LandingPage() {
             <img src="/images/logo-horrizental.png" alt="راشد" className="h-14 w-auto object-contain" />
           </Link>
 
-          <nav className="hidden items-center gap-8 text-base font-black text-[#14224A] md:flex">
+          <nav className="hidden items-center gap-8 text-base font-black text-[var(--rashid-color-14224a)] md:flex">
             {landingItems(landing, "nav").map((item) => (
-              <a key={item.item_key} className="transition hover:text-[#12AFC0]" href={item.button_link || "#home"}>{item.title}</a>
+              <a key={item.item_key} className="transition hover:text-[var(--rashid-color-12afc0)]" href={item.button_link || "#home"}>{item.title}</a>
             ))}
           </nav>
 
@@ -275,8 +276,8 @@ export default async function LandingPage() {
 
       <section id="home" className="relative min-h-[850px] overflow-hidden pt-28">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/images/rashid-hero-bg.png')" }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-white/10 to-[#F5FBFF]" />
-        <div className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-[#F5FBFF] to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-white/10 to-[var(--rashid-color-f5fbff)]" />
+        <div className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-[var(--rashid-color-f5fbff)] to-transparent" />
 
         <div className="rashid-shimmer absolute left-[10%] top-[22%] h-3 w-3 rounded-full bg-white shadow-[0_0_30px_12px_rgba(255,255,255,.65)]" />
         <div className="rashid-shimmer absolute right-[22%] top-[18%] h-2 w-2 rounded-full bg-white shadow-[0_0_22px_10px_rgba(255,255,255,.6)]" />
@@ -286,7 +287,7 @@ export default async function LandingPage() {
 
         <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-6 pb-24 pt-16 lg:grid-cols-[.95fr_1.05fr]">
           <div className="rashid-slide-up rashid-hero-card max-w-2xl pt-8">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/75 px-5 py-2 text-sm font-black text-[#0E9FAA] shadow-lg backdrop-blur">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/75 px-5 py-2 text-sm font-black text-[var(--rashid-color-0e9faa)] shadow-lg backdrop-blur">
               <LandingIcon item={heroBadge} className="text-lg" imageClassName="h-6 w-6 rounded-full object-cover" />
               <span>{heroBadge.title}</span>
             </div>
@@ -300,12 +301,12 @@ export default async function LandingPage() {
             <p className="rashid-hero-desc mt-7 max-w-xl text-xl font-bold leading-10">{hero.description}</p>
 
             <div className="mt-9 flex flex-wrap gap-4">
-              <Link href={user ? "/dashboard" : text(hero.button_link, "/register")} className="group inline-flex items-center gap-3 rounded-full bg-gradient-to-l from-[#19C6D4] to-[#0E9FAA] px-8 py-4 text-lg font-black text-white shadow-[0_15px_35px_rgba(17,187,203,.35)] transition hover:-translate-y-1">
+              <Link href={user ? "/dashboard" : text(hero.button_link, "/register")} className="group inline-flex items-center gap-3 rounded-full bg-gradient-to-l from-[var(--rashid-color-19c6d4)] to-[var(--rashid-color-0e9faa)] px-8 py-4 text-lg font-black text-white shadow-[0_15px_35px_rgba(17,187,203,.35)] transition hover:-translate-y-1">
                 <span>{hero.icon || "🎮"}</span>
                 <span>{user ? "اذهب للوحة التحكم" : hero.button_text}</span>
               </Link>
 
-              <a href={heroSecondButton.button_link || "#methodology"} className="inline-flex items-center gap-3 rounded-full border border-[#11BBCB]/30 bg-white/80 px-8 py-4 text-lg font-black text-[#0B8398] shadow-xl backdrop-blur transition hover:-translate-y-1 hover:bg-white">
+              <a href={heroSecondButton.button_link || "#methodology"} className="inline-flex items-center gap-3 rounded-full border border-[var(--rashid-color-11bbcb)]/30 bg-white/80 px-8 py-4 text-lg font-black text-[var(--rashid-color-0b8398)] shadow-xl backdrop-blur transition hover:-translate-y-1 hover:bg-white">
                 <span>{heroSecondButton.icon}</span>
                 <span>{heroSecondButton.button_text}</span>
               </a>
@@ -320,11 +321,11 @@ export default async function LandingPage() {
         <div className="relative mx-auto -mt-12 max-w-6xl px-6">
           <div className="grid gap-4 rounded-[2.2rem] border border-white/70 bg-white/85 p-5 shadow-[0_25px_70px_rgba(18,34,74,.12)] backdrop-blur-xl md:grid-cols-4">
             {landingItems(landing, "hero_feature").map((item) => (
-              <div key={item.item_key} className="flex items-start gap-4 rounded-[1.6rem] p-4 transition hover:bg-[#F2FEFF]">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-[#19C6D4] to-[#0E9FAA] text-3xl text-white shadow-lg"><LandingIcon item={item} className="text-3xl" imageClassName="h-full w-full object-cover" /></div>
+              <div key={item.item_key} className="flex items-start gap-4 rounded-[1.6rem] p-4 transition hover:bg-[var(--rashid-color-f2feff)]">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--rashid-color-19c6d4)] to-[var(--rashid-color-0e9faa)] text-3xl text-white shadow-lg"><LandingIcon item={item} className="text-3xl" imageClassName="h-full w-full object-cover" /></div>
                 <div>
-                  <h3 className="text-xl font-black text-[#14224A]">{item.title}</h3>
-                  <p className="mt-2 text-sm font-semibold leading-7 text-[#526079]">{item.description}</p>
+                  <h3 className="text-xl font-black text-[var(--rashid-color-14224a)]">{item.title}</h3>
+                  <p className="mt-2 text-sm font-semibold leading-7 text-[var(--rashid-color-526079)]">{item.description}</p>
                 </div>
               </div>
             ))}
@@ -334,14 +335,14 @@ export default async function LandingPage() {
 
       <HomeBannersSlider banners={banners} />
 
-      <section id="methodology" className="relative overflow-hidden bg-[#F5FBFF] px-6 py-24">
-        <div className="absolute -left-32 top-16 h-80 w-80 rounded-full bg-[#19C6D4]/10 blur-3xl" />
-        <div className="absolute -right-32 bottom-16 h-80 w-80 rounded-full bg-[#FFD54A]/20 blur-3xl" />
+      <section id="methodology" className="relative overflow-hidden bg-[var(--rashid-color-f5fbff)] px-6 py-24">
+        <div className="absolute -left-32 top-16 h-80 w-80 rounded-full bg-[var(--rashid-color-19c6d4)]/10 blur-3xl" />
+        <div className="absolute -right-32 bottom-16 h-80 w-80 rounded-full bg-[var(--rashid-color-ffd54a)]/20 blur-3xl" />
         <div className="relative mx-auto max-w-7xl">
           <div className="mx-auto mb-14 max-w-3xl text-center">
-            <div className="mb-5 inline-flex rounded-full bg-white px-5 py-2 text-sm font-black text-[#0E9FAA] shadow-lg">{methodologyHeader.title}</div>
-            <h2 className="text-4xl font-black leading-[1.3] text-[#14224A] md:text-6xl">{methodologyHeader.subtitle}</h2>
-            <p className="mx-auto mt-5 max-w-2xl text-lg font-semibold leading-9 text-[#526079]">{methodologyHeader.description}</p>
+            <div className="mb-5 inline-flex rounded-full bg-white px-5 py-2 text-sm font-black text-[var(--rashid-color-0e9faa)] shadow-lg">{methodologyHeader.title}</div>
+            <h2 className="text-4xl font-black leading-[1.3] text-[var(--rashid-color-14224a)] md:text-6xl">{methodologyHeader.subtitle}</h2>
+            <p className="mx-auto mt-5 max-w-2xl text-lg font-semibold leading-9 text-[var(--rashid-color-526079)]">{methodologyHeader.description}</p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -355,8 +356,8 @@ export default async function LandingPage() {
                   />
                 </div>  
 
-                <h3 className="text-2xl font-black text-[#14224A] text-center">{item.title}</h3>
-                <p className="mt-4 text-base font-semibold leading-8 text-[#526079]">{item.description}</p>
+                <h3 className="text-2xl font-black text-[var(--rashid-color-14224a)] text-center">{item.title}</h3>
+                <p className="mt-4 text-base font-semibold leading-8 text-[var(--rashid-color-526079)]">{item.description}</p>
               </div>
             ))}
           </div>
@@ -366,8 +367,8 @@ export default async function LandingPage() {
       <section className="overflow-hidden bg-white px-6 py-24">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto mb-14 max-w-3xl text-center">
-            <div className="mb-5 inline-flex rounded-full bg-[#E8FBFD] px-5 py-2 text-sm font-black text-[#0E9FAA] shadow-lg">{parentsHeader.title}</div>
-            <h2 className="text-4xl font-black text-[#14224A] md:text-6xl">{parentsHeader.subtitle}</h2>
+            <div className="mb-5 inline-flex rounded-full bg-[var(--rashid-color-e8fbfd)] px-5 py-2 text-sm font-black text-[var(--rashid-color-0e9faa)] shadow-lg">{parentsHeader.title}</div>
+            <h2 className="text-4xl font-black text-[var(--rashid-color-14224a)] md:text-6xl">{parentsHeader.subtitle}</h2>
           </div>
         </div>
 
@@ -378,39 +379,39 @@ export default async function LandingPage() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
-              <div className="mb-5 inline-flex rounded-full bg-[#E8FBFD] px-5 py-2 font-black text-[#0E9FAA]">{programsHeader.title}</div>
-              <h2 className="text-4xl font-black text-[#14224A] md:text-5xl">{programsHeader.subtitle}</h2>
+              <div className="mb-5 inline-flex rounded-full bg-[var(--rashid-color-e8fbfd)] px-5 py-2 font-black text-[var(--rashid-color-0e9faa)]">{programsHeader.title}</div>
+              <h2 className="text-4xl font-black text-[var(--rashid-color-14224a)] md:text-5xl">{programsHeader.subtitle}</h2>
             </div>
-            <Link href={programsHeader.button_link || "/child/programs"} className="group inline-flex items-center gap-3 rounded-full bg-[#F5FBFF] px-7 py-4 text-[#14224A] shadow-lg transition hover:-translate-y-1 hover:bg-[#19C6D4] hover:text-white"><span className="text-base font-black">{programsHeader.button_text}</span><span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#0E9FAA]">←</span></Link>
+            <Link href={programsHeader.button_link || "/child/programs"} className="group inline-flex items-center gap-3 rounded-full bg-[var(--rashid-color-f5fbff)] px-7 py-4 text-[var(--rashid-color-14224a)] shadow-lg transition hover:-translate-y-1 hover:bg-[var(--rashid-color-19c6d4)] hover:text-white"><span className="text-base font-black">{programsHeader.button_text}</span><span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[var(--rashid-color-0e9faa)]">←</span></Link>
           </div>
 
           {programs.length > 0 ? (
             <div className={`grid gap-6 ${programs.length === 1 ? "mx-auto max-w-[420px]" : programs.length === 2 ? "mx-auto max-w-4xl md:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3"}`}>
               {programs.slice(0, 6).map((program) => (
-                <Link key={program.id} href={`/child/programs/${program.slug}`} className="overflow-hidden rounded-[2rem] border border-[#E7F0F7] bg-white shadow-[0_18px_45px_rgba(18,34,74,.08)] transition hover:-translate-y-2">
-                  {program.image_url ? <img src={getFileUrl(program.image_url)} alt={program.title} className="h- w-full object-cover" /> : <div className="h-44 bg-gradient-to-br from-[#19C6D4] via-[#8B5CF6] to-[#FFD54A]" />}
+                <Link key={program.id} href={`/child/programs/${program.slug}`} className="overflow-hidden rounded-[2rem] border border-[var(--rashid-color-e7f0f7)] bg-white shadow-[0_18px_45px_rgba(18,34,74,.08)] transition hover:-translate-y-2">
+                  {program.image_url ? <img src={getFileUrl(program.image_url)} alt={program.title} className="h- w-full object-cover" /> : <div className="h-44 bg-gradient-to-br from-[var(--rashid-color-19c6d4)] via-[var(--rashid-color-8b5cf6)] to-[var(--rashid-color-ffd54a)]" />}
                   <div className="p-6">
-                    <div className="mb-4 flex flex-wrap gap-2">{program.categories?.name && <span className="rounded-full bg-[#E8FBFD] px-4 py-2 text-sm font-black text-[#0E9FAA]">{program.categories.name}</span>}<span className={`rounded-full px-4 py-2 text-sm font-black ${program.access_type === "pro" ? "bg-yellow-100 text-yellow-700" : "bg-green-100 text-green-700"}`}>{program.access_type === "pro" ? "👑 Pro" : "🟢 مجاني"}</span></div>
-                    <h3 className="text-2xl font-black text-[#14224A]">{program.title}</h3>
-                    {program.description && <p className="mt-3 line-clamp-2 leading-7 text-[#526079]">{program.description}</p>}
-                    <div className="mt-6 inline-flex rounded-full bg-[#19C6D4] px-6 py-3 font-black text-white">{program.access_type === "pro" ? "مشاهدة التفاصيل" : "جرّب الآن"}</div>
+                    <div className="mb-4 flex flex-wrap gap-2">{program.categories?.name && <span className="rounded-full bg-[var(--rashid-color-e8fbfd)] px-4 py-2 text-sm font-black text-[var(--rashid-color-0e9faa)]">{program.categories.name}</span>}<span className={`rounded-full px-4 py-2 text-sm font-black ${program.access_type === "pro" ? "bg-yellow-100 text-yellow-700" : "bg-green-100 text-green-700"}`}>{program.access_type === "pro" ? "👑 Pro" : "🟢 مجاني"}</span></div>
+                    <h3 className="text-2xl font-black text-[var(--rashid-color-14224a)]">{program.title}</h3>
+                    {program.description && <p className="mt-3 line-clamp-2 leading-7 text-[var(--rashid-color-526079)]">{program.description}</p>}
+                    <div className="mt-6 inline-flex rounded-full bg-[var(--rashid-color-19c6d4)] px-6 py-3 font-black text-white">{program.access_type === "pro" ? "مشاهدة التفاصيل" : "جرّب الآن"}</div>
                   </div>
                 </Link>
               ))}
             </div>
-          ) : <div className="rounded-[2.5rem] border-2 border-dashed border-[#DDEDEA] bg-[#F9FFFD] p-12 text-center"><h3 className="text-3xl font-black text-[#14224A]">لا توجد برامج منشورة حاليًا</h3></div>}
+          ) : <div className="rounded-[2.5rem] border-2 border-dashed border-[var(--rashid-color-ddedea)] bg-[var(--rashid-color-f9fffd)] p-12 text-center"><h3 className="text-3xl font-black text-[var(--rashid-color-14224a)]">لا توجد برامج منشورة حاليًا</h3></div>}
         </div>
       </section>
 
-      <section id="stories" className="bg-[#F5FBFF] px-6 py-24">
+      <section id="stories" className="bg-[var(--rashid-color-f5fbff)] px-6 py-24">
         <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-2">
           <div className="rounded-[2.5rem] bg-white p-8 shadow-[0_20px_60px_rgba(18,34,74,.08)]"><img src={landingMediaSrc(storiesHeader.image_url) || "/images/gamestory.png"} alt="عالم راشد" className="h-80 w-full rounded-[2rem] object-cover" /></div>
           <div>
-            <div className="mb-5 inline-flex rounded-full bg-white px-5 py-2 font-black text-[#8B5CF6] shadow-lg">{storiesHeader.title}</div>
-            <h2 className="text-4xl font-black leading-[1.35] text-[#14224A] md:text-5xl">{storiesHeader.subtitle}</h2>
-            <p className="mt-6 text-lg font-semibold leading-9 text-[#526079]">{storiesHeader.description}</p>
+            <div className="mb-5 inline-flex rounded-full bg-white px-5 py-2 font-black text-[var(--rashid-color-8b5cf6)] shadow-lg">{storiesHeader.title}</div>
+            <h2 className="text-4xl font-black leading-[1.35] text-[var(--rashid-color-14224a)] md:text-5xl">{storiesHeader.subtitle}</h2>
+            <p className="mt-6 text-lg font-semibold leading-9 text-[var(--rashid-color-526079)]">{storiesHeader.description}</p>
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              {landingItems(landing, "story_feature").map((item) => <div key={item.item_key} className="rounded-2xl bg-white p-5 text-lg font-black text-[#14224A] shadow-lg"><span className="ml-2 inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl align-middle"><LandingIcon item={item} className="text-2xl" imageClassName="h-full w-full object-cover" /></span>{item.title}</div>)}
+              {landingItems(landing, "story_feature").map((item) => <div key={item.item_key} className="rounded-2xl bg-white p-5 text-lg font-black text-[var(--rashid-color-14224a)] shadow-lg"><span className="ml-2 inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl align-middle"><LandingIcon item={item} className="text-2xl" imageClassName="h-full w-full object-cover" /></span>{item.title}</div>)}
             </div>
           </div>
         </div>
@@ -419,40 +420,48 @@ export default async function LandingPage() {
       <section id="plans" className="bg-white px-6 py-24">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center">
-            <div className="mb-5 inline-flex rounded-full bg-[#E8FBFD] px-5 py-2 font-black text-[#0E9FAA]">{plansHeader.title}</div>
-            <h2 className="text-4xl font-black text-[#14224A] md:text-5xl">{plansHeader.subtitle}</h2>
-            <p className="mx-auto mt-5 max-w-2xl text-lg leading-9 text-[#526079]">{plansHeader.description}</p>
+            <div className="mb-5 inline-flex rounded-full bg-[var(--rashid-color-e8fbfd)] px-5 py-2 font-black text-[var(--rashid-color-0e9faa)]">{plansHeader.title}</div>
+            <h2 className="text-4xl font-black text-[var(--rashid-color-14224a)] md:text-5xl">{plansHeader.subtitle}</h2>
+            <p className="mx-auto mt-5 max-w-2xl text-lg leading-9 text-[var(--rashid-color-526079)]">{plansHeader.description}</p>
           </div>
 
           {plans.length > 0 ? (
             <div className="grid gap-8 md:grid-cols-3">
               {plans.map((plan) => (
-                <div key={plan.id} className={`rounded-[2.5rem] p-8 shadow-xl transition hover:-translate-y-2 ${plan.is_featured ? "bg-[#14224A] text-white" : "bg-[#F5FBFF] text-[#14224A]"}`}>
-                  {plan.is_featured && <div className="mb-5 inline-flex rounded-full bg-[#FFD54A] px-4 py-2 text-sm font-black text-[#14224A]">الأكثر اختيارًا</div>}
+                <div key={plan.id} className={`rounded-[2.5rem] p-8 shadow-xl transition hover:-translate-y-2 ${plan.is_featured ? "bg-[var(--rashid-color-14224a)] text-white" : "bg-[var(--rashid-color-f5fbff)] text-[var(--rashid-color-14224a)]"}`}>
+                  {plan.is_featured && <div className="mb-5 inline-flex rounded-full bg-[var(--rashid-color-ffd54a)] px-4 py-2 text-sm font-black text-[var(--rashid-color-14224a)]">الأكثر اختيارًا</div>}
                   <h3 className="text-3xl font-black">{plan.name}</h3>
-                  {plan.description && <p className={`mt-3 leading-7 ${plan.is_featured ? "text-white/70" : "text-[#526079]"}`}>{plan.description}</p>}
-                  <div className="mt-7 flex items-end gap-2"><span className="text-5xl font-black">{plan.price}</span>{plan.currency && <span className={plan.is_featured ? "text-white/60" : "text-[#526079]"}>{plan.currency}{plan.period ? ` / ${plan.period}` : ""}</span>}</div>
-                  <div className="mt-8 space-y-4">{plan.features?.map((feature, index) => <div key={`${feature}-${index}`} className="flex items-center gap-3 font-bold"><span className={`flex h-7 w-7 items-center justify-center rounded-full ${plan.is_featured ? "bg-white/15 text-[#FFD54A]" : "bg-white text-[#19C6D4]"}`}>✓</span>{feature}</div>)}</div>
-                  <Link href={user ? "/dashboard" : "/register"} className={`mt-9 block w-full rounded-full py-4 text-center font-black ${plan.is_featured ? "bg-[#FFD54A] text-[#14224A]" : "bg-[#19C6D4] text-white"}`}>{user ? "إدارة الاشتراك" : "ابدأ الآن"}</Link>
+                  {plan.description && <p className={`mt-3 leading-7 ${plan.is_featured ? "text-white/70" : "text-[var(--rashid-color-526079)]"}`}>{plan.description}</p>}
+                  <div className="mt-7 flex items-end gap-2"><span className="text-5xl font-black">{plan.price}</span>{plan.currency && <span className={plan.is_featured ? "text-white/60" : "text-[var(--rashid-color-526079)]"}>{plan.currency}{plan.period ? ` / ${plan.period}` : ""}</span>}</div>
+                  <div className="mt-8 space-y-4">{plan.features?.map((feature, index) => <div key={`${feature}-${index}`} className="flex items-center gap-3 font-bold"><span className={`flex h-7 w-7 items-center justify-center rounded-full ${plan.is_featured ? "bg-white/15 text-[var(--rashid-color-ffd54a)]" : "bg-white text-[var(--rashid-color-19c6d4)]"}`}>✓</span>{feature}</div>)}</div>
+                  <Link href={user ? "/dashboard" : "/register"} className={`mt-9 block w-full rounded-full py-4 text-center font-black ${plan.is_featured ? "bg-[var(--rashid-color-ffd54a)] text-[var(--rashid-color-14224a)]" : "bg-[var(--rashid-color-19c6d4)] text-white"}`}>{user ? "إدارة الاشتراك" : "ابدأ الآن"}</Link>
                 </div>
               ))}
             </div>
-          ) : <div className="mx-auto max-w-3xl rounded-[2.5rem] border-2 border-dashed border-[#DDEDEA] bg-[#F5FBFF] p-12 text-center"><h3 className="text-3xl font-black">لا توجد خطط مفعّلة حاليًا</h3><p className="mt-4 text-[#526079]">عند إضافة خطط من لوحة الإدارة ستظهر هنا تلقائيًا.</p></div>}
+          ) : <div className="mx-auto max-w-3xl rounded-[2.5rem] border-2 border-dashed border-[var(--rashid-color-ddedea)] bg-[var(--rashid-color-f5fbff)] p-12 text-center"><h3 className="text-3xl font-black">لا توجد خطط مفعّلة حاليًا</h3><p className="mt-4 text-[var(--rashid-color-526079)]">عند إضافة خطط من لوحة الإدارة ستظهر هنا تلقائيًا.</p></div>}
         </div>
       </section>
 
       <section className="relative overflow-hidden px-6 py-24 text-center text-white">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/images/rashid-hero-bg.png')" }} />
-        <div className="absolute inset-0 bg-[#14224A]/60 backdrop-blur-[1px]" />
+        <div className="absolute inset-0 bg-[var(--rashid-color-14224a)]/60 backdrop-blur-[1px]" />
         <div className="relative mx-auto max-w-4xl">
           <img src={landingMediaSrc(cta.image_url) || "/images/logo-horrizental.png"} alt="راشد" className="mx-auto mb-8 h-24 w-auto" />
           <h2 className="text-4xl font-black md:text-6xl">{cta.title}</h2>
           <p className="mx-auto mt-5 max-w-2xl text-xl leading-9 text-white/80">{cta.description}</p>
-          <div className="mt-10 flex justify-center gap-4"><Link href={user ? "/dashboard" : text(cta.button_link, "/register")} className="rounded-full bg-[#FFD54A] px-9 py-4 text-lg font-black text-[#14224A]">{user ? "لوحة التحكم" : cta.button_text}</Link></div>
+          <div className="mt-10 flex justify-center gap-4">
+            
+          <LandingCtaAction
+              buttonText={cta.button_text || "إنشاء حساب"}
+              buttonLink={cta.button_link || "/register"}
+            />
+
+            {/* <Link href={user ? "/dashboard" : text(cta.button_link, "/register")} className="rounded-full bg-[var(--rashid-color-ffd54a)] px-9 py-4 text-lg font-black text-[var(--rashid-color-14224a)]">{user ? "لوحة التحكم" : cta.button_text}</Link></div> */}
+        </div>
         </div>
       </section>
 
-      <footer className="bg-[#101B3D] px-6 py-14 text-white">
+      <footer className="bg-[var(--rashid-color-101b3d)] px-6 py-14 text-white">
         <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-4">
           <div><img src={landingMediaSrc(footer.image_url) || "/images/logo-horrizental.png"} alt="راشد" className="mb-4 h-16 w-auto" /><p className="leading-8 text-white/60">{footer.title}</p></div>
           <div><h4 className="mb-4 font-black">المنصة</h4><p className="mb-3 text-white/55">عن راشد</p><p className="mb-3 text-white/55">البرامج</p><p className="mb-3 text-white/55">منهجية راشد</p></div>

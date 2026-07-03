@@ -166,7 +166,7 @@ const requiredProgressTypes = [
   if (loading) {
     return (
       <ParentLayout>
-        <div className="rounded-[2.5rem] bg-white p-12 text-center text-2xl font-black text-[#7048e8] shadow-xl">
+        <div className="rounded-[2.5rem] bg-white p-12 text-center text-2xl font-black text-[var(--rashid-color-7048e8)] shadow-xl">
           جاري تحميل بيانات الطفل...
         </div>
       </ParentLayout>
@@ -177,42 +177,42 @@ const requiredProgressTypes = [
     <ParentLayout>
       <div className="mx-auto max-w-5xl">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-          <Link href={`/dashboard/children/${childId}`} className="inline-flex rounded-full bg-white px-6 py-4 font-black text-[#0B4D6B] shadow-sm">
+          <Link href={`/dashboard/children/${childId}`} className="inline-flex rounded-full bg-white px-6 py-4 font-black text-[var(--rashid-color-0b4d6b)] shadow-sm">
             ← رجوع للتفاصيل
           </Link>
-          <Link href="/dashboard/children" className="inline-flex rounded-full bg-[#F3EFFF] px-6 py-4 font-black text-[#7048e8] shadow-sm">
+          <Link href="/dashboard/children" className="inline-flex rounded-full bg-[var(--rashid-color-f3efff)] px-6 py-4 font-black text-[var(--rashid-color-7048e8)] shadow-sm">
             كل الأبناء
           </Link>
         </div>
 
         <div className="overflow-hidden rounded-[2.8rem] bg-white/95 p-7 shadow-[0_18px_45px_rgba(62,87,120,.13)] md:p-9">
           <div className="mb-8">
-            <div className="mb-3 inline-flex rounded-full bg-[#E8F8F3] px-5 py-2 font-black text-[#42BFA8]">
+            <div className="mb-3 inline-flex rounded-full bg-[var(--rashid-color-e8f8f3)] px-5 py-2 font-black text-[var(--rashid-color-42bfa8)]">
               تعديل بيانات الطفل
             </div>
-            <h1 className="text-4xl font-black leading-[1.25] text-[#20294f] md:text-5xl">
+            <h1 className="text-4xl font-black leading-[1.25] text-[var(--rashid-color-20294f)] md:text-5xl">
               تعديل حساب {child?.full_name || "الطفل"}
             </h1>
-            <p className="mt-4 max-w-2xl text-lg font-bold leading-8 text-[#667085]">
+            <p className="mt-4 max-w-2xl text-lg font-bold leading-8 text-[var(--rashid-color-667085)]">
               يمكنك تعديل الاسم والعمر وبيانات الدخول. إذا غيرت كود الدخول، أعطه للطفل من جديد.
             </p>
           </div>
 
           <form onSubmit={saveChild} className="space-y-5">
             <label className="block">
-              <span className="mb-2 block font-black text-[#0B4D6B]">اسم الطفل الكامل</span>
-              <input required value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="مثال: سامي محمد" className="w-full rounded-2xl border border-[#DDEDEA] bg-[#FAFFFD] px-5 py-4 font-bold outline-none transition focus:border-[#42BFA8] focus:ring-4 focus:ring-[#42BFA8]/10" />
+              <span className="mb-2 block font-black text-[var(--rashid-color-0b4d6b)]">اسم الطفل الكامل</span>
+              <input required value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="مثال: سامي محمد" className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] bg-[var(--rashid-color-fafffd)] px-5 py-4 font-bold outline-none transition focus:border-[var(--rashid-color-42bfa8)] focus:ring-4 focus:ring-[var(--rashid-color-42bfa8)]/10" />
             </label>
 
             <label className="block">
-              <span className="mb-2 block font-black text-[#0B4D6B]">اسم المستخدم للطفل</span>
-              <input required value={username} onChange={(e) => setUsername(normalizeUsername(e.target.value))} placeholder="مثال: sami-7" className="w-full rounded-2xl border border-[#DDEDEA] bg-[#FAFFFD] px-5 py-4 font-bold lowercase outline-none transition focus:border-[#42BFA8] focus:ring-4 focus:ring-[#42BFA8]/10" />
+              <span className="mb-2 block font-black text-[var(--rashid-color-0b4d6b)]">اسم المستخدم للطفل</span>
+              <input required value={username} onChange={(e) => setUsername(normalizeUsername(e.target.value))} placeholder="مثال: sami-7" className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] bg-[var(--rashid-color-fafffd)] px-5 py-4 font-bold lowercase outline-none transition focus:border-[var(--rashid-color-42bfa8)] focus:ring-4 focus:ring-[var(--rashid-color-42bfa8)]/10" />
             </label>
 
-            <div className="block rounded-[2rem] border border-[#DDEDEA] bg-[#FAFFFD] p-5">
+            <div className="block rounded-[2rem] border border-[var(--rashid-color-ddedea)] bg-[var(--rashid-color-fafffd)] p-5">
               <div className="mb-4 flex items-center justify-between gap-4">
-                <span className="font-black text-[#0B4D6B]">العمر</span>
-                <span className="rounded-full bg-[#ECFBF7] px-5 py-2 text-lg font-black text-[#0B4D6B]">{age} سنوات</span>
+                <span className="font-black text-[var(--rashid-color-0b4d6b)]">العمر</span>
+                <span className="rounded-full bg-[var(--rashid-color-ecfbf7)] px-5 py-2 text-lg font-black text-[var(--rashid-color-0b4d6b)]">{age} سنوات</span>
               </div>
 
               <input
@@ -222,10 +222,10 @@ const requiredProgressTypes = [
                 step={1}
                 value={age}
                 onChange={(e) => setAge(Number(e.target.value))}
-                className="w-full cursor-pointer accent-[#42BFA8]"
+                className="w-full cursor-pointer accent-[var(--rashid-color-42bfa8)]"
               />
 
-              <div className="mt-3 flex justify-between text-sm font-black text-[#6E7A99]">
+              <div className="mt-3 flex justify-between text-sm font-black text-[var(--rashid-color-6e7a99)]">
                 {[5, 6, 7, 8, 9].map((year) => (
                   <span key={year}>{year}</span>
                 ))}
@@ -233,30 +233,30 @@ const requiredProgressTypes = [
             </div>
 
             <div>
-              <span className="mb-3 block font-black text-[#0B4D6B]">الجنس</span>
+              <span className="mb-3 block font-black text-[var(--rashid-color-0b4d6b)]">الجنس</span>
               <div className="grid grid-cols-2 gap-4">
-                <button type="button" onClick={() => setGender("male")} className={`rounded-[2rem] border-2 p-6 transition ${gender === "male" ? "border-[#42BFA8] bg-[#ECFBF7] shadow-lg" : "border-[#E5EEF1] bg-white"}`}>
+                <button type="button" onClick={() => setGender("male")} className={`rounded-[2rem] border-2 p-6 transition ${gender === "male" ? "border-[var(--rashid-color-42bfa8)] bg-[var(--rashid-color-ecfbf7)] shadow-lg" : "border-[var(--rashid-color-e5eef1)] bg-white"}`}>
                   <div className="text-7xl">👦</div>
-                  <div className="mt-3 text-xl font-black text-[#0B4D6B]">ولد</div>
+                  <div className="mt-3 text-xl font-black text-[var(--rashid-color-0b4d6b)]">ولد</div>
                 </button>
-                <button type="button" onClick={() => setGender("female")} className={`rounded-[2rem] border-2 p-6 transition ${gender === "female" ? "border-[#FF8FB3] bg-[#FFF0F6] shadow-lg" : "border-[#E5EEF1] bg-white"}`}>
+                <button type="button" onClick={() => setGender("female")} className={`rounded-[2rem] border-2 p-6 transition ${gender === "female" ? "border-[var(--rashid-color-ff8fb3)] bg-[var(--rashid-color-fff0f6)] shadow-lg" : "border-[var(--rashid-color-e5eef1)] bg-white"}`}>
                   <div className="text-7xl">👧</div>
-                  <div className="mt-3 text-xl font-black text-[#0B4D6B]">بنت</div>
+                  <div className="mt-3 text-xl font-black text-[var(--rashid-color-0b4d6b)]">بنت</div>
                 </button>
               </div>
             </div>
 
-            <label className="flex cursor-pointer items-center justify-between gap-4 rounded-[2rem] border border-[#DDEDEA] bg-[#FAFFFD] p-5">
+            <label className="flex cursor-pointer items-center justify-between gap-4 rounded-[2rem] border border-[var(--rashid-color-ddedea)] bg-[var(--rashid-color-fafffd)] p-5">
               <div>
-                <div className="font-black text-[#0B4D6B]">توليد كود دخول جديد</div>
-                <p className="mt-1 text-sm font-bold text-[#667085]">استخدمها فقط إذا نسي الطفل الكود القديم.</p>
+                <div className="font-black text-[var(--rashid-color-0b4d6b)]">توليد كود دخول جديد</div>
+                <p className="mt-1 text-sm font-bold text-[var(--rashid-color-667085)]">استخدمها فقط إذا نسي الطفل الكود القديم.</p>
               </div>
               <input type="checkbox" checked={regenerateCode} onChange={(e) => setRegenerateCode(e.target.checked)} className="h-6 w-6" />
             </label>
 
             <div className="grid gap-3 pt-4 md:grid-cols-2">
-              <Link href={`/dashboard/children/${childId}`} className="rounded-full bg-[#F4FAF8] px-8 py-4 text-center font-black text-[#0B4D6B]">إلغاء</Link>
-              <button disabled={saving} className="rounded-full bg-[#42BFA8] px-8 py-4 font-black text-white shadow-lg disabled:opacity-50">
+              <Link href={`/dashboard/children/${childId}`} className="rounded-full bg-[var(--rashid-color-f4faf8)] px-8 py-4 text-center font-black text-[var(--rashid-color-0b4d6b)]">إلغاء</Link>
+              <button disabled={saving} className="rounded-full bg-[var(--rashid-color-42bfa8)] px-8 py-4 font-black text-white shadow-lg disabled:opacity-50">
                 {saving ? "جاري الحفظ..." : "حفظ التعديلات"}
               </button>
             </div>

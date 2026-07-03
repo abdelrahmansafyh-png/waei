@@ -192,22 +192,22 @@ export default function AdminBannersPage() {
   }
 
   return (
-    <main dir="rtl" className="min-h-screen bg-[#F4FAF8] p-6">
+    <main dir="rtl" className="min-h-screen bg-[var(--rashid-color-f4faf8)] p-6">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>
-            <h1 className="text-4xl font-black text-[#0B4D6B]">
+            <h1 className="text-4xl font-black text-[var(--rashid-color-0b4d6b)]">
               إدارة البانرات
             </h1>
 
-            <p className="mt-3 text-[#6E7A99]">
+            <p className="mt-3 text-[var(--rashid-color-6e7a99)]">
               يمكنك إضافة بانرات وربطها بأي صفحة أو رابط خارجي.
             </p>
           </div>
 
           <button
             onClick={resetForm}
-            className="rounded-full bg-[#0B4D6B] px-6 py-3 font-black text-white"
+            className="rounded-full bg-[var(--rashid-color-0b4d6b)] px-6 py-3 font-black text-white"
           >
             إضافة بانر جديد
           </button>
@@ -215,7 +215,7 @@ export default function AdminBannersPage() {
 
         <div className="grid gap-8 lg:grid-cols-[430px_1fr]">
           <div className="rounded-[2rem] bg-white p-8 shadow-xl">
-            <h2 className="mb-6 text-2xl font-black text-[#0B4D6B]">
+            <h2 className="mb-6 text-2xl font-black text-[var(--rashid-color-0b4d6b)]">
               {editingId ? "تعديل البانر" : "إضافة بانر"}
             </h2>
 
@@ -230,7 +230,7 @@ export default function AdminBannersPage() {
                     title: e.target.value,
                   })
                 }
-                className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none focus:border-[#42BFA8]"
+                className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none focus:border-[var(--rashid-color-42bfa8)]"
               />
 
               <input
@@ -242,7 +242,7 @@ export default function AdminBannersPage() {
                     subtitle: e.target.value,
                   })
                 }
-                className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none focus:border-[#42BFA8]"
+                className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none focus:border-[var(--rashid-color-42bfa8)]"
               />
 
               <textarea
@@ -254,11 +254,11 @@ export default function AdminBannersPage() {
                     description: e.target.value,
                   })
                 }
-                className="h-28 w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none focus:border-[#42BFA8]"
+                className="h-28 w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none focus:border-[var(--rashid-color-42bfa8)]"
               />
 
-              <div className="rounded-2xl border border-dashed border-[#42BFA8] bg-[#F4FAF8] p-5">
-                <label className="mb-3 block font-black text-[#0B4D6B]">
+              <div className="rounded-2xl border border-dashed border-[var(--rashid-color-42bfa8)] bg-[var(--rashid-color-f4faf8)] p-5">
+                <label className="mb-3 block font-black text-[var(--rashid-color-0b4d6b)]">
                   صورة البانر
                 </label>
 
@@ -276,14 +276,14 @@ export default function AdminBannersPage() {
                 />
 
                 {uploading && (
-                  <p className="mt-3 font-bold text-[#42BFA8]">
+                  <p className="mt-3 font-bold text-[var(--rashid-color-42bfa8)]">
                     جاري رفع الصورة...
                   </p>
                 )}
 
                 {form.image_url && (
                   <div className="mt-4">
-                    <div className="overflow-hidden rounded-2xl border border-[#DDEDEA] bg-white">
+                    <div className="overflow-hidden rounded-2xl border border-[var(--rashid-color-ddedea)] bg-white">
                       <img
                         src={getFileUrl(form.image_url)}
                         alt="preview"
@@ -291,7 +291,7 @@ export default function AdminBannersPage() {
                       />
                     </div>
 
-                    <p className="mt-3 break-all rounded-xl bg-white p-3 text-xs text-[#6E7A99]">
+                    <p className="mt-3 break-all rounded-xl bg-white p-3 text-xs text-[var(--rashid-color-6e7a99)]">
                       {form.image_url}
                     </p>
 
@@ -321,7 +321,7 @@ export default function AdminBannersPage() {
                       button_text: e.target.value,
                     })
                   }
-                  className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none focus:border-[#42BFA8]"
+                  className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none focus:border-[var(--rashid-color-42bfa8)]"
                 />
 
                 <input
@@ -333,7 +333,7 @@ export default function AdminBannersPage() {
                       button_link: e.target.value,
                     })
                   }
-                  className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none focus:border-[#42BFA8]"
+                  className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none focus:border-[var(--rashid-color-42bfa8)]"
                 />
               </div>
 
@@ -347,10 +347,10 @@ export default function AdminBannersPage() {
                     sort_order: Number(e.target.value),
                   })
                 }
-                className="w-full rounded-2xl border border-[#DDEDEA] px-4 py-4 outline-none focus:border-[#42BFA8]"
+                className="w-full rounded-2xl border border-[var(--rashid-color-ddedea)] px-4 py-4 outline-none focus:border-[var(--rashid-color-42bfa8)]"
               />
 
-              <label className="flex items-center gap-3 rounded-2xl bg-[#F4FAF8] p-4 font-bold">
+              <label className="flex items-center gap-3 rounded-2xl bg-[var(--rashid-color-f4faf8)] p-4 font-bold">
                 <input
                   type="checkbox"
                   checked={form.open_in_new_tab}
@@ -365,7 +365,7 @@ export default function AdminBannersPage() {
                 فتح الرابط في تبويب جديد
               </label>
 
-              <label className="flex items-center gap-3 rounded-2xl bg-[#F4FAF8] p-4 font-bold">
+              <label className="flex items-center gap-3 rounded-2xl bg-[var(--rashid-color-f4faf8)] p-4 font-bold">
                 <input
                   type="checkbox"
                   checked={form.is_active}
@@ -383,7 +383,7 @@ export default function AdminBannersPage() {
               <button
                 type="submit"
                 disabled={uploading}
-                className="w-full rounded-full bg-[#42BFA8] py-4 font-black text-white disabled:opacity-50"
+                className="w-full rounded-full bg-[var(--rashid-color-42bfa8)] py-4 font-black text-white disabled:opacity-50"
               >
                 {editingId ? "حفظ التعديل" : "حفظ البانر"}
               </button>
@@ -392,7 +392,7 @@ export default function AdminBannersPage() {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="w-full rounded-full bg-gray-100 py-4 font-black text-[#0B4D6B]"
+                  className="w-full rounded-full bg-gray-100 py-4 font-black text-[var(--rashid-color-0b4d6b)]"
                 >
                   إلغاء التعديل
                 </button>
@@ -423,7 +423,7 @@ export default function AdminBannersPage() {
                         className="h-64 w-full object-cover"
                       />
                     ) : (
-                      <div className="h-64 bg-gradient-to-br from-[#0B4D6B] to-[#42BFA8]" />
+                      <div className="h-64 bg-gradient-to-br from-[var(--rashid-color-0b4d6b)] to-[var(--rashid-color-42bfa8)]" />
                     )}
 
                     <div className="p-8">
@@ -438,38 +438,38 @@ export default function AdminBannersPage() {
                           {banner.is_active ? "مفعّل" : "مخفي"}
                         </span>
 
-                        <span className="text-sm font-black text-[#6E7A99]">
+                        <span className="text-sm font-black text-[var(--rashid-color-6e7a99)]">
                           ترتيب: {banner.sort_order}
                         </span>
                       </div>
 
                       {banner.subtitle && (
-                        <div className="mb-3 inline-flex rounded-full bg-[#D9F5EE] px-4 py-2 text-sm font-black text-[#0B4D6B]">
+                        <div className="mb-3 inline-flex rounded-full bg-[var(--rashid-color-d9f5ee)] px-4 py-2 text-sm font-black text-[var(--rashid-color-0b4d6b)]">
                           {banner.subtitle}
                         </div>
                       )}
 
-                      <h2 className="text-3xl font-black text-[#0B4D6B]">
+                      <h2 className="text-3xl font-black text-[var(--rashid-color-0b4d6b)]">
                         {banner.title}
                       </h2>
 
                       {banner.description && (
-                        <p className="mt-4 leading-8 text-[#6E7A99]">
+                        <p className="mt-4 leading-8 text-[var(--rashid-color-6e7a99)]">
                           {banner.description}
                         </p>
                       )}
 
                       {banner.button_link && (
-                        <div className="mt-5 rounded-2xl bg-[#F4FAF8] p-4 text-sm">
-                          <div className="font-black text-[#0B4D6B]">
+                        <div className="mt-5 rounded-2xl bg-[var(--rashid-color-f4faf8)] p-4 text-sm">
+                          <div className="font-black text-[var(--rashid-color-0b4d6b)]">
                             الرابط:
                           </div>
 
-                          <div className="mt-2 break-all text-[#6E7A99]">
+                          <div className="mt-2 break-all text-[var(--rashid-color-6e7a99)]">
                             {banner.button_link}
                           </div>
 
-                          <div className="mt-2 text-xs font-bold text-[#42BFA8]">
+                          <div className="mt-2 text-xs font-bold text-[var(--rashid-color-42bfa8)]">
                             {banner.open_in_new_tab
                               ? "يفتح في تبويب جديد"
                               : "يفتح داخل الموقع"}
@@ -480,14 +480,14 @@ export default function AdminBannersPage() {
                       <div className="mt-8 grid grid-cols-3 gap-3">
                         <button
                           onClick={() => startEdit(banner)}
-                          className="rounded-full bg-[#42BFA8] py-3 font-black text-white"
+                          className="rounded-full bg-[var(--rashid-color-42bfa8)] py-3 font-black text-white"
                         >
                           تعديل
                         </button>
 
                         <button
                           onClick={() => toggleActive(banner)}
-                          className="rounded-full bg-yellow-100 py-3 font-black text-[#0B4D6B]"
+                          className="rounded-full bg-yellow-100 py-3 font-black text-[var(--rashid-color-0b4d6b)]"
                         >
                           {banner.is_active ? "إخفاء" : "تفعيل"}
                         </button>

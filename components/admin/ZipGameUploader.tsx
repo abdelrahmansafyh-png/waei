@@ -44,8 +44,8 @@ export default function ZipGameUploader({
   }
 
   return (
-    <div className="rounded-2xl border border-[#DDEDEA] bg-[#F9FFFD] p-4">
-      <label className="mb-3 block font-black text-[#0B4D6B]">
+    <div className="rounded-2xl border border-[var(--rashid-color-ddedea)] bg-[var(--rashid-color-f9fffd)] p-4">
+      <label className="mb-3 block font-black text-[var(--rashid-color-0b4d6b)]">
         رفع لعبة ZIP
       </label>
 
@@ -61,13 +61,13 @@ export default function ZipGameUploader({
       />
 
       {uploading && (
-        <div className="mt-3 rounded-xl bg-[#FFF7D8] p-3 font-black text-[#9A6B00]">
+        <div className="mt-3 rounded-xl bg-[var(--rashid-color-fff7d8)] p-3 font-black text-[var(--rashid-color-9a6b00)]">
           جاري رفع اللعبة وفك الضغط وحقن bridge...
         </div>
       )}
 
       {gameUrl && (
-        <div className="mt-3 rounded-xl bg-[#E9FFF7] p-3 text-sm font-black text-[#064E3B] break-all">
+        <div className="mt-3 rounded-xl bg-[var(--rashid-color-e9fff7)] p-3 text-sm font-black text-[var(--rashid-color-064e3b)] break-all">
           تم تجهيز اللعبة:
           <br />
           {gameUrl}

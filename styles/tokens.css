@@ -1,19 +1,18 @@
-/* Design tokens for Rashid.
-   Change brand colors, radii, and shadows here instead of editing every page. */
+/* Design tokens for Rashid. Edit Colors.css for actual palette values. */
 :root {
-  --color-primary: #4F7DF3;
-  --color-primary-dark: #3563E9;
-  --color-sky: #DDF2FF;
-  --color-sky-2: #BEE7FF;
-  --color-green: #8EDB92;
-  --color-green-dark: #58B96A;
-  --color-purple: #B497FF;
-  --color-purple-dark: #8E6DF4;
-  --color-yellow: #FFD96A;
-  --color-text: #2D3A5F;
-  --color-text-light: #6E7A99;
-  --color-card: #FFFFFF;
-  --color-background: #F4FAFF;
+  --color-primary: var(--theme-teal-main);
+  --color-primary-dark: var(--theme-teal-dark);
+  --color-sky: var(--theme-blue-soft);
+  --color-sky-2: var(--theme-blue-bg);
+  --color-green: var(--theme-green-light);
+  --color-green-dark: var(--theme-green-main);
+  --color-purple: var(--theme-purple-light);
+  --color-purple-dark: var(--theme-purple-main);
+  --color-yellow: var(--theme-yellow-main);
+  --color-text: var(--theme-text-main);
+  --color-text-light: var(--theme-text-muted);
+  --color-card: var(--theme-card);
+  --color-background: var(--theme-page-bg);
 
   /* Backward-compatible aliases used by existing pages */
   --primary: var(--color-primary);

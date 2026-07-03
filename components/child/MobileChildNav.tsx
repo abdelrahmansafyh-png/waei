@@ -30,26 +30,26 @@ export default function MobileChildNav({ profile, activeHref = "/dashboard" }: M
       <header className="sticky top-0 z-30 border-b border-white/60 bg-white/78 px-3 py-2 shadow-[0_10px_30px_rgba(20,34,74,.08)] backdrop-blur-xl lg:hidden">
         <div className="flex items-center justify-between gap-3">
           <Link href="/dashboard" className="flex min-w-0 items-center gap-2 rounded-2xl bg-white/78 px-2 py-1.5 shadow-sm">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#E6F9FF] text-2xl shadow-inner">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[var(--rashid-color-e6f9ff)] text-2xl shadow-inner">
               {childAvatar}
             </span>
             <span className="min-w-0">
-              <span className="block truncate text-sm font-black text-[#0E9FAA]">أهلًا يا</span>
-              <span className="block max-w-[130px] truncate text-xl font-black leading-5 text-[#14224A]">{childName}</span>
+              <span className="block truncate text-sm font-black text-[var(--rashid-color-0e9faa)]">أهلًا يا</span>
+              <span className="block max-w-[130px] truncate text-xl font-black leading-5 text-[var(--rashid-color-14224a)]">{childName}</span>
             </span>
           </Link>
 
           <div className="flex items-center gap-2">
             <Link
               href={proActive ? "/dashboard/subscription" : "/plans"}
-              className="rounded-full bg-[#FFEBA5] px-3 py-2 text-xs font-black text-[#8A6200] shadow-sm"
+              className="rounded-full bg-[var(--rashid-color-ffeba5)] px-3 py-2 text-xs font-black text-[var(--rashid-color-8a6200)] shadow-sm"
             >
               {proActive ? "👑 Pro" : "🟢 Free"}
             </Link>
             <button
               type="button"
               onClick={handleLogout}
-              className="grid h-10 w-10 place-items-center rounded-full bg-[#FF7AB6] text-lg text-white shadow-sm"
+              className="grid h-10 w-10 place-items-center rounded-full bg-[var(--rashid-color-ff7ab6)] text-lg text-white shadow-sm"
               aria-label="تسجيل خروج"
             >
               ⏻
@@ -68,11 +68,11 @@ export default function MobileChildNav({ profile, activeHref = "/dashboard" }: M
                 href={item.href}
                 className={`flex min-w-0 flex-col items-center justify-center rounded-2xl px-1.5 py-2 text-[11px] font-black transition ${
                   active
-                    ? "bg-[#0E9FAA] text-white shadow-[0_8px_18px_rgba(14,159,170,.24)]"
-                    : "bg-white/65 text-[#566681]"
+                    ? "bg-[var(--rashid-color-0e9faa)] text-white shadow-[0_8px_18px_rgba(14,159,170,.24)]"
+                    : "bg-white/65 text-[var(--rashid-color-566681)]"
                 }`}
               >
-                <span className={`mb-1 grid h-8 w-8 place-items-center rounded-xl ${active ? "bg-white" : "bg-[#EAF7FF]"}`}>
+                <span className={`mb-1 grid h-8 w-8 place-items-center rounded-xl ${active ? "bg-white" : "bg-[var(--rashid-color-eaf7ff)]"}`}>
                   <img src={item.icon} alt="" className="h-6 w-6 object-contain" />
                 </span>
                 <span className="truncate leading-4">{item.label}</span>
