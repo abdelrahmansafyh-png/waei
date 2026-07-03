@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<defs>
+<filter id="s" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#25125f" flood-opacity=".28"/></filter>
+<linearGradient id="gold" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#fff7b0"/><stop offset=".45" stop-color="#ffc941"/><stop offset="1" stop-color="#f08300"/></linearGradient>
+<linearGradient id="purple" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#8f6dff"/><stop offset="1" stop-color="#4420a8"/></linearGradient>
+<linearGradient id="green" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#b9ff8a"/><stop offset="1" stop-color="#20a657"/></linearGradient>
+<linearGradient id="blue" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#dff6ff"/><stop offset="1" stop-color="#4c8cff"/></linearGradient>
+</defs>
+<g filter="url(#s)"><path d="M153 84h206v105c0 62-46 112-103 112s-103-50-103-112z" fill="url(#gold)"/><path d="M153 122H88c3 74 36 119 93 128l16-52c-31-7-48-31-52-63h8zM359 122h65c-3 74-36 119-93 128l-16-52c31-7 48-31 52-63h-8z" fill="#ffb300"/><rect x="211" y="292" width="90" height="72" rx="18" fill="#c47b1a"/><rect x="154" y="358" width="204" height="62" rx="26" fill="url(#purple)"/><path d="m256 128 25 50 55 8-40 39 10 55-50-26-50 26 10-55-40-39 55-8z" fill="#fff6bd"/></g>
+</svg>

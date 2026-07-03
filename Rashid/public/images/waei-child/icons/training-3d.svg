@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<defs>
+<filter id="s" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#25125f" flood-opacity=".28"/></filter>
+<linearGradient id="gold" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#fff7b0"/><stop offset=".45" stop-color="#ffc941"/><stop offset="1" stop-color="#f08300"/></linearGradient>
+<linearGradient id="purple" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#8f6dff"/><stop offset="1" stop-color="#4420a8"/></linearGradient>
+<linearGradient id="green" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#b9ff8a"/><stop offset="1" stop-color="#20a657"/></linearGradient>
+<linearGradient id="blue" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#dff6ff"/><stop offset="1" stop-color="#4c8cff"/></linearGradient>
+</defs>
+<g filter="url(#s)"><path d="M176 84h82v96h-82c-31 0-56-25-56-56s25-40 56-40z" fill="url(#purple)"/><path d="M258 84h78c31 0 56 9 56 40s-25 56-56 56h-78z" fill="url(#gold)"/><path d="M176 180h82v82h-82c-31 0-56-25-56-56s25-26 56-26z" fill="url(#green)"/><path d="M258 180h78c31 0 56-5 56 26s-25 56-56 56h-78z" fill="url(#blue)"/><path d="M176 262h82v166h-82c-31 0-56-25-56-56v-54c0-31 25-56 56-56z" fill="#ff7aa8"/><path d="M258 262h78c31 0 56 25 56 56v54c0 31-25 56-56 56h-78z" fill="#fff3a6"/><path d="M258 74v364M108 180h296M108 262h296" stroke="#fff" stroke-width="16" opacity=".55"/></g>
+</svg>

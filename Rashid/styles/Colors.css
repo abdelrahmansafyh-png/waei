@@ -1,0 +1,294 @@
+/*
+  Colors.css
+  عدّل ألوان الموقع من أعلى هذا الملف فقط.
+  القسم السفلي اسمه LEGACY MAP لا تحتاج تلمسه؛ هو فقط يربط الألوان القديمة بالكود الحالي.
+*/
+
+:root {
+  /* =========================================================
+     1) QUICK THEME CONTROLS — عدّل من هون فقط
+     ========================================================= */
+
+  /* الخلفيات والكروت */
+  --theme-page-bg: #F5FBFF;
+  --theme-surface: #F8FAFC;
+  --theme-card: #FFFFFF;
+  --theme-card-soft: #FBFDFF;
+  --theme-border: #EDF0FB;
+  --theme-white: #FFFFFF;
+  --theme-black: #000000;
+
+  /* النصوص */
+  --theme-text-main: #14224A;
+  --theme-text-muted: #526079;
+  --theme-navy: #101B3D;
+
+  /* التيل / السماوي - اللون الأساسي */
+  --theme-teal-dark: #087985;
+  --theme-teal-main: #0E9FAA;
+  --theme-teal-light: #19C6D4;
+  --theme-teal-soft: #E8FBFD;
+  --theme-teal-bg: #F2FEFF;
+
+  /* الأزرق */
+  --theme-blue-main: #4F7DF3;
+  --theme-blue-soft: #DFF4FF;
+  --theme-blue-bg: #EEF7FF;
+
+  /* البنفسجي — لو بدك تغير كل البنفسجي، غير هاي المجموعة فقط */
+  --theme-purple-main: #19c2b4;
+  --theme-purple-dark: #12a99d;
+  --theme-purple-deep: #0f8f84;
+  --theme-purple-mid: #16b5a8;
+  --theme-purple-soft: #bff3ee;
+  --theme-purple-bg: #eefdfb;
+  --theme-purple-border: #8ee5dc;
+
+  /* الأصفر / الذهبي */
+  --theme-yellow-dark: #F5A800;
+  --theme-yellow-main: #FFD54A;
+  --theme-yellow-soft: #FFF2CC;
+  --theme-yellow-bg: #FFF8DB;
+
+  /* مثال سريع: لتحويل كل البنفسجي إلى أصفر، استبدل مجموعة البنفسجي بالأتي:
+  --theme-purple-deep: var(--theme-yellow-dark);
+  --theme-purple-dark: var(--theme-yellow-dark);
+  --theme-purple-main: var(--theme-yellow-main);
+  --theme-purple-light: var(--theme-yellow-main);
+  --theme-purple-muted: #7A5B00;
+  --theme-purple-soft: var(--theme-yellow-soft);
+  --theme-purple-border: var(--theme-yellow-soft);
+  --theme-purple-bg: var(--theme-yellow-bg);
+  */
+
+  /* الأخضر */
+  --theme-green-dark: #166534;
+  --theme-green-main: #22C55E;
+  --theme-green-light: #8EDB92;
+  --theme-green-soft: #DCFCE7;
+  --theme-green-bg: #ECFDF5;
+
+  /* البرتقالي */
+  --theme-orange-dark: #B45309;
+  --theme-orange-main: #F59E0B;
+  --theme-orange-light: #FFD166;
+  --theme-orange-soft: #FEF3C7;
+  --theme-orange-bg: #FFF7ED;
+
+  /* الأحمر / الوردي */
+  --theme-danger-dark: #991B1B;
+  --theme-danger-soft: #FEE2E2;
+  --theme-pink-main: #FF7AB6;
+  --theme-pink-soft: #FFF0F6;
+
+  /* =========================================================
+     2) APP SEMANTIC COLORS — أسماء سهلة مستخدمة في الكود
+     ========================================================= */
+  --color-brand-primary: var(--theme-teal-main);
+  --color-brand-primary-2: var(--theme-teal-light);
+  --color-brand-navy: var(--theme-text-main);
+  --color-brand-deep: var(--theme-navy);
+  --color-brand-purple: var(--theme-purple-main);
+  --color-brand-purple-dark: var(--theme-purple-dark);
+  --color-brand-yellow: var(--theme-yellow-main);
+  --color-brand-green: var(--theme-green-main);
+
+  --color-page-bg: var(--theme-page-bg);
+  --color-card-bg: var(--theme-card);
+  --color-text-main: var(--theme-text-main);
+  --color-text-muted: var(--theme-text-muted);
+
+  /* =========================================================
+     3) LEGACY MAP — لا تعدل هذا القسم غالبًا
+     هذا القسم يخلي كل الكود القديم يتبع المجموعات السهلة فوق.
+     ========================================================= */
+  --rashid-color-064e3b: var(--theme-teal-dark);
+  --rashid-color-087985: var(--theme-teal-dark);
+  --rashid-color-0b8398: var(--theme-teal-dark);
+  --rashid-color-0e9faa: var(--theme-teal-main);
+  --rashid-color-0f9eb2: var(--theme-teal-main);
+  --rashid-color-11bbcb: var(--theme-teal-main);
+  --rashid-color-12afc0: var(--theme-teal-main);
+  --rashid-color-137c9a: var(--theme-teal-main);
+  --rashid-color-167a8f: var(--theme-teal-main);
+  --rashid-color-19b889: var(--theme-teal-light);
+  --rashid-color-19c6d4: var(--theme-teal-light);
+  --rashid-color-22c7a9: var(--theme-teal-light);
+  --rashid-color-246f82: var(--theme-teal-light);
+  --rashid-color-2d9b87: var(--theme-teal-light);
+  --rashid-color-42bfa8: var(--theme-teal-light);
+  --rashid-color-bfe9df: var(--theme-teal-soft);
+  --rashid-color-ccfbf1: var(--theme-teal-soft);
+  --rashid-color-d9f5ee: var(--theme-teal-soft);
+  --rashid-color-ddedea: var(--theme-teal-soft);
+  --rashid-color-e5eef1: var(--theme-teal-soft);
+  --rashid-color-e6f9ff: var(--theme-teal-soft);
+  --rashid-color-e7f8f1: var(--theme-teal-soft);
+  --rashid-color-e7fbf4: var(--theme-teal-soft);
+  --rashid-color-e8f7f3: var(--theme-teal-bg);
+  --rashid-color-e8f8f3: var(--theme-teal-bg);
+  --rashid-color-e8fbfd: var(--theme-teal-bg);
+  --rashid-color-e9fbfc: var(--theme-teal-bg);
+  --rashid-color-e9fff7: var(--theme-teal-bg);
+  --rashid-color-ecfbf7: var(--theme-teal-bg);
+  --rashid-color-f1fffb: var(--theme-teal-bg);
+  --rashid-color-f2feff: var(--theme-teal-bg);
+  --rashid-color-062033: var(--theme-navy);
+  --rashid-color-083b52: var(--theme-navy);
+  --rashid-color-0b4d6b: var(--theme-navy);
+  --rashid-color-0d5b78: var(--theme-navy);
+  --rashid-color-101b3d: var(--theme-navy);
+  --rashid-color-111827: var(--theme-navy);
+  --rashid-color-14224a: var(--theme-text-main);
+  --rashid-color-1d3772: var(--theme-text-main);
+  --rashid-color-1e3a8a: var(--theme-text-main);
+  --rashid-color-20294f: var(--theme-text-main);
+  --rashid-color-203154: var(--theme-text-main);
+  --rashid-color-243b53: var(--theme-text-main);
+  --rashid-color-2a3556: var(--theme-text-main);
+  --rashid-color-2d3a5f: var(--theme-text-main);
+  --rashid-color-3361cc: var(--theme-blue-main);
+  --rashid-color-3563e9: var(--theme-blue-main);
+  --rashid-color-40506f: var(--theme-blue-main);
+  --rashid-color-475569: var(--theme-blue-main);
+  --rashid-color-4da3ff: var(--theme-blue-main);
+  --rashid-color-4f7df3: var(--theme-blue-main);
+  --rashid-color-526079: var(--theme-text-muted);
+  --rashid-color-566681: var(--theme-text-muted);
+  --rashid-color-5b7cfa: var(--theme-text-muted);
+  --rashid-color-64748b: var(--theme-text-muted);
+  --rashid-color-667085: var(--theme-text-muted);
+  --rashid-color-6c63ff: var(--theme-text-muted);
+  --rashid-color-6e7a99: var(--theme-text-muted);
+  --rashid-color-8a94aa: var(--theme-text-muted);
+  --rashid-color-93c5fd: var(--theme-text-muted);
+  --rashid-color-9aa3b2: var(--theme-text-muted);
+  --rashid-color-bee7ff: var(--theme-blue-soft);
+  --rashid-color-bfe9ff: var(--theme-blue-soft);
+  --rashid-color-d7dce8: var(--theme-blue-soft);
+  --rashid-color-dbe7ff: var(--theme-blue-soft);
+  --rashid-color-dbeafe: var(--theme-blue-soft);
+  --rashid-color-dce4f5: var(--theme-blue-soft);
+  --rashid-color-ddf2ff: var(--theme-blue-soft);
+  --rashid-color-dff4ff: var(--theme-blue-soft);
+  --rashid-color-dff7ff: var(--theme-blue-bg);
+  --rashid-color-e0f2fe: var(--theme-blue-bg);
+  --rashid-color-e6eef3: var(--theme-blue-bg);
+  --rashid-color-e7f0f7: var(--theme-border);
+  --rashid-color-e8eefc: var(--theme-blue-bg);
+  --rashid-color-eaf7ff: var(--theme-blue-bg);
+  --rashid-color-edf0fb: var(--theme-border);
+  --rashid-color-edf2ff: var(--theme-blue-bg);
+  --rashid-color-eef7ff: var(--theme-blue-bg);
+  --rashid-color-4423b8: var(--theme-purple-deep);
+  --rashid-color-4c34c9: var(--theme-purple-deep);
+  --rashid-color-5f5a7b: var(--theme-purple-muted);
+  --rashid-color-6847f5: var(--theme-purple-dark);
+  --rashid-color-7048e8: var(--theme-purple-main);
+  --rashid-color-7050e8: var(--theme-purple-main);
+  --rashid-color-7464c8: var(--theme-purple-main);
+  --rashid-color-8b5cf6: var(--theme-purple-main);
+  --rashid-color-8e6df4: var(--theme-purple-main);
+  --rashid-color-b497ff: var(--theme-purple-light);
+  --rashid-color-c4b5fd: var(--theme-purple-light);
+  --rashid-color-d8d2ff: var(--theme-purple-light);
+  --rashid-color-e9ddff: var(--theme-purple-soft);
+  --rashid-color-e9e4ff: var(--theme-purple-soft);
+  --rashid-color-ece7ff: var(--theme-purple-border);
+  --rashid-color-ede9fe: var(--theme-purple-soft);
+  --rashid-color-f0e9ff: var(--theme-purple-soft);
+  --rashid-color-f3eeff: var(--theme-purple-soft);
+  --rashid-color-f3efff: var(--theme-purple-border);
+  --rashid-color-f4f0ff: var(--theme-purple-border);
+  --rashid-color-f6e7ff: var(--theme-purple-bg);
+  --rashid-color-f7f3ff: var(--theme-purple-bg);
+  --rashid-color-15803d: var(--theme-green-dark);
+  --rashid-color-166534: var(--theme-green-dark);
+  --rashid-color-16a34a: var(--theme-green-main);
+  --rashid-color-22c55e: var(--theme-green-main);
+  --rashid-color-247b25: var(--theme-green-main);
+  --rashid-color-3aae55: var(--theme-green-main);
+  --rashid-color-58b96a: var(--theme-green-main);
+  --rashid-color-5ec267: var(--theme-green-main);
+  --rashid-color-6ed46e: var(--theme-green-main);
+  --rashid-color-86efac: var(--theme-green-light);
+  --rashid-color-8edb92: var(--theme-green-light);
+  --rashid-color-b2f06a: var(--theme-green-light);
+  --rashid-color-bbf7d0: var(--theme-green-soft);
+  --rashid-color-d8f36a: var(--theme-green-soft);
+  --rashid-color-d9f99d: var(--theme-green-soft);
+  --rashid-color-dcfce7: var(--theme-green-soft);
+  --rashid-color-ddf8cc: var(--theme-green-soft);
+  --rashid-color-e3fff1: var(--theme-green-soft);
+  --rashid-color-eaffdd: var(--theme-green-bg);
+  --rashid-color-ecfdf5: var(--theme-green-bg);
+  --rashid-color-eefbf1: var(--theme-green-bg);
+  --rashid-color-f2ffe8: var(--theme-green-bg);
+  --rashid-color-7a6b22: var(--theme-yellow-dark);
+  --rashid-color-f4e7a2: var(--theme-yellow-main);
+  --rashid-color-fff1a8: var(--theme-yellow-main);
+  --rashid-color-fff4c7: var(--theme-yellow-soft);
+  --rashid-color-fff8d9: var(--theme-yellow-bg);
+  --rashid-color-fff8db: var(--theme-yellow-bg);
+  --rashid-color-5a3a00: var(--theme-orange-dark);
+  --rashid-color-7a5b00: var(--theme-orange-dark);
+  --rashid-color-8a6200: var(--theme-orange-dark);
+  --rashid-color-8a6a00: var(--theme-orange-dark);
+  --rashid-color-9a6b00: var(--theme-orange-dark);
+  --rashid-color-b45309: var(--theme-orange-dark);
+  --rashid-color-b75a00: var(--theme-orange-dark);
+  --rashid-color-f3d7a8: var(--theme-orange-dark);
+  --rashid-color-f59e0b: var(--theme-orange-main);
+  --rashid-color-f5a800: var(--theme-yellow-dark);
+  --rashid-color-f8b23a: var(--theme-orange-main);
+  --rashid-color-fed7aa: var(--theme-orange-main);
+  --rashid-color-fef3c7: var(--theme-orange-main);
+  --rashid-color-ff8a00: var(--theme-orange-light);
+  --rashid-color-ffb347: var(--theme-orange-light);
+  --rashid-color-ffd166: var(--theme-orange-light);
+  --rashid-color-ffd54a: var(--theme-yellow-main);
+  --rashid-color-ffd65a: var(--theme-orange-light);
+  --rashid-color-ffd96a: var(--theme-orange-light);
+  --rashid-color-ffe4c2: var(--theme-orange-soft);
+  --rashid-color-ffe89d: var(--theme-orange-soft);
+  --rashid-color-ffeba5: var(--theme-orange-soft);
+  --rashid-color-ffeec2: var(--theme-orange-soft);
+  --rashid-color-fff2cc: var(--theme-orange-soft);
+  --rashid-color-fff5dd: var(--theme-orange-bg);
+  --rashid-color-fff7d8: var(--theme-orange-bg);
+  --rashid-color-fff7e8: var(--theme-orange-bg);
+  --rashid-color-fff7ed: var(--theme-orange-bg);
+  --rashid-color-fff9e8: var(--theme-orange-bg);
+  --rashid-color-991b1b: var(--theme-danger-dark);
+  --rashid-color-9a3412: var(--theme-danger-dark);
+  --rashid-color-fee2e2: var(--theme-danger-soft);
+  --rashid-color-ff5c8a: var(--theme-pink-main);
+  --rashid-color-ff7ab6: var(--theme-pink-main);
+  --rashid-color-ff8fb3: var(--theme-pink-main);
+  --rashid-color-ffe4e6: var(--theme-pink-soft);
+  --rashid-color-fff0f6: var(--theme-pink-soft);
+  --rashid-color-000000: var(--theme-black);
+  --rashid-color-e4efea: var(--theme-border);
+  --rashid-color-e5e7eb: var(--theme-border);
+  --rashid-color-e6f1ee: var(--theme-border);
+  --rashid-color-e8efec: var(--theme-border);
+  --rashid-color-edf0f8: var(--theme-border);
+  --rashid-color-eef8f3: var(--theme-border);
+  --rashid-color-eef8f4: var(--theme-border);
+  --rashid-color-f4f7ff: var(--theme-surface);
+  --rashid-color-f4faf8: var(--theme-surface);
+  --rashid-color-f4faff: var(--theme-surface);
+  --rashid-color-f5faf8: var(--theme-surface);
+  --rashid-color-f5fbff: var(--theme-page-bg);
+  --rashid-color-f6fbf9: var(--theme-page-bg);
+  --rashid-color-f7fbff: var(--theme-page-bg);
+  --rashid-color-f8fafc: var(--theme-page-bg);
+  --rashid-color-f8fbfc: var(--theme-page-bg);
+  --rashid-color-f8fbff: var(--theme-card-soft);
+  --rashid-color-f9fffd: var(--theme-page-bg);
+  --rashid-color-faf8ff: var(--theme-card-soft);
+  --rashid-color-fafffd: var(--theme-card-soft);
+  --rashid-color-fbfaff: var(--theme-card-soft);
+  --rashid-color-fbfdff: var(--theme-card-soft);
+  --rashid-color-ffffff: var(--theme-white);
+}
